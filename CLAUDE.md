@@ -53,3 +53,10 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - Locations: Vadodara, Nandesari, Makarpura, Manjusar, Savli, Halol, Waghodia, Padra and Dahej. Areas with no client show "Our work nearby" with real neighbouring clients only.
 - Keyword targets are in the report from 13 Oct 2026. Homepage primary keyword: "industrial construction company in Vadodara".
 - **Service page depth (owner wants long, FAQ-rich pages):** each service page has an SEO intro, scope, a 5-step process, "why choose us", a "how to choose a contractor" checklist, areas, and **13–14 FAQs** (its own FAQs + `src/data/serviceFaqs.ts` + shared FAQs in the template), all included in FAQPage structured data. Target **1,500+ words**. Don't add near-duplicate questions. Location pages have 6 FAQs, industry pages 7 and guides 5.
+
+## Hosting & deployment
+- Repo: https://github.com/Jayambecivilonline/jayambe-website (public; GitHub Pages on the free plan needs a public repo, so never commit private client details).
+- Every push to `main` builds and deploys via `.github/workflows/deploy.yml` (takes 1–2 minutes). `public/CNAME` = jayambeengworks.in.
+- DNS lives at GoDaddy: A @ → 185.199.108.153 / .109.153 / .110.153 / .111.153, CNAME www → jayambecivilonline.github.io. The domain has no MX (email) records yet.
+- The enquiry form still needs a Web3Forms access key (`src/components/SiteVisitForm.astro`).
+- `plan.html` is internal and git-ignored.
