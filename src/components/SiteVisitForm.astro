@@ -1,14 +1,16 @@
 ---
-// Phase 4 lead form. Submissions go to email via Web3Forms.
-// TODO: replace ACCESS_KEY with the key from https://web3forms.com (free, tied to info@ email).
+// Phase 4 lead form. Submissions are emailed to the owner via Web3Forms.
+// The access key is public by design (it can only send mail to the owner's own inbox).
 import { serviceGroups } from '../data/site';
-const ACCESS_KEY = 'YOUR_WEB3FORMS_ACCESS_KEY';
+const ACCESS_KEY = '3f41700d-d614-41ec-b6ac-dc28941ea4ff';
 const allServices = serviceGroups.flatMap((g) => g.services.map((s) => s.name));
 ---
 <form class="form visit-form" action="https://api.web3forms.com/submit" method="POST">
   <input type="hidden" name="access_key" value={ACCESS_KEY} />
-  <input type="hidden" name="subject" value="New free site visit request — website" />
-  <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
+  <input type="hidden" name="subject" value="New free site visit request — jayambeengworks.in" />
+  <input type="hidden" name="from_name" value="Jay Ambe website" />
+  <input type="hidden" name="page" value={Astro.url.pathname} />
+  <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" />
   <div class="row">
     <label>Your name *<input name="name" required autocomplete="name" /></label>
     <label>Company *<input name="company" required autocomplete="organization" /></label>
@@ -29,11 +31,41 @@ const allServices = serviceGroups.flatMap((g) => g.services.map((s) => s.name));
   </div>
   <label>Tell us about your project<textarea name="message" rows="4" placeholder="New plant, expansion or new unit? Scope, timeline, drawings available…"></textarea></label>
   <button class="btn btn-primary" type="submit">Book My Free Site Visit →</button>
-  <p class="note">We'll call you back within one working day. Free visit, free quote, no obligation.</p>
+  <p class="note" data-status>We'll call you back to arrange the visit. Free visit, free quote, no obligation.</p>
 </form>
+
+<script>
+  // Send without leaving the page, and show the result inline.
+  // Without JavaScript the form still posts normally to Web3Forms.
+  document.querySelectorAll<HTMLFormElement>('form.visit-form').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      const status = form.querySelector<HTMLElement>('[data-status]')!;
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+        form.innerHTML = '<div class="done"><b>✅ Thank you, we’ve received your request.</b><p>Our team will call you back to arrange your free site visit. For anything urgent, call or WhatsApp us.</p></div>';
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Book My Free Site Visit →';
+        status.textContent = 'Sorry, that didn’t go through. Please try again, or call or WhatsApp us directly.';
+        status.classList.add('err');
+      }
+    });
+  });
+</script>
 
 <style>
   .visit-form { background: #fff; padding: 28px; border-radius: var(--radius); box-shadow: 0 10px 40px rgba(11,58,102,.15); color: var(--ink); }
   .visit-form button { justify-content: center; font-size: 17px; padding: 16px; }
+  .visit-form button:disabled { opacity: .7; cursor: wait; }
+  .hp { display: none; }
   .note { font-size: 13px; color: var(--muted); margin: 0; text-align: center; }
+  .note.err { color: var(--navy); font-weight: 600; }
+  .visit-form :global(.done) { text-align: center; padding: 24px 8px; }
+  .visit-form :global(.done b) { font-family: var(--head); font-size: 26px; color: var(--navy); display: block; margin-bottom: 8px; }
 </style>

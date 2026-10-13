@@ -58,5 +58,5 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - Repo: https://github.com/Jayambecivilonline/jayambe-website (public; GitHub Pages on the free plan needs a public repo, so never commit private client details).
 - Every push to `main` builds and deploys via `.github/workflows/deploy.yml` (takes 1–2 minutes). `public/CNAME` = jayambeengworks.in.
 - DNS lives at GoDaddy: A @ → 185.199.108.153 / .109.153 / .110.153 / .111.153, CNAME www → jayambecivilonline.github.io. The domain has no MX (email) records yet.
-- The enquiry form still needs a Web3Forms access key (`src/components/SiteVisitForm.astro`).
+- The enquiry form sends through Web3Forms (key in `src/components/SiteVisitForm.astro`, public by design) to the owner's inbox, and shows an inline thank-you message.
 - `plan.html` is internal and git-ignored.
