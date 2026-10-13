@@ -14,6 +14,11 @@ export const company = {
   email: 'info@jayambeengworks.in',
   address: 'A/27 Nilkhant Society, Nandesari, Vadodara, Gujarat, India', // confirmed by owner
   city: 'Vadodara',
+  // Google Business Profile (owner shared 14 Oct 2026) and other official listings
+  googleProfile: 'https://share.google/4s6v9Az60OgH4YRtl',
+  googleKg: 'https://www.google.com/search?kgmid=/g/11x7qm2rwj',
+  indiamart: 'https://m.indiamart.com/jay-ambeengineering-works',
+  mapEmbed: 'https://www.google.com/maps?q=' + encodeURIComponent('Jay Ambe Engineering Works, A/27 Nilkhant Society, Nandesari, Vadodara') + '&output=embed',
 };
 
 // Client names only. No logos until permission is given.

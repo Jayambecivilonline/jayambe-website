@@ -15,7 +15,8 @@ import { company } from '../data/site';
         <a class="item" href={company.whatsapp} target="_blank" rel="noopener"><span>💬</span><div><b>WhatsApp</b>Send photos or drawings directly</div></a>
         <a class="item" href={`mailto:${company.email}`}><span>✉</span><div><b>Email</b>{company.email}</div></a>
         <div class="item"><span>📍</span><div><b>Office</b>{company.address}</div></div>
-        <iframe class="map" title="Map of our office" loading="lazy" src="https://www.google.com/maps?q=Nandesari,+Vadodara,+Gujarat&output=embed"></iframe>
+        <a class="item" href={company.googleProfile} target="_blank" rel="noopener"><span>⭐</span><div><b>Find us on Google</b>See our profile, directions and reviews</div></a>
+        <iframe class="map" title="Map of Jay Ambe Engineering Works, Nandesari" loading="lazy" src={company.mapEmbed}></iframe>
       </div>
     </div>
   </section>

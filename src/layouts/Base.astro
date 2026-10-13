@@ -49,6 +49,7 @@ const nav = [
     url: Astro.site,
     address: { '@type': 'PostalAddress', streetAddress: 'A/27 Nilkhant Society, Nandesari', addressLocality: 'Vadodara', addressRegion: 'Gujarat', addressCountry: 'IN' },
     areaServed: "Gujarat, India",
+    sameAs: [company.googleProfile, company.googleKg, company.indiamart],
   })} />
   {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", ...s })} />)}
 </head>
@@ -105,6 +106,7 @@ const nav = [
         <p class="f-muted">{company.address}</p>
         <a href={company.phoneHref}>📞 {company.phone}</a>
         <a href={`mailto:${company.email}`}>✉ {company.email}</a>
+        <a href={company.googleProfile} target="_blank" rel="noopener">⭐ Google Business Profile</a>
       </div>
     </div>
     <div class="wrap copy">© {new Date().getFullYear()} {company.name}. All rights reserved.</div>
