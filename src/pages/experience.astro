@@ -1,0 +1,525 @@
+---
+// TEST PAGE: "From Bare Ground to First Production" (not indexed, not in the sitemap).
+// One scroll-driven scene: a plant builds itself from dawn to night, following MCB + 4 phases.
+// Text stays real HTML. The scene is layered SVG plus a light canvas, driven by GSAP ScrollTrigger + Lenis.
+import Base from '../layouts/Base.astro';
+import BreakerCursor from '../components/BreakerCursor.astro';
+import { company, YEARS, FOUNDED, clients } from '../data/site';
+
+// building geometry (scene units: 1600 × 900, ground at y = 720)
+const cols = [430, 550, 670, 790, 910];
+const winCols = Array.from({ length: 12 }, (_, i) => 446 + i * 38);
+const winRows = [452, 500, 548];
+const windows = winRows.flatMap((y) => winCols.map((x) => ({ x, y }))).sort((a, b) => a.x - b.x || a.y - b.y);
+const stars = Array.from({ length: 70 }, (_, i) => ({ x: (i * 397) % 1600, y: (i * 131) % 380, r: (i % 3) * 0.5 + 0.6 }));
+const steam = [0, 1, 2, 3, 4, 5];
+---
+<Base title="Experience | Jay Ambe Engineering Works" description="Watch a plant being built from bare ground to first production." noindex>
+  <BreakerCursor />
+
+  <div class="exp">
+    <!-- ================= THE STAGE (sticky scene) ================= -->
+    <div class="stage" aria-hidden="true">
+      <svg id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop id="s0" offset="0" stop-color="#061a33" />
+            <stop id="s1" offset=".45" stop-color="#0B3A66" />
+            <stop id="s2" offset=".8" stop-color="#c9772a" />
+          </linearGradient>
+          <radialGradient id="sunGlow"><stop offset="0" stop-color="#ffd27a" stop-opacity=".9" /><stop offset="1" stop-color="#F5A623" stop-opacity="0" /></radialGradient>
+          <linearGradient id="flow" x1="0" x2="1"><stop offset="0" stop-color="#F5A623" stop-opacity="0" /><stop offset=".5" stop-color="#ffe2a8" /><stop offset="1" stop-color="#F5A623" stop-opacity="0" /></linearGradient>
+          <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a" stop-opacity=".55" /><stop offset="1" stop-color="#ffd27a" stop-opacity="0" /></linearGradient>
+          <filter id="soft" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7" /></filter>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+          <pattern id="cladding" width="14" height="20" patternUnits="userSpaceOnUse"><rect width="14" height="20" fill="#12406d" /><rect width="2" height="20" fill="#0B3A66" /></pattern>
+        </defs>
+
+        <rect width="1600" height="900" fill="url(#sky)" />
+        <g id="stars">{stars.map((s) => <circle cx={s.x} cy={s.y} r={s.r} fill="#fff" />)}</g>
+        <g id="sun"><circle r="120" fill="url(#sunGlow)" /><circle r="40" fill="#ffd27a" /></g>
+
+        <!-- far skyline (parallax layer) -->
+        <g id="far">
+          <path d="M0 720V640h70v-40h24v40h90v-60h40v60h120v-30h60v30h80v-90h18v90h140v-50h70v50h120v-70h30v70h100v-40h90v40h110v-100h22v100h150v-60h80v60h96v80z" />
+        </g>
+
+        <g id="world">
+          <rect id="ground" x="-200" y="720" width="2000" height="300" fill="#13263d" />
+          <rect x="-200" y="718" width="2000" height="4" fill="#EB9723" opacity=".35" />
+
+          <!-- survey pegs -->
+          <g id="pegs">{[400, 520, 640, 760, 880, 1000, 1120, 1240, 1360, 1480].map((x) => <path class="peg" d={`M${x} 720l-5-16h10z`} fill="#EB9723" />)}</g>
+
+          <!-- excavator -->
+          <g id="exc" transform="translate(250 0)">
+            <rect x="-55" y="692" width="110" height="22" rx="10" fill="#0B3A66" />
+            <rect x="-40" y="652" width="70" height="42" rx="4" fill="#EB9723" />
+            <rect x="-30" y="660" width="26" height="20" fill="#CFE0F2" opacity=".8" />
+            <g id="arm1" transform="rotate(-30 25 660)">
+              <rect x="25" y="654" width="90" height="12" rx="4" fill="#D9860F" />
+              <g id="arm2" transform="rotate(60 112 660)">
+                <rect x="108" y="654" width="70" height="10" rx="4" fill="#D9860F" />
+                <path d="M172 652l22 4-6 22-18-8z" fill="#0B3A66" />
+              </g>
+            </g>
+          </g>
+
+          <!-- foundations -->
+          <g id="found">
+            <rect class="fd" x="410" y="712" width="520" height="14" fill="#9fb6cc" />
+            {cols.map((x) => <rect class="fd" x={x - 16} y="700" width="32" height="24" fill="#CFE0F2" />)}
+            <rect class="fd" x="1090" y="706" width="100" height="18" fill="#CFE0F2" />
+            <rect class="fd" x="1210" y="706" width="110" height="18" fill="#CFE0F2" />
+            <rect class="fd" x="925" y="706" width="46" height="18" fill="#CFE0F2" />
+          </g>
+
+          <!-- cladding + roof (fills in after the steel) -->
+          <g id="clad">
+            <rect x="430" y="430" width="480" height="290" fill="url(#cladding)" />
+            <polygon points="422,432 670,368 918,432" fill="#1565C0" />
+            {windows.map((w) => <rect x={w.x} y={w.y} width="24" height="30" rx="2" fill="#0a2747" />)}
+            <rect x="640" y="640" width="60" height="80" fill="#EB9723" />
+          </g>
+
+          <!-- steel frame (draws itself) -->
+          <g id="steel" stroke="#EB9723" stroke-width="7" stroke-linecap="square">
+            {cols.map((x) => <line class="draw col" x1={x} y1="720" x2={x} y2="430" />)}
+            <line class="draw beam" x1="430" y1="560" x2="910" y2="560" />
+            <line class="draw beam" x1="430" y1="430" x2="910" y2="430" />
+            <line class="draw beam" x1="430" y1="430" x2="670" y2="370" />
+            <line class="draw beam" x1="670" y1="370" x2="910" y2="430" />
+          </g>
+
+          <!-- tanks + stack -->
+          <g class="tank" style="--o: bottom"><rect x="1100" y="520" width="80" height="200" fill="#1565C0" /><ellipse cx="1140" cy="520" rx="40" ry="10" fill="#4F8FD6" /><rect x="1100" y="580" width="80" height="6" fill="#0B3A66" opacity=".4" /></g>
+          <g class="tank"><rect x="1220" y="480" width="90" height="240" fill="#0f4f8f" /><ellipse cx="1265" cy="480" rx="45" ry="11" fill="#4F8FD6" /><rect x="1220" y="550" width="90" height="6" fill="#0B3A66" opacity=".4" /></g>
+          <g id="stack"><rect x="934" y="250" width="28" height="470" fill="#0B3A66" /><rect x="934" y="262" width="28" height="10" fill="#EB9723" /><rect x="934" y="286" width="28" height="10" fill="#EB9723" /></g>
+
+          <!-- pipes -->
+          <g id="pipes" fill="none" stroke-linecap="round">
+            <path class="draw pipe" d="M910 600H1100" stroke="#4F8FD6" stroke-width="10" />
+            <path class="draw pipe" d="M1180 620H1220" stroke="#4F8FD6" stroke-width="10" />
+            <path class="draw pipe" d="M1310 640H1500V720" stroke="#EB9723" stroke-width="10" />
+            <path class="draw pipe" d="M910 650H1080V700" stroke="#CFE0F2" stroke-width="8" />
+            <path class="flow" d="M910 600H1100" stroke="url(#flow)" stroke-width="4" />
+            <path class="flow" d="M1310 640H1500V720" stroke="url(#flow)" stroke-width="4" />
+            <g stroke="#0B3A66" stroke-width="5"><path class="draw pipe" d="M1360 640V720M1440 640V720" /></g>
+          </g>
+
+          <!-- fire ring main + hydrants -->
+          <path id="ring" d="M300 752H1520" fill="none" stroke="#4F8FD6" stroke-width="5" stroke-dasharray="14 10" opacity="0" />
+          <g class="hyd" transform="translate(330 0)"><rect x="-9" y="692" width="18" height="28" rx="3" fill="#EB9723" /><rect x="-12" y="688" width="24" height="7" rx="3" fill="#D9860F" /></g>
+          <g class="hyd" transform="translate(1540 0)"><rect x="-9" y="692" width="18" height="28" rx="3" fill="#EB9723" /><rect x="-12" y="688" width="24" height="7" rx="3" fill="#D9860F" /></g>
+
+          <!-- tower crane -->
+          <g id="crane">
+            <g id="mast" stroke="#EB9723" stroke-width="3" fill="none">
+              <path d="M1030 720V180M1050 720V180" />
+              <path d="M1030 720L1050 690L1030 660L1050 630L1030 600L1050 570L1030 540L1050 510L1030 480L1050 450L1030 420L1050 390L1030 360L1050 330L1030 300L1050 270L1030 240L1050 210L1030 180" />
+            </g>
+            <g stroke="#EB9723" stroke-width="3" fill="none">
+              <path d="M360 180H1190M360 192H1040" />
+              <path d="M360 192L390 180L420 192L450 180L480 192L510 180L540 192L570 180L600 192L630 180L660 192L690 180L720 192L750 180L780 192L810 180L840 192L870 180L900 192L930 180L960 192L990 180L1020 192" />
+              <path d="M1040 180V140L360 180M1040 140L1190 180" stroke-width="2" />
+            </g>
+            <rect x="1150" y="182" width="40" height="26" fill="#0B3A66" />
+            <rect x="1022" y="190" width="36" height="24" fill="#0B3A66" />
+            <g id="trolley">
+              <rect x="-10" y="190" width="20" height="8" fill="#0B3A66" />
+              <g id="hook">
+                <line id="hookLine" x1="0" y1="198" x2="0" y2="300" stroke="#0B3A66" stroke-width="1.6" />
+                <g id="hookEnd" transform="translate(0 300)">
+                  <path d="M-5 0h10l-2 8a4 4 0 1 1-6 0z" fill="#0B3A66" />
+                  <rect id="load" x="-44" y="12" width="88" height="8" fill="#EB9723" opacity="0" />
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+
+        <!-- night tint, then everything that glows sits above it -->
+        <rect id="night" width="1600" height="900" fill="#020c1c" opacity="0" />
+        <g id="lights">
+          <g id="cones">
+            <polygon points="360,520 260,720 460,720" fill="url(#cone)" />
+            <polygon points="1500,520 1400,720 1600,720" fill="url(#cone)" />
+          </g>
+          {windows.map((w) => <rect class="lit" x={w.x} y={w.y} width="24" height="30" rx="2" fill="#F5A623" filter="url(#glow)" opacity="0" />)}
+          <circle id="beacon" cx="948" cy="246" r="5" fill="#F5A623" filter="url(#glow)" opacity="0" />
+          <circle id="pulse" r="9" fill="#9fd0ff" filter="url(#glow)" opacity="0" />
+          <g id="steam">{steam.map((i) => <circle class="puff" cx="948" cy="240" r={12 + i * 2} fill="#eaf3fd" filter="url(#soft)" style={`--d:${i * 0.66}s`} />)}</g>
+        </g>
+
+        <!-- phase 3: the stalled version on the left half -->
+        <g id="stall" opacity="0">
+          <rect width="800" height="900" fill="#0B3A66" opacity=".62" />
+          <line x1="800" y1="0" x2="800" y2="900" stroke="#F5A623" stroke-width="3" />
+          <text x="60" y="140" fill="#CFE0F2" font-family="Barlow Condensed, sans-serif" font-size="44" font-weight="700">❌ THE PROJECT THAT STALLS</text>
+          <text x="860" y="140" fill="#ffd27a" font-family="Barlow Condensed, sans-serif" font-size="44" font-weight="700">✅ ON TIME, WITH JAY AMBE</text>
+        </g>
+      </svg>
+      <canvas id="dust"></canvas>
+      <div class="time" id="clock">05:45</div>
+    </div>
+
+    <!-- ================= CHAPTERS (scroll over the stage) ================= -->
+    <div class="chapters">
+      <section class="ch hero">
+        <div class="card big">
+          <span class="eyebrow">Since {FOUNDED} · Vadodara, Gujarat</span>
+          <h1>Your New Plant Should Start Earning On Time. <span class="hl">Not Months Late.</span></h1>
+          <p>Scroll and watch a plant go from bare ground to first production, the way we build them.</p>
+          <div class="btn-row"><a href="/contact/#site-visit" class="btn btn-primary">Book Free Site Visit</a><a href="#ch1" class="btn btn-ghost">Start the build ↓</a></div>
+        </div>
+        <div class="hint">Scroll to build <span>↓</span></div>
+      </section>
+
+      <section class="ch" id="ch1">
+        <div class="card">
+          <span class="eyebrow">06:30 · Excavation &amp; foundations</span>
+          <h2>Why do some plants start on time, while others run months late?</h2>
+          <p>It's decided before the first foundation is poured. Most projects slip because:</p>
+          <ul class="x"><li>Work starts before drawings and material are ready</li><li>Civil, steel and piping wait on each other</li><li>The crew keeps changing</li><li>Fire approvals are left to the end</li></ul>
+          <div class="stats">
+            <div><b data-count={YEARS}>0</b><span>years in Gujarat</span></div>
+            <div><b data-count="0">0</b><span>safety incidents</span></div>
+            <div><b data-count="25" data-suffix="+">0</b><span>industrial clients</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ch right">
+        <div class="card">
+          <span class="eyebrow">09:00 · Steel goes up</span>
+          <h2>The 3 decisions on-time plants make</h2>
+          <ol class="dec"><li><b>Lock the plan</b> before anyone mobilises</li><li><b>One responsible contractor</b> for every trade</li><li><b>A permanent crew</b>, and proof of progress every day</li></ol>
+          <div class="dpr">
+            <small>DAILY PROGRESS REPORT · real figures from one of our sites</small>
+            <div class="dpr-row">
+              <div><b data-count="200">0</b><span>workers</span></div>
+              <div><b data-count="50">0</b><span>skilled</span></div>
+              <div><b data-count="150">0</b><span>unskilled</span></div>
+              <div><b data-count="2268">0</b><span>m³ excavated</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ch">
+        <div class="card">
+          <span class="eyebrow">12:30 · Piping &amp; utilities</span>
+          <h2>You're comparing the wrong number.</h2>
+          <p>A 5% cheaper quote on a ₹2 crore job saves <b>₹10 lakh</b>. Now drag the slider: if your plant earns ₹40 lakh a month, see what each month of delay costs, and watch the plant fade.</p>
+          <label class="slider"><span>Months the project runs late: <output id="mOut">0</output></span>
+            <input id="delay" type="range" min="0" max="12" step="1" value="0" />
+          </label>
+          <p class="verdict" id="verdict">No delay, no loss. That's what we plan for.</p>
+        </div>
+      </section>
+
+      <section class="ch right">
+        <div class="card">
+          <span class="eyebrow">16:00 · The choice</span>
+          <h2>Two ways your next project can go.</h2>
+          <div class="two"><div><b>❌ Lowest bidder</b><p>Delays, rework, four contractors blaming each other.</p></div><div><b>✅ Jay Ambe</b><p>Planned before day one, own crew, daily report, handed over on time.</p></div></div>
+          <p class="small">Trusted on projects for {clients.join(' and ')}.</p>
+        </div>
+      </section>
+
+      <section class="ch final">
+        <div class="card big">
+          <span class="eyebrow">20:00 · Lights on</span>
+          <h2>Production starts. <span class="hl">On time.</span></h2>
+          <p>That's the moment we build for. Get a free site visit and a detailed quote for your plant, expansion or shed, with no obligation.</p>
+          <div class="btn-row"><a href="/contact/#site-visit" class="btn btn-primary">Book My Free Site Visit</a><a href={company.whatsapp} class="btn btn-ghost" target="_blank" rel="noopener">💬 WhatsApp</a></div>
+          <p class="small">📞 <a href={company.phoneHref}>{company.phone}</a> · <a href="/">Back to the main site</a></p>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
+  import { burst } from '../scripts/fx';
+
+  gsap.registerPlugin(ScrollTrigger);
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const small = matchMedia('(max-width: 800px)').matches;
+  const $ = <T extends Element = SVGElement>(s: string) => document.querySelector(s) as unknown as T;
+  const $$ = <T extends Element = SVGElement>(s: string) => [...document.querySelectorAll(s)] as unknown as T[];
+  const clamp = gsap.utils.clamp(0, 1);
+  const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
+  const ease = (t: number) => t * t * (3 - 2 * t);
+
+  // ---------- smooth, weighted scrolling ----------
+  if (!still) {
+    const lenis = new Lenis({ lerp: 0.09 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((t) => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // ---------- scene refs ----------
+  const svg = $<SVGSVGElement>('#scene');
+  const world = $<SVGGElement>('#world');
+  const stops = ['#s0', '#s1', '#s2'].map((s) => $(s));
+  const sun = $('#sun'), stars = $('#stars'), far = $('#far'), ground = $('#ground'), night = $('#night');
+  const pegs = $$('.peg'), fds = $$('.fd'), tanks = $$('.tank'), stack = $('#stack'), clad = $('#clad');
+  const cols = $$<SVGGeometryElement>('.col'), beams = $$<SVGGeometryElement>('.beam'), pipes = $$<SVGGeometryElement>('.pipe');
+  const flows = $$('.flow'), ring = $<SVGPathElement>('#ring'), pulse = $('#pulse'), hyds = $$('.hyd');
+  const lit = $$('.lit'), cones = $('#cones'), beacon = $('#beacon'), steamG = $('#steam'), stall = $('#stall');
+  const exc = $('#exc'), arm1 = $('#arm1'), arm2 = $('#arm2'), crane = $('#crane'), mast = $('#mast');
+  const trolley = $('#trolley'), hook = $('#hook'), hookLine = $('#hookLine'), hookEnd = $('#hookEnd'), load = $('#load');
+  const clock = $<HTMLElement>('#clock');
+
+  // stroke-drawing setup
+  const lens = new Map<Element, number>();
+  for (const el of [...cols, ...beams, ...pipes]) { const L = el.getTotalLength(); lens.set(el, L); el.style.strokeDasharray = `${L}`; el.style.strokeDashoffset = `${L}`; }
+  const draw = (el: SVGGeometryElement, t: number) => { el.style.strokeDashoffset = `${lens.get(el)! * (1 - t)}`; };
+  const ringLen = ring.getTotalLength();
+
+  // phone screens: frame the plant instead of the whole panorama
+  const frame = () => svg.setAttribute('viewBox', innerWidth / innerHeight < 1 ? '300 120 1000 780' : '0 0 1600 900');
+  frame(); addEventListener('resize', frame);
+
+  // ---------- time of day ----------
+  const skyKeys = [
+    { p: 0.0, c: ['#061a33', '#0B3A66', '#c9772a'], g: '#13263d', f: '#0a2747' },
+    { p: 0.16, c: ['#0e4a85', '#3f7fc0', '#f2b36b'], g: '#5a4a3a', f: '#1d4f80' },
+    { p: 0.38, c: ['#2f78c4', '#7fb3e6', '#d8ebfa'], g: '#9c7a52', f: '#5f8fbd' },
+    { p: 0.58, c: ['#3b86d1', '#9cc8ef', '#e8f3fc'], g: '#a5835a', f: '#77a4cf' },
+    { p: 0.78, c: ['#0b2c55', '#b8692b', '#f0a04b'], g: '#5c4632', f: '#2a3f66' },
+    { p: 0.9, c: ['#020c1c', '#06213f', '#0B3A66'], g: '#0d1b2c', f: '#061a33' },
+    { p: 1.0, c: ['#020c1c', '#06213f', '#0B3A66'], g: '#0d1b2c', f: '#061a33' },
+  ];
+  const lerpC = (a: string, b: string, t: number) => gsap.utils.interpolate(a, b, t) as string;
+  function skyAt(p: number) {
+    let i = 0;
+    while (i < skyKeys.length - 2 && p > skyKeys[i + 1].p) i++;
+    const A = skyKeys[i], B = skyKeys[i + 1], t = ease(seg(p, A.p, B.p));
+    return { c: A.c.map((c, k) => lerpC(c, B.c[k], t)), g: lerpC(A.g, B.g, t), f: lerpC(A.f, B.f, t) };
+  }
+
+  // ---------- crane: trolley schedule + a swinging hook ----------
+  let trolleyX = 1000, hookLen = 120, carrying = 0, swing = 0, swingV = 0, lastX = 1000;
+  function craneAt(p: number) {
+    const t = seg(p, 0.2, 0.4);
+    if (t <= 0 || t >= 1) { trolleyX = 1000; hookLen = 110; carrying = 0; return; }
+    const cyc = t * 2, c = cyc % 1, dropX = cyc < 1 ? 560 : 800;
+    if (c < 0.25) { trolleyX = 1000; hookLen = gsap.utils.interpolate(110, 500, ease(c / 0.25)); carrying = 0; }
+    else if (c < 0.55) { const k = ease((c - 0.25) / 0.3); trolleyX = gsap.utils.interpolate(1000, dropX, k); hookLen = gsap.utils.interpolate(500, 170, Math.min(1, k * 1.6)); carrying = 1; }
+    else if (c < 0.8) { trolleyX = dropX; hookLen = gsap.utils.interpolate(170, 225, ease((c - 0.55) / 0.25)); carrying = 1; }
+    else { const k = ease((c - 0.8) / 0.2); trolleyX = gsap.utils.interpolate(dropX, 1000, k); hookLen = gsap.utils.interpolate(225, 110, k); carrying = 0; }
+  }
+  // pendulum physics for the hook, so the load swings and settles like real weight
+  gsap.ticker.add(() => {
+    const v = trolleyX - lastX; lastX = trolleyX;
+    swingV += (-v * 0.012) - swing * 0.04 - swingV * 0.08;
+    swing = Math.max(-0.35, Math.min(0.35, swing + swingV)); // keep the swing believable even on fast scrolls
+    trolley.setAttribute('transform', `translate(${trolleyX} 0)`);
+    hook.setAttribute('transform', `rotate(${(swing * 57.3).toFixed(2)} 0 198)`);
+    hookLine.setAttribute('y2', String(198 + hookLen));
+    hookEnd.setAttribute('transform', `translate(0 ${198 + hookLen})`);
+    load.setAttribute('opacity', String(carrying));
+  });
+
+  // ---------- sparks at steel joints & dust at foundations ----------
+  const toScreen = (x: number, y: number) => { const pt = svg.createSVGPoint(); pt.x = x; pt.y = y; return pt.matrixTransform(world.getScreenCTM()!); };
+  const events = [
+    ...[430, 550, 670, 790, 910].map((x, i) => ({ p: 0.11 + i * 0.015, x, y: 712, kind: 'dust' as const })),
+    ...[430, 550, 670, 790, 910].map((x, i) => ({ p: 0.22 + i * 0.022, x, y: 430, kind: 'spark' as const })),
+    { p: 0.34, x: 670, y: 370, kind: 'spark' as const }, { p: 0.36, x: 910, y: 560, kind: 'spark' as const }, { p: 0.37, x: 430, y: 560, kind: 'spark' as const },
+  ];
+  let prevP = 0;
+
+  // ---------- delay slider (dims the scene) ----------
+  let delayM = 0;
+  const delayIn = document.getElementById('delay') as HTMLInputElement;
+  const mOut = document.getElementById('mOut')!, verdict = document.getElementById('verdict')!;
+  delayIn.addEventListener('input', () => {
+    delayM = Number(delayIn.value);
+    mOut.textContent = String(delayM);
+    const lost = 40 * delayM;
+    verdict.textContent = delayM === 0 ? 'No delay, no loss. That’s what we plan for.'
+      : `Lost: ₹${lost >= 100 ? (lost / 100).toLocaleString('en-IN') + ' crore' : lost + ' lakh'}. That's ${Math.round(lost / 10)}× the ₹10 lakh you saved.`;
+    svg.style.filter = delayM ? `brightness(${1 - delayM * 0.045}) saturate(${1 - delayM * 0.06})` : '';
+  });
+
+  // ---------- the master update, driven by scroll progress ----------
+  function update(p: number) {
+    // sky, ground, far skyline
+    const s = skyAt(p);
+    stops.forEach((el, k) => el.setAttribute('stop-color', s.c[k]));
+    ground.setAttribute('fill', s.g);
+    far.setAttribute('fill', s.f);
+    const sunT = seg(p, 0, 0.84);
+    sun.setAttribute('transform', `translate(${150 + sunT * 1300} ${720 - Math.sin(sunT * Math.PI) * 560})`);
+    sun.setAttribute('opacity', String(1 - seg(p, 0.8, 0.86)));
+    const nightAmt = seg(p, 0.82, 0.92);
+    stars.setAttribute('opacity', String(nightAmt));
+    night.setAttribute('opacity', String(nightAmt * 0.45));
+    far.setAttribute('transform', `translate(${-60 * p} 0)`);
+
+    // camera: close in while building, pull back for the finale
+    const cam = 1.1 - 0.1 * ease(seg(p, 0.86, 1));
+    world.setAttribute('transform', `translate(800 900) scale(${cam}) translate(-800 -900)`);
+
+    // clock in the corner
+    const mins = 5 * 60 + 45 + Math.round(p * (14 * 60 + 15));
+    clock.textContent = `${String(Math.floor(mins / 60) % 24).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
+
+    // ground works
+    pegs.forEach((el, i) => el.setAttribute('opacity', String(seg(p, 0.02 + i * 0.006, 0.05 + i * 0.006) * (1 - seg(p, 0.2, 0.24)))));
+    const excIn = seg(p, 0.02, 0.06), excOut = seg(p, 0.2, 0.27);
+    exc.setAttribute('transform', `translate(${250 - (1 - excIn) * 400 - excOut * 500} 0)`);
+    arm1.setAttribute('transform', `rotate(${-30 + Math.sin(p * 120) * 18} 25 660)`);
+    arm2.setAttribute('transform', `rotate(${60 + Math.sin(p * 120 + 1) * 25} 112 660)`);
+    fds.forEach((el, i) => { (el as SVGElement).style.transform = `scaleY(${ease(seg(p, 0.08 + i * 0.012, 0.13 + i * 0.012))})`; });
+
+    // crane rises, works, then leaves before the finale
+    const craneIn = ease(seg(p, 0.14, 0.2));
+    mast.style.transform = `scaleY(${craneIn})`;
+    crane.setAttribute('opacity', String(Math.min(craneIn * 1.5, 1) * (1 - seg(p, 0.82, 0.87))));
+    craneAt(p);
+
+    // steel
+    cols.forEach((el, i) => draw(el, ease(seg(p, 0.2 + i * 0.022, 0.25 + i * 0.022))));
+    beams.forEach((el, i) => draw(el, ease(seg(p, 0.3 + i * 0.02, 0.35 + i * 0.02))));
+
+    // tanks, stack, cladding
+    tanks.forEach((el, i) => { (el as SVGElement).style.transform = `scaleY(${ease(seg(p, 0.38 + i * 0.03, 0.45 + i * 0.03))})`; });
+    stack.style.transform = `scaleY(${ease(seg(p, 0.4, 0.48))})`;
+    clad.setAttribute('opacity', String(ease(seg(p, 0.44, 0.54))));
+
+    // pipes draw, then flow
+    pipes.forEach((el, i) => draw(el, ease(seg(p, 0.5 + i * 0.015, 0.56 + i * 0.015))));
+    const flowing = p > 0.6;
+    flows.forEach((el) => el.classList.toggle('on', flowing));
+
+    // phase 3: stalled vs on time
+    stall.setAttribute('opacity', String(seg(p, 0.66, 0.7) * (1 - seg(p, 0.77, 0.8))));
+
+    // fire ring main pressure test pulse
+    const ringT = seg(p, 0.8, 0.87);
+    ring.setAttribute('opacity', String(seg(p, 0.79, 0.81) * 0.9));
+    hyds.forEach((el) => el.setAttribute('opacity', String(seg(p, 0.76, 0.8))));
+    const pt = ring.getPointAtLength(ringT * ringLen);
+    pulse.setAttribute('cx', String(pt.x)); pulse.setAttribute('cy', String(pt.y));
+    pulse.setAttribute('opacity', String(ringT > 0 && ringT < 1 ? 1 : 0));
+
+    // lights on: a wave from left to right, then the stack breathes
+    const lt = seg(p, 0.88, 0.95);
+    lit.forEach((el, i) => el.setAttribute('opacity', lt * lit.length > i ? '1' : '0'));
+    cones.setAttribute('opacity', String(seg(p, 0.87, 0.9)));
+    beacon.setAttribute('opacity', String(seg(p, 0.86, 0.88)));
+    steamG.setAttribute('opacity', String(seg(p, 0.9, 0.96)));
+
+    // one-off effects when scrolling forward past a moment
+    if (!still && p > prevP) {
+      for (const e of events) if (prevP < e.p && p >= e.p) { const sp = toScreen(e.x, e.y); burst(sp.x, sp.y, e.kind, e.kind === 'spark' ? (small ? 6 : 12) : 4); }
+    }
+    prevP = p;
+  }
+
+  ScrollTrigger.create({ trigger: '.exp', start: 'top top', end: 'bottom bottom', onUpdate: (st) => update(st.progress) });
+  update(0);
+
+  // ---------- numbers count up when they appear ----------
+  const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    const el = en.target as HTMLElement, to = Number(el.dataset.count), suf = el.dataset.suffix ?? '';
+    const o = { v: 0 };
+    gsap.to(o, { v: to, duration: still ? 0 : 1.6, ease: 'power2.out', onUpdate: () => { el.textContent = Math.round(o.v).toLocaleString('en-IN') + suf; } });
+    io.unobserve(el);
+  }), { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach((el) => io.observe(el));
+
+  // ---------- cards glide in ----------
+  if (!still) gsap.utils.toArray<HTMLElement>('.ch .card').forEach((c) => gsap.from(c, { y: 60, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: c, start: 'top 85%' } }));
+
+  // ---------- dust drifting in the sunlight ----------
+  const dust = document.getElementById('dust') as HTMLCanvasElement;
+  if (!still) {
+    const ctx = dust.getContext('2d')!, dpr = Math.min(devicePixelRatio || 1, 2);
+    const N = small ? 24 : 70;
+    const motes = Array.from({ length: N }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.8 + 0.4, vx: (Math.random() - .5) * 0.0004, vy: -Math.random() * 0.0003 - 0.00005, tw: Math.random() * 6 }));
+    const size = () => { dust.width = innerWidth * dpr; dust.height = innerHeight * dpr; };
+    size(); addEventListener('resize', size);
+    gsap.ticker.add(() => {
+      const day = Math.sin(Math.PI * clamp(prevP / 0.84)); // brightest mid-day, gone at night
+      ctx.clearRect(0, 0, dust.width, dust.height);
+      if (day < 0.05) return;
+      for (const m of motes) {
+        m.x += m.vx; m.y += m.vy; m.tw += 0.03;
+        if (m.y < -0.02) m.y = 1.02; if (m.x < -0.02) m.x = 1.02; if (m.x > 1.02) m.x = -0.02;
+        ctx.globalAlpha = day * (0.35 + Math.sin(m.tw) * 0.25);
+        ctx.fillStyle = '#ffe8c2';
+        ctx.beginPath(); ctx.arc(m.x * dust.width, m.y * dust.height, m.r * dpr, 0, 7); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    });
+  }
+</script>
+
+<style>
+  .exp { position: relative; }
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; z-index: 0; background: #061a33; }
+  #scene { width: 100%; height: 100%; display: block; }
+  #dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .time { position: absolute; right: 24px; bottom: 20px; font-family: var(--head); font-size: 22px; letter-spacing: 2px; color: #fff; background: rgba(7,33,59,.55); border: 1px solid rgba(255,255,255,.18); border-radius: 4px; padding: 4px 12px; backdrop-filter: blur(6px); }
+
+  /* scene pieces that scale from their base */
+  .fd, .tank, #stack, #mast { transform-box: fill-box; transform-origin: 50% 100%; }
+  .flow { stroke-dasharray: 60 240; stroke-dashoffset: 300; opacity: 0; }
+  .flow.on { opacity: 1; animation: flow 2.2s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: 0; } }
+  .puff { animation: rise 4s ease-out infinite; animation-delay: var(--d); opacity: 0; }
+  @keyframes rise { 0% { transform: translate(0, 0) scale(.5); opacity: 0; } 15% { opacity: .38; } 100% { transform: translate(60px, -200px) scale(2.6); opacity: 0; } }
+  .puff { transform-box: fill-box; transform-origin: center; }
+
+  .chapters { position: relative; z-index: 2; margin-top: -100vh; }
+  .ch { min-height: 130vh; display: flex; align-items: center; padding: 0 max(24px, 6vw); }
+  .ch.right { justify-content: flex-end; }
+  .ch.hero { min-height: 100vh; flex-direction: column; justify-content: center; align-items: flex-start; }
+  .ch.final { min-height: 160vh; align-items: flex-end; justify-content: flex-end; padding-bottom: 8vh; }
+  .ch.final .card { max-width: 440px; }
+  .card { max-width: 480px; background: rgba(7,33,59,.72); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 28px; color: #fff; backdrop-filter: blur(12px); box-shadow: 0 30px 60px rgba(2,12,28,.35); }
+  .card.big { max-width: 640px; }
+  .card h1, .card h2 { color: #fff; }
+  .card h1 { font-size: clamp(36px, 5vw, 60px); }
+  .card .eyebrow { color: var(--orange-light); }
+  .card p, .card li { color: #E6EEF7; }
+  .card a:not(.btn) { color: var(--orange-light); }
+  .hl { color: var(--orange-light); }
+  .hint { margin-top: 28px; color: #fff; font-weight: 600; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,.4); }
+  .hint span { display: inline-block; animation: bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(6px); } }
+  .x { padding-left: 20px; } .x li { margin: 6px 0; }
+  .stats, .dpr-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+  .dpr-row { grid-template-columns: repeat(4, 1fr); }
+  .stats div, .dpr-row div { background: rgba(255,255,255,.06); border-radius: 6px; padding: 12px 8px; text-align: center; }
+  .stats b, .dpr-row b { display: block; font-family: var(--head); font-size: 34px; color: var(--orange-light); line-height: 1; }
+  .stats span, .dpr-row span { font-size: 12px; }
+  .dpr { margin-top: 18px; border-top: 1px solid rgba(255,255,255,.15); padding-top: 14px; }
+  .dpr small { font-size: 11px; letter-spacing: .8px; color: var(--navy-soft); }
+  .dec { padding-left: 20px; } .dec li { margin: 8px 0; }
+  .slider { display: grid; gap: 8px; margin: 16px 0 8px; font-weight: 600; }
+  .slider input { width: 100%; accent-color: var(--accent); height: 30px; }
+  .slider output { font-family: var(--head); font-size: 24px; color: var(--orange-light); }
+  .verdict { font-family: var(--head); font-size: 24px; color: #fff !important; margin: 0; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .two div { background: rgba(255,255,255,.06); border-radius: 6px; padding: 14px; }
+  .two p { margin: 6px 0 0; font-size: 15px; }
+  .small { font-size: 14px; margin-top: 14px; }
+  @media (max-width: 800px) {
+    .ch, .ch.right { justify-content: center; padding: 0 16px; }
+    .card { padding: 20px; background: rgba(7,33,59,.82); }
+    .dpr-row { grid-template-columns: repeat(2, 1fr); }
+    .time { right: 12px; bottom: 76px; font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .flow.on, .puff, .hint span { animation: none; } }
+</style>

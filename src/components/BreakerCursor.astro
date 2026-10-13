@@ -1,0 +1,107 @@
+---
+// Custom cursor: a hand-held breaker (jackhammer). Click (or hold) and it hammers:
+// it shakes, throws concrete debris and dust, and leaves a crack that fades.
+// On touch phones, taps vibrate the phone where the browser allows it (most Android phones).
+// Desktop mouse only for the cursor itself; it is skipped for touch screens and "reduce motion".
+---
+<div id="breaker" aria-hidden="true">
+  <div class="bk-inner">
+    <svg viewBox="0 0 56 92" width="56" height="92">
+      <rect x="4" y="3" width="48" height="9" rx="4.5" fill="#0B3A66" />
+      <rect x="4" y="3" width="12" height="9" rx="4.5" fill="#EB9723" />
+      <rect x="40" y="3" width="12" height="9" rx="4.5" fill="#EB9723" />
+      <rect x="23" y="10" width="10" height="12" fill="#0B3A66" />
+      <rect x="14" y="20" width="28" height="42" rx="6" fill="#1565C0" stroke="#0B3A66" stroke-width="2" />
+      <rect x="14" y="30" width="28" height="6" fill="#EB9723" />
+      <path d="M19 44h18M19 50h18" stroke="#0B3A66" stroke-width="2" opacity=".5" />
+      <rect x="22" y="61" width="12" height="9" rx="2" fill="#0B3A66" />
+      <polygon points="24,70 32,70 30.5,88 25.5,88" fill="#CFE0F2" stroke="#0B3A66" stroke-width="1.5" />
+      <polygon points="25.5,88 30.5,88 28,92" fill="#0B3A66" />
+    </svg>
+  </div>
+</div>
+
+<script>
+  import { burst } from '../scripts/fx';
+
+  const el = document.getElementById('breaker')!;
+  const fine = matchMedia('(pointer: fine)').matches;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TIP_X = 28, TIP_Y = 92; // chisel tip = the real click point
+
+  const crack = (x: number, y: number) => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    c.setAttribute('class', 'crack');
+    c.setAttribute('viewBox', '-30 -30 60 60');
+    c.style.left = x - 30 + 'px';
+    c.style.top = y - 30 + 'px';
+    let d = '';
+    for (let i = 0; i < 5; i++) {
+      const a = Math.random() * Math.PI * 2;
+      let px = 0, py = 0;
+      d += 'M0 0';
+      for (let s = 0; s < 3; s++) { px += Math.cos(a + (Math.random() - .5) * .9) * 8; py += Math.sin(a + (Math.random() - .5) * .9) * 8; d += `L${px.toFixed(1)} ${py.toFixed(1)}`; }
+    }
+    c.innerHTML = `<path d="${d}" fill="none" stroke="#0B3A66" stroke-width="1.6" stroke-linecap="round"/>`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 1300);
+  };
+
+  const buzz = (pattern: number | number[]) => { try { navigator.vibrate?.(pattern); } catch {} };
+
+  if (fine && !still) {
+    document.documentElement.classList.add('has-breaker');
+    let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, holding: number | undefined;
+    addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; el.classList.add('on'); }, { passive: true });
+    document.addEventListener('pointerleave', () => el.classList.remove('on'));
+    const loop = () => {
+      x += (tx - x) * 0.45; y += (ty - y) * 0.45; // slight weight, like a heavy tool
+      el.style.transform = `translate3d(${x - TIP_X}px, ${y - TIP_Y}px, 0)`;
+      requestAnimationFrame(loop);
+    };
+    loop();
+    // over links and buttons the breaker tilts, ready to "hit" them
+    addEventListener('pointerover', (e) => el.classList.toggle('ready', !!(e.target as Element).closest('a, button, input, select, textarea, label')));
+
+    const hit = () => { burst(tx, ty, 'debris', 10); burst(tx, ty, 'dust', 3); };
+    addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      el.classList.add('hammering');
+      crack(tx, ty);
+      hit();
+      buzz(30);
+      holding = window.setInterval(hit, 110); // keep breaking while held
+    });
+    const stop = () => { el.classList.remove('hammering'); clearInterval(holding); };
+    addEventListener('pointerup', stop);
+    addEventListener('blur', stop);
+  }
+
+  // Touch screens: no custom cursor, but taps still crack, throw debris and vibrate.
+  if (!fine && !still) {
+    addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse') return;
+      burst(e.clientX, e.clientY, 'debris', 8);
+      crack(e.clientX, e.clientY);
+      buzz([25, 30, 25]);
+    }, { passive: true });
+  }
+</script>
+
+<style is:global>
+  html.has-breaker, html.has-breaker * { cursor: none !important; }
+  #breaker { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; opacity: 0; transition: opacity .2s; will-change: transform; }
+  #breaker.on { opacity: 1; }
+  #breaker .bk-inner { transform-origin: 50% 100%; transition: transform .15s; filter: drop-shadow(0 6px 8px rgba(4,24,45,.35)); }
+  #breaker.ready .bk-inner { transform: rotate(-12deg); }
+  #breaker.hammering .bk-inner { animation: bk-shake 55ms linear infinite; }
+  @keyframes bk-shake {
+    0% { transform: translate(0, 0) rotate(0); }
+    25% { transform: translate(-1.5px, -3px) rotate(-1.5deg); }
+    50% { transform: translate(1.5px, 1px) rotate(1deg); }
+    75% { transform: translate(-1px, -2px) rotate(-.5deg); }
+    100% { transform: translate(1px, 0) rotate(1.5deg); }
+  }
+  .crack { position: fixed; width: 60px; height: 60px; pointer-events: none; z-index: 9997; animation: crack-fade 1.3s ease-out forwards; }
+  @keyframes crack-fade { 0% { opacity: .9; transform: scale(.6); } 15% { transform: scale(1); } 100% { opacity: 0; } }
+</style>

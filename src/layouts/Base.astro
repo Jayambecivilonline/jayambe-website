@@ -7,8 +7,10 @@ interface Props {
   description: string;
   /** extra schema.org objects for this page (FAQPage, Service, BreadcrumbList…) */
   schema?: object[];
+  /** keep test pages out of Google */
+  noindex?: boolean;
 }
-const { title, description, schema = [] } = Astro.props;
+const { title, description, schema = [], noindex = false } = Astro.props;
 const path = Astro.url.pathname;
 
 const nav = [
@@ -28,6 +30,7 @@ const nav = [
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
   <link rel="canonical" href={new URL(path, Astro.site)} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />

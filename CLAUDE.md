@@ -60,3 +60,8 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - DNS lives at GoDaddy: A @ → 185.199.108.153 / .109.153 / .110.153 / .111.153, CNAME www → jayambecivilonline.github.io. The domain has no MX (email) records yet.
 - The enquiry form sends through Web3Forms (key in `src/components/SiteVisitForm.astro`, public by design) to the owner's inbox, and shows an inline thank-you message.
 - `plan.html` is internal and git-ignored.
+
+## Experience test page
+- `/experience/` (`src/pages/experience.astro`) is a TEST page: a scroll-driven scene where a plant builds itself from dawn to night (GSAP ScrollTrigger + Lenis, layered SVG, dust canvas). It is `noindex` and excluded from the sitemap. It is not linked from the menu until the owner approves it.
+- `src/components/BreakerCursor.astro` is the jackhammer cursor (desktop mouse only). Clicking or holding shakes it, throws debris and leaves a crack. On touch screens, taps vibrate where supported. It respects `prefers-reduced-motion`.
+- `src/scripts/fx.ts` is the shared particle engine (sparks, debris, dust).
