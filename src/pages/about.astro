@@ -12,19 +12,7 @@ const values = [
 ];
 ---
 <Base title={`About Us | ${company.name}, Vadodara since ${FOUNDED}`} description={`Founded in ${FOUNDED} by ${company.founder}, Jay Ambe Engineering Works is an industrial construction contractor based in Nandesari, Vadodara.`}>
-  <PageHero eyebrow={`About us · Since ${FOUNDED}`} title={`${YEARS} years of building what Gujarat's industries run on.`} lead="A family-run industrial contractor from Nandesari that plant owners trust with the jobs they can't afford to get wrong." />
-
-  <section class="section">
-    <div class="wrap story">
-      <div class="photo"><img src="/emblem.png" alt="" width="160" height="160" /><b>Since {FOUNDED}</b><span>Nandesari, Vadodara</span></div>
-      <div>
-        <span class="eyebrow">Founder</span>
-        <h2>{company.founder}</h2>
-        <p class="lead">Founded Jay Ambe Engineering Works in {FOUNDED}.</p>
-        <p class="todo">TODO-confirm: the founder's story. How did he start, what was the first big job, and what does he believe in? A short message in his own words works best.</p>
-      </div>
-    </div>
-  </section>
+  <PageHero eyebrow={`About us · Since ${FOUNDED}`} title={`${YEARS} years of building what Gujarat's industries run on.`} lead={"An industrial contractor from Nandesari that plant owners trust with the jobs they can't afford to get wrong."} />
 
   <section class="section alt">
     <div class="wrap">
@@ -56,14 +44,10 @@ const values = [
 </Base>
 
 <style>
-  .story { display: grid; grid-template-columns: 320px 1fr; gap: 48px; align-items: center; }
-  .photo { aspect-ratio: 4/5; border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; background: var(--tint); border: 1px solid var(--line); }
-  .photo b { font-family: var(--head); font-size: 32px; color: var(--navy); margin-top: 10px; }
-  .photo span { font-size: 14px; }
   .timeline { list-style: none; padding: 0; margin: 24px 0 0; border-left: 3px solid var(--accent); }
   .timeline li { padding: 14px 0 14px 28px; position: relative; display: grid; grid-template-columns: 90px 1fr; gap: 16px; }
   .timeline li::before { content: ''; position: absolute; left: -9px; top: 22px; width: 15px; height: 15px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); }
   .timeline b { font-family: var(--head); font-size: 24px; color: var(--orange); }
   .val { border-top: 4px solid var(--accent); }
-  @media (max-width: 900px) { .story { grid-template-columns: 1fr; } .photo { max-width: 280px; } }
+
 </style>
