@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { company, serviceGroups, FOUNDED, YEARS } from '../../data/site';
+import { industryPages, locationPages } from '../../data/seoPages';
+import { guides } from '../../data/guides';
+
+const all = serviceGroups.flatMap((g) => g.services);
+const schema = [
+  { '@type': 'ItemList', name: 'Industrial construction services', itemListElement: all.map((s, i) => ({
+    '@type': 'ListItem', position: i + 1, name: s.name, url: new URL(`/services/${s.slug}/`, Astro.site).href })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: 'Services', item: new URL('/services/', Astro.site).href },
+  ] },
+];
+---
+<Base title="Industrial Construction Services, Vadodara | Jay Ambe" description="Industrial construction services in Vadodara and Gujarat: factories, PEB and industrial sheds, warehouses, civil, steel, piping, fire fighting, precast walls." schema={schema}>
+  <PageHero eyebrow="Industrial construction services · Vadodara, Gujarat" title="Everything your new plant needs, under one contract." lead="Stop managing four contractors. One team handles planning, civil, steel, piping, mechanical and fire fighting, and takes full responsibility for the result.">
+    <div class="btn-row" style="margin-top:24px">
+      <a href="/contact/#site-visit" class="btn btn-primary">Book Free Site Visit</a>
+    </div>
+  </PageHero>
+
+  <section class="section intro-sec">
+    <div class="wrap intro">
+      <h2>Industrial construction services in Vadodara and across Gujarat</h2>
+      <p>Since {FOUNDED}, Jay Ambe Engineering Works has delivered industrial construction services for chemical, pharmaceutical, industrial gas and process plants across Gujarat. From our base in Nandesari, Vadodara, we build <a href="/services/factory-construction/">factory buildings</a>, <a href="/services/industrial-shed-construction/">industrial sheds</a>, <a href="/services/peb-structures/">PEB structures</a> and <a href="/services/warehouse-construction/">warehouses</a>, and handle <a href="/services/civil-works/">civil works</a>, <a href="/services/structural-steel/">structural steel</a>, <a href="/services/piping/">process piping</a> and <a href="/services/fire-fighting/">fire fighting systems</a> under one contract.</p>
+      <p>{YEARS} years, 25+ industrial clients, our own skilled crew, a daily progress report on every job and zero safety incidents. That's why clients like Sicgil India have stayed with us for decades.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      {serviceGroups.map((g) => (
+        <div class="group">
+          <h2><span aria-hidden="true">{g.icon}</span> {g.name}</h2>
+          <div class="grid g3">
+            {g.services.map((s) => (
+              <a class="card svc" id={s.slug} href={`/services/${s.slug}/`}>
+                <h3>{s.name}</h3>
+                <p>{s.blurb}</p>
+                <span class="more">{s.name} details →</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap two">
+      <div>
+        <h2>Industries we build for</h2>
+        <div class="links">{industryPages.map((i) => <a href={`/industries/${i.slug}/`}>{i.name} →</a>)}</div>
+      </div>
+      <div>
+        <h2>Areas we serve</h2>
+        <div class="links">{locationPages.map((l) => <a href={`/locations/${l.slug}/`}>📍 {l.name}</a>)}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Guides for plant owners</h2>
+      <div class="links">{guides.map((g) => <a href={`/guides/${g.slug}/`}>{g.h1} →</a>)}</div>
+    </div>
+  </section>
+
+  <CtaBand heading="Not sure which service you need? Our engineer will tell you, free." />
+</Base>
+
+<style>
+  .intro-sec { padding-bottom: 0; }
+  .intro { max-width: 900px; }
+  .intro h2 { font-size: clamp(26px, 3vw, 34px); }
+  .group { margin-bottom: 56px; }
+  .group h2 { border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 24px; }
+  .svc { border-left: 4px solid var(--accent); text-decoration: none; color: var(--ink); transition: box-shadow .15s, transform .15s; }
+  .svc:hover { box-shadow: 0 8px 24px rgba(11,58,102,.12); transform: translateY(-2px); }
+  .more { font-weight: 600; color: var(--orange); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .links a { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 16px; text-decoration: none; color: var(--navy); font-weight: 600; }
+  .links a:hover { border-color: var(--accent); }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+</style>

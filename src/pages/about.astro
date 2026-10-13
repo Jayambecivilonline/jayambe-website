@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company, YEARS, FOUNDED } from '../data/site';
+
+const values = [
+  { t: 'Safety first', d: 'No deadline is worth an injury. Every job starts with a safety plan and trained supervision.' },
+  { t: 'Our word is the schedule', d: 'We plan before we start, so the date we promise is the date we deliver.' },
+  { t: 'Right first time', d: 'Work to drawing and standard, tested and documented, so there is no rework.' },
+  { t: 'One team, full ownership', d: 'One contract and one point of responsibility. We never pass the blame.' },
+];
+---
+<Base title={`About Us | ${company.name}, Vadodara since ${FOUNDED}`} description={`Founded in ${FOUNDED} by ${company.founder}, Jay Ambe Engineering Works is an industrial construction contractor based in Nandesari, Vadodara.`}>
+  <PageHero eyebrow={`About us · Since ${FOUNDED}`} title={`${YEARS} years of building what Gujarat's industries run on.`} lead="A family-run industrial contractor from Nandesari that plant owners trust with the jobs they can't afford to get wrong." />
+
+  <section class="section">
+    <div class="wrap story">
+      <div class="photo"><img src="/emblem.png" alt="" width="160" height="160" /><b>Since {FOUNDED}</b><span>Nandesari, Vadodara</span></div>
+      <div>
+        <span class="eyebrow">Founder</span>
+        <h2>{company.founder}</h2>
+        <p class="lead">Founded Jay Ambe Engineering Works in {FOUNDED}.</p>
+        <p class="todo">TODO-confirm: the founder's story. How did he start, what was the first big job, and what does he believe in? A short message in his own words works best.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <span class="eyebrow">Our journey</span>
+      <h2>Milestones</h2>
+      <ol class="timeline">
+        <li><b>{FOUNDED}</b><span>Jay Ambe Engineering Works founded in Nandesari, Vadodara by {company.founder}. Early work for Deepak Nitrite and Sicgil India. Sicgil is still a client today.</span></li>
+        <li><b>1997</b><span>Begins an 11-year relationship with Abbey Chemicals, Lamdapura.</span></li>
+        <li><b>2002</b><span>Work for Indian Oil (Bajwa), BMS Chemicals and Paragon Chemicals. The Paragon relationship runs 14 years.</span></li>
+        <li><b>2005</b><span>Starts working with Gulbrandsen Chemicals, Akalbara, for 15 years, later also at Dahej.</span></li>
+        <li><b>2007–08</b><span>Jobs for Indian Petrochemicals (IPCL) and Reliance Industries.</span></li>
+        <li><b>2013</b><span>Starts work with Amoli Organics, Luna.</span></li>
+        <li><b>Today</b><span>Running jobs for Sicgil India, Gulbrandsen Chemicals (Dahej), Nexcel Chemicals (Vadodara) and Shakti Gases, plus our own precast compound wall plant. <a href="/clients/">See all clients →</a></span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">How we work</span>
+      <h2>What we stand for</h2>
+      <div class="grid g4">
+        {values.map((v) => <div class="card val"><h3>{v.t}</h3><p>{v.d}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .story { display: grid; grid-template-columns: 320px 1fr; gap: 48px; align-items: center; }
+  .photo { aspect-ratio: 4/5; border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; background: var(--tint); border: 1px solid var(--line); }
+  .photo b { font-family: var(--head); font-size: 32px; color: var(--navy); margin-top: 10px; }
+  .photo span { font-size: 14px; }
+  .timeline { list-style: none; padding: 0; margin: 24px 0 0; border-left: 3px solid var(--accent); }
+  .timeline li { padding: 14px 0 14px 28px; position: relative; display: grid; grid-template-columns: 90px 1fr; gap: 16px; }
+  .timeline li::before { content: ''; position: absolute; left: -9px; top: 22px; width: 15px; height: 15px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); }
+  .timeline b { font-family: var(--head); font-size: 24px; color: var(--orange); }
+  .val { border-top: 4px solid var(--accent); }
+  @media (max-width: 900px) { .story { grid-template-columns: 1fr; } .photo { max-width: 280px; } }
+</style>

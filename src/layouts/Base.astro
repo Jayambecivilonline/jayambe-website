@@ -1,0 +1,167 @@
+---
+import '../styles/global.css';
+import { company, serviceGroups, FOUNDED } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** extra schema.org objects for this page (FAQPage, Service, BreadcrumbList…) */
+  schema?: object[];
+}
+const { title, description, schema = [] } = Astro.props;
+const path = Astro.url.pathname;
+
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/about/', label: 'About' },
+  { href: '/services/', label: 'Services' },
+  { href: '/industries/', label: 'Industries' },
+  { href: '/clients/', label: 'Clients' },
+  { href: '/guides/', label: 'Guides' },
+  { href: '/contact/', label: 'Contact' },
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={new URL(path, Astro.site)} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta property="og:image" content={new URL("/logo.png", Astro.site)} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet" />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'GeneralContractor',
+    name: company.name,
+    founder: company.founder,
+    foundingDate: String(FOUNDED),
+    telephone: company.phone,
+    email: company.email,
+    url: Astro.site,
+    address: { '@type': 'PostalAddress', streetAddress: 'A/27 Nilkhant Society, Nandesari', addressLocality: 'Vadodara', addressRegion: 'Gujarat', addressCountry: 'IN' },
+    areaServed: "Gujarat, India",
+  })} />
+  {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", ...s })} />)}
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap bar">
+      <a href="/" class="logo" aria-label={company.name}>
+        <img src="/emblem.png" alt="" width="52" height="52" />
+        <span class="words"><b>Jay Ambe</b><small>Engineering Works · Since {FOUNDED}</small></span>
+      </a>
+      <button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+      <nav class="nav">
+        {nav.map((n) => (
+          <a href={n.href} class:list={[{ active: n.href === '/' ? path === '/' : path.startsWith(n.href) }]}>{n.label}</a>
+        ))}
+        <a href="/contact/#site-visit" class="btn btn-primary nav-cta">Book Free Site Visit</a>
+      </nav>
+    </div>
+  </header>
+
+  <main><slot /></main>
+
+  <footer class="site-footer">
+    <div class="wrap grid g4">
+      <div>
+        <div class="logo"><img src="/emblem.png" alt="" width="52" height="52" /><span class="words"><b>Jay Ambe</b><small>Engineering Works</small></span></div>
+        <p class="f-muted">Industrial construction, piping, structural and fire fighting contractor for Gujarat's process industries since {FOUNDED}.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        {serviceGroups.flatMap((g) => g.services).slice(0, 8).map((s) => <a href={`/services/${s.slug}/`}>{s.name}</a>)}
+        <a href="/services/">All services →</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="/about/">About Us</a>
+        <a href="/clients/">Clients &amp; Track Record</a>
+        <a href="/industries/">Industries</a>
+        <a href="/guides/">Guides</a>
+        <a href="/contact/">Contact</a>
+        <h4 class="f-sub">Areas we serve</h4>
+        <a href="/locations/vadodara/">Vadodara</a>
+        <a href="/locations/nandesari/">Nandesari GIDC</a>
+        <a href="/locations/padra/">Padra &amp; Umraya</a>
+        <a href="/locations/makarpura/">Makarpura GIDC</a>
+        <a href="/locations/manjusar/">Manjusar GIDC</a>
+        <a href="/locations/savli/">Savli</a>
+        <a href="/locations/halol/">Halol</a>
+        <a href="/locations/waghodia/">Waghodia</a>
+        <a href="/locations/dahej/">Dahej</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p class="f-muted">{company.address}</p>
+        <a href={company.phoneHref}>📞 {company.phone}</a>
+        <a href={`mailto:${company.email}`}>✉ {company.email}</a>
+      </div>
+    </div>
+    <div class="wrap copy">© {new Date().getFullYear()} {company.name}. All rights reserved.</div>
+  </footer>
+
+  <div class="mobile-bar">
+    <a href={company.phoneHref}>📞 Call</a>
+    <a href={company.whatsapp} target="_blank" rel="noopener">💬 WhatsApp</a>
+    <a href="/contact/#site-visit" class="hl">Free Site Visit</a>
+  </div>
+
+  <script>
+    const btn = document.querySelector('.menu-btn');
+    const nav = document.querySelector('.nav');
+    btn?.addEventListener('click', () => {
+      const open = nav?.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(!!open));
+    });
+  </script>
+</body>
+</html>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 4px solid var(--accent); box-shadow: 0 2px 12px rgba(11,58,102,.08); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo img { width: 52px; height: 52px; }
+  .words { display: flex; flex-direction: column; line-height: 1.1; }
+  .words b { font-family: var(--body); font-weight: 800; font-size: 24px; color: #EB9723; letter-spacing: -.3px; }
+  .words small { font-size: 12px; color: var(--ink); letter-spacing: .3px; }
+  .nav { display: flex; align-items: center; gap: 22px; }
+  .nav a:not(.btn) { color: var(--ink); text-decoration: none; font-weight: 500; font-size: 15px; }
+  .nav a:not(.btn):hover, .nav a.active { color: var(--orange); }
+  .nav-cta { padding: 10px 18px; font-size: 15px; }
+  .menu-btn { display: none; background: none; border: 0; color: var(--navy); font-size: 28px; cursor: pointer; }
+
+  .site-footer { background: var(--navy); color: #fff; padding: 56px 0 24px; }
+  .site-footer .logo { background: #fff; padding: 8px 14px 8px 8px; border-radius: var(--radius); display: inline-flex; }
+  .site-footer .f-sub { margin-top: 20px; }
+  .site-footer h4 { font-size: 18px; color: var(--orange-light); margin-bottom: 12px; }
+  .site-footer a { display: block; color: var(--navy-soft); text-decoration: none; margin: 6px 0; font-size: 15px; }
+  .site-footer a:hover { color: var(--orange-light); }
+  .f-muted { color: var(--navy-soft); font-size: 15px; margin-top: 12px; }
+  .copy { border-top: 1px solid rgba(255,255,255,.18); margin-top: 32px; padding-top: 18px; font-size: 13px; color: var(--navy-soft); }
+
+  .mobile-bar { display: none; }
+
+  @media (max-width: 1080px) {
+    .menu-btn { display: block; }
+    .nav { display: none; position: absolute; top: 80px; left: 0; right: 0; background: #fff; flex-direction: column; align-items: stretch; padding: 12px 16px 20px; gap: 4px; border-bottom: 4px solid var(--accent); box-shadow: 0 10px 20px rgba(11,58,102,.12); }
+    .nav.open { display: flex; }
+    .nav a:not(.btn) { padding: 12px 4px; border-bottom: 1px solid var(--line); }
+    .nav-cta { justify-content: center; margin-top: 10px; }
+  }
+  @media (max-width: 700px) {
+    .mobile-bar { display: grid; grid-template-columns: 1fr 1fr 1.3fr; position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: var(--navy); border-top: 3px solid var(--accent); }
+    .mobile-bar a { color: #fff; text-decoration: none; text-align: center; padding: 16px 4px; font-weight: 600; font-size: 15px; }
+    .mobile-bar a.hl { background: var(--accent); color: var(--navy); }
+  }
+</style>

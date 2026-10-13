@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { guides } from '../../data/guides';
+---
+<Base title="Industrial Construction Guides for Plant Owners | Jay Ambe" description="Practical guides for plant owners in Gujarat: shed costs, PEB vs conventional, precast walls, warehouses, fire fighting systems and choosing a contractor.">
+  <PageHero eyebrow="Guides" title="Straight answers for plant owners." lead="What decides the cost, which option to choose, and how to avoid delays, from 30 years of building plants in Gujarat." />
+  <section class="section">
+    <div class="wrap grid g2">
+      {guides.map((g) => <a class="card tile" href={`/guides/${g.slug}/`}><h2>{g.h1}</h2><p>{g.description}</p><span>Read the guide →</span></a>)}
+    </div>
+  </section>
+  <CtaBand />
+</Base>
+
+<style>
+  .tile { text-decoration: none; color: var(--ink); border-top: 4px solid var(--accent); }
+  .tile h2 { font-size: 26px; }
+  .tile span { color: var(--orange); font-weight: 600; }
+</style>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Illustration of shutdown maintenance: a pipe rack with valves, a safety helmet and a job checklist">
+  <defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#0B3A66" stroke-opacity=".07"/></pattern>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEAF8"/><stop offset="1" stop-color="#F4F8FD"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#sky)"/>
+  <rect width="400" height="500" fill="url(#g)"/>
+
+  <!-- pipe rack structure -->
+  <g fill="#0B3A66">
+    <rect x="40" y="120" width="12" height="290"/><rect x="190" y="120" width="12" height="290"/><rect x="340" y="120" width="12" height="290"/>
+    <rect x="30" y="120" width="332" height="10"/><rect x="30" y="230" width="332" height="10"/>
+  </g>
+  <!-- pipes -->
+  <g stroke-linecap="round">
+    <path d="M0 106H400" stroke="#1565C0" stroke-width="20"/>
+    <path d="M0 106H400" stroke="#4F8FD6" stroke-width="5" stroke-opacity=".6" transform="translate(0,-5)"/>
+    <path d="M0 214H400" stroke="#EB9723" stroke-width="16"/>
+    <path d="M0 190H400" stroke="#1565C0" stroke-width="12"/>
+  </g>
+  <!-- flanges -->
+  <g fill="#0B3A66"><rect x="118" y="90" width="8" height="32" rx="2"/><rect x="128" y="90" width="8" height="32" rx="2"/><rect x="268" y="200" width="7" height="28" rx="2"/><rect x="277" y="200" width="7" height="28" rx="2"/></g>
+
+  <!-- vertical drop with big valve -->
+  <path d="M260 106V330" stroke="#1565C0" stroke-width="18"/>
+  <rect x="244" y="270" width="32" height="40" rx="4" fill="#0B3A66"/>
+  <rect x="256" y="246" width="8" height="26" fill="#0B3A66"/>
+  <circle cx="260" cy="242" r="24" fill="none" stroke="#EB9723" stroke-width="6"/>
+  <path d="M236 242H284M260 218V266" stroke="#EB9723" stroke-width="4"/>
+  <!-- tag -->
+  <rect x="284" y="282" width="46" height="26" rx="3" fill="#fff" stroke="#0B3A66" stroke-width="2"/>
+  <text x="307" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="11" fill="#0B3A66">LOTO</text>
+  <path d="M276 290L284 292" stroke="#0B3A66" stroke-width="2"/>
+
+  <!-- checklist board -->
+  <rect x="58" y="262" width="118" height="140" rx="6" fill="#fff" stroke="#0B3A66" stroke-width="3"/>
+  <rect x="96" y="254" width="42" height="14" rx="3" fill="#0B3A66"/>
+  <g font-family="Arial, sans-serif" font-size="11" fill="#0B3A66">
+    <text x="70" y="290" font-weight="700">JOB PLAN</text>
+  </g>
+  <g stroke="#EB9723" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M70 308l5 5 9-10"/><path d="M70 334l5 5 9-10"/><path d="M70 360l5 5 9-10"/>
+  </g>
+  <g fill="#CFE0F2"><rect x="92" y="304" width="72" height="8" rx="4"/><rect x="92" y="330" width="60" height="8" rx="4"/><rect x="92" y="356" width="68" height="8" rx="4"/><rect x="92" y="382" width="54" height="8" rx="4"/></g>
+  <rect x="70" y="380" width="12" height="12" rx="2" fill="none" stroke="#0B3A66" stroke-width="2"/>
+
+  <!-- safety helmet -->
+  <path d="M286 396a44 40 0 0 1 88 0z" fill="#EB9723"/>
+  <rect x="276" y="394" width="108" height="12" rx="6" fill="#D9860F"/>
+  <rect x="325" y="352" width="10" height="44" rx="4" fill="#F5A623"/>
+
+  <!-- ground -->
+  <rect y="410" width="400" height="90" fill="#0B3A66"/>
+  <rect y="410" width="400" height="6" fill="#EB9723"/>
+  <g stroke="#DCEAF8" stroke-opacity=".35" stroke-width="2"><path d="M0 446H400M0 474H400"/></g>
+  <text x="24" y="458" font-family="Arial, sans-serif" font-weight="700" font-size="14" fill="#DCEAF8">SHUTDOWN</text>
+  <rect x="24" y="466" width="120" height="6" rx="3" fill="#1565C0"/>
+  <rect x="24" y="466" width="84" height="6" rx="3" fill="#EB9723"/>
+  <text x="152" y="473" font-family="Arial, sans-serif" font-size="11" fill="#DCEAF8">PLANNED BEFORE DAY 1</text>
+</svg>

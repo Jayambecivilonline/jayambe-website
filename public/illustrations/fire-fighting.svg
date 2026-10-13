@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Illustration of a fire fighting system: pump house, fire water network, hydrant, sprinkler and an approval badge">
+  <defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#0B3A66" stroke-opacity=".07"/></pattern>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEAF8"/><stop offset="1" stop-color="#F4F8FD"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#sky)"/>
+  <rect width="400" height="500" fill="url(#g)"/>
+
+  <!-- fire water tank -->
+  <rect x="34" y="200" width="96" height="210" fill="#1565C0"/>
+  <ellipse cx="82" cy="200" rx="48" ry="12" fill="#4F8FD6"/>
+  <path d="M34 250H130M34 300H130M34 350H130" stroke="#0B3A66" stroke-opacity=".3" stroke-width="3"/>
+  <text x="82" y="282" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="12" fill="#DCEAF8">FIRE WATER</text>
+
+  <!-- pump house -->
+  <polygon points="140,300 205,262 270,300" fill="#1565C0"/>
+  <rect x="146" y="300" width="118" height="110" fill="#0B3A66"/>
+  <rect x="160" y="318" width="36" height="24" rx="2" fill="#DCEAF8" opacity=".85"/>
+  <rect x="214" y="342" width="36" height="68" fill="#EB9723"/>
+  <text x="205" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="10" fill="#DCEAF8">PUMP HOUSE</text>
+
+  <!-- ring main -->
+  <path d="M130 392H146M264 392H300V150H372" stroke="#EB9723" stroke-width="12" fill="none" stroke-linejoin="round"/>
+  <!-- sprinkler + spray -->
+  <rect x="352" y="150" width="8" height="20" fill="#0B3A66"/>
+  <path d="M346 172h20l-10 10z" fill="#0B3A66"/>
+  <g fill="#4F8FD6">
+    <circle cx="340" cy="200" r="4"/><circle cx="356" cy="206" r="4"/><circle cx="372" cy="200" r="4"/>
+    <circle cx="332" cy="224" r="4"/><circle cx="350" cy="232" r="4"/><circle cx="366" cy="230" r="4"/><circle cx="382" cy="222" r="4"/>
+    <circle cx="344" cy="256" r="4"/><circle cx="362" cy="258" r="4"/><circle cx="378" cy="250" r="4"/>
+  </g>
+
+  <!-- hydrant -->
+  <g transform="translate(300,300)">
+    <rect x="22" y="62" width="44" height="48" rx="4" fill="#EB9723"/>
+    <rect x="16" y="54" width="56" height="12" rx="4" fill="#D9860F"/>
+    <path d="M24 54a20 22 0 0 1 40 0z" fill="#EB9723"/>
+    <rect x="40" y="18" width="8" height="16" rx="2" fill="#D9860F"/>
+    <rect x="6" y="74" width="16" height="18" rx="3" fill="#0B3A66"/>
+    <rect x="66" y="74" width="16" height="18" rx="3" fill="#0B3A66"/>
+  </g>
+
+  <!-- approval badge -->
+  <g transform="translate(150,96)">
+    <path d="M50 0l42 16v34c0 32-20 54-42 64C28 104 8 82 8 50V16z" fill="#0B3A66"/>
+    <path d="M50 12l32 12v26c0 25-15 42-32 50-17-8-32-25-32-50V24z" fill="#1565C0"/>
+    <path d="M32 54l12 12 24-26" stroke="#EB9723" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="200" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="13" fill="#0B3A66">INSPECTION READY</text>
+
+  <!-- ground -->
+  <rect y="410" width="400" height="90" fill="#0B3A66"/>
+  <rect y="410" width="400" height="6" fill="#EB9723"/>
+  <g stroke="#DCEAF8" stroke-opacity=".35" stroke-width="2"><path d="M0 446H400M0 474H400"/></g>
+  <text x="24" y="458" font-family="Arial, sans-serif" font-weight="700" font-size="14" fill="#DCEAF8">FIRE FIGHTING SYSTEM</text>
+  <rect x="24" y="466" width="120" height="6" rx="3" fill="#EB9723"/>
+  <text x="152" y="473" font-family="Arial, sans-serif" font-size="11" fill="#DCEAF8">TESTED &amp; DOCUMENTED</text>
+</svg>

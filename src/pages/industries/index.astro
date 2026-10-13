@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { industryPages, locationPages } from '../../data/seoPages';
+import { company } from '../../data/site';
+---
+<Base title={`Industries & Locations We Serve | ${company.short}`} description="Industrial contractor for chemical, pharmaceutical, industrial gas and petrochemical plants across Vadodara, Nandesari, Padra and Dahej, Gujarat.">
+  <PageHero eyebrow="Industries & locations" title="Built for Gujarat's process industries." lead="Chemical, pharma, gas and petrochemical plants each have their own risks. Here's how we work in each, and where." />
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Industries</h2>
+      <div class="grid g2">{industryPages.map((i) => <a class="card tile" href={`/industries/${i.slug}/`}><h3>{i.name}</h3><p>{i.intro}</p><span>Explore →</span></a>)}</div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>Locations</h2>
+      <div class="grid g4">{locationPages.map((l) => <a class="card tile" href={`/locations/${l.slug}/`}><h3>📍 {l.name}</h3><span>See our work here →</span></a>)}</div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .tile { text-decoration: none; color: var(--ink); border-top: 4px solid var(--accent); }
+  .tile span { color: var(--orange); font-weight: 600; }
+</style>

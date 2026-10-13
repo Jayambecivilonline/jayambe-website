@@ -1,0 +1,25 @@
+---
+// Phase 4 offer band, used at the bottom of every page.
+import { company } from '../data/site';
+interface Props { heading?: string }
+const { heading = 'Planning a new plant or expansion? Get a free site visit and quote.' } = Astro.props;
+---
+<section class="cta-band">
+  <div class="wrap inner">
+    <div>
+      <h2>{heading}</h2>
+      <p>Our engineer visits your site, studies your drawings and scope, and sends you a detailed quote. No cost and no obligation.</p>
+    </div>
+    <div class="btn-row">
+      <a href="/contact/#site-visit" class="btn btn-dark">Book Free Site Visit →</a>
+      <a href={company.whatsapp} class="btn btn-white" target="_blank" rel="noopener">💬 WhatsApp Us</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band { background: var(--accent); padding: 56px 0; }
+  .inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
+  h2 { color: var(--ink); max-width: 680px; margin-bottom: 8px; }
+  p { margin: 0; color: var(--ink); max-width: 620px; }
+</style>

@@ -1,0 +1,99 @@
+---
+// Phase 2 transformative insight: "You're comparing the wrong number."
+// The visitor enters THEIR OWN numbers, so no statistics are invented.
+// Everything runs in the browser and nothing is sent anywhere.
+---
+<section class="section dark blueprint insight-calc" id="insight">
+  <div class="wrap">
+    <div class="intro">
+      <span class="eyebrow">A new way to look at it</span>
+      <h2>You're comparing the wrong number.</h2>
+      <p class="lead">Every plant owner compares quotations. But the quote is paid <b>once</b>. Delay is paid <b>every month</b>, in production you never get back. Put in your own numbers and see which one really matters.</p>
+    </div>
+
+    <div class="calc">
+      <div class="inputs">
+        <label>
+          <span class="row"><span>Contract value</span><output data-out="contract"></output></span>
+          <input type="range" min="10" max="2000" step="10" value="200" data-in="contract" />
+        </label>
+        <label>
+          <span class="row"><span>Saving from a cheaper quote</span><output data-out="saving"></output></span>
+          <input type="range" min="0" max="20" step="1" value="5" data-in="saving" />
+        </label>
+        <label>
+          <span class="row"><span>Profit your new plant earns per month, once running</span><output data-out="profit"></output></span>
+          <input type="range" min="1" max="500" step="1" value="40" data-in="profit" />
+        </label>
+        <label>
+          <span class="row"><span>Months the project runs late</span><output data-out="delay"></output></span>
+          <input type="range" min="0" max="12" step="1" value="3" data-in="delay" />
+        </label>
+        <p class="small">Use your own numbers. Nothing you enter is sent anywhere.</p>
+      </div>
+
+      <div class="results" aria-live="polite">
+        <div class="res save"><small>The cheaper quote saves you</small><b data-out="saved"></b></div>
+        <div class="res lose"><small>The delay costs you</small><b data-out="lost"></b></div>
+        <p class="verdict" data-out="verdict"></p>
+      </div>
+    </div>
+
+    <p class="takeaway">The quote is the number you see. <b>Time is the number you pay.</b> That's why we plan every job before day one, and report progress to you every day.</p>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('#insight');
+  if (root) {
+    const get = (k: string) => Number(root.querySelector<HTMLInputElement>(`[data-in="${k}"]`)!.value);
+    const out = (k: string, v: string) => { root.querySelector(`[data-out="${k}"]`)!.textContent = v; };
+    // amounts are in lakh; show crore above 100 lakh, Indian style
+    const inr = (lakh: number) => lakh >= 100
+      ? `₹${(lakh / 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })} crore`
+      : `₹${Math.round(lakh).toLocaleString('en-IN')} lakh`;
+
+    const update = () => {
+      const contract = get('contract'), saving = get('saving'), profit = get('profit'), delay = get('delay');
+      const saved = contract * saving / 100;
+      const lost = profit * delay;
+      out('contract', inr(contract));
+      out('saving', `${saving}%`);
+      out('profit', `${inr(profit)} / month`);
+      out('delay', `${delay} ${delay === 1 ? 'month' : 'months'}`);
+      out('saved', inr(saved));
+      out('lost', inr(lost));
+      let verdict: string;
+      if (lost === 0) verdict = 'No delay, no loss. That is exactly what we plan for.';
+      else if (saved === 0) verdict = `With no saving on the quote, the delay is pure loss: ${inr(lost)}.`;
+      else if (lost > saved) verdict = `The delay costs you ${Math.round(lost / saved * 10) / 10}× what the cheaper quote saved.`;
+      else verdict = `Here the saving is bigger than the delay cost. Add one more month of delay and see what happens.`;
+      out('verdict', verdict);
+    };
+    root.querySelectorAll('input').forEach((i) => i.addEventListener('input', update));
+    update();
+  }
+</script>
+
+<style>
+  .intro { max-width: 780px; }
+  .calc { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; background: #fff; color: var(--ink); border-radius: var(--radius); padding: 32px; margin-top: 36px; box-shadow: 0 20px 50px rgba(0,0,0,.25); }
+  .inputs { display: grid; gap: 22px; }
+  .inputs label { display: grid; gap: 8px; font-weight: 600; font-size: 15px; }
+  .row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  output { font-family: var(--head); font-size: 22px; color: var(--orange); white-space: nowrap; }
+  input[type=range] { width: 100%; accent-color: var(--accent); height: 28px; }
+  .small { font-size: 13px; margin: 0; font-weight: 400; }
+  .results { display: grid; gap: 14px; align-content: center; }
+  .res { border-radius: var(--radius); padding: 18px 20px; }
+  .res small { display: block; font-size: 14px; font-weight: 600; }
+  .res b { display: block; font-family: var(--head); font-size: 44px; line-height: 1.1; }
+  .save { background: var(--tint); }
+  .save b { color: var(--navy); }
+  .lose { background: var(--navy); color: #fff; }
+  .lose b { color: var(--orange-light); }
+  .verdict { font-family: var(--head); font-size: 24px; font-weight: 700; margin: 4px 0 0; color: var(--ink); }
+  .takeaway { text-align: center; font-size: 22px; margin: 40px auto 0; max-width: 760px; color: #E6EEF7; }
+  .takeaway b { color: var(--orange-light); }
+  @media (max-width: 900px) { .calc { grid-template-columns: 1fr; padding: 20px; } .res b { font-size: 36px; } }
+</style>

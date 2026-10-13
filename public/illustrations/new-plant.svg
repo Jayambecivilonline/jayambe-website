@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Illustration of a new industrial plant under construction with a tower crane, storage tanks and pipe rack">
+  <defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#0B3A66" stroke-opacity=".07"/></pattern>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEAF8"/><stop offset="1" stop-color="#F4F8FD"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#sky)"/>
+  <rect width="400" height="500" fill="url(#g)"/>
+  <circle cx="78" cy="92" r="36" fill="#EB9723" opacity=".9"/>
+
+  <!-- tower crane -->
+  <g stroke="#EB9723" stroke-width="3" fill="none">
+    <path d="M330 112V410M350 112V410"/>
+    <path d="M330 140L350 170L330 200L350 230L330 260L350 290L330 320L350 350L330 380L350 410"/>
+    <path d="M160 112H392M160 126H392"/>
+    <path d="M160 126L190 112L220 126L250 112L280 126L310 112L340 126L370 112L392 126"/>
+    <path d="M340 112L340 84L392 112M340 84L160 112"/>
+  </g>
+  <rect x="372" y="126" width="22" height="26" fill="#0B3A66"/>
+  <rect x="326" y="126" width="28" height="22" fill="#0B3A66"/>
+  <line x1="212" y1="126" x2="212" y2="196" stroke="#0B3A66" stroke-width="2"/>
+  <rect x="180" y="196" width="64" height="10" fill="#EB9723"/>
+
+  <!-- steel frame under construction -->
+  <g stroke="#1565C0" stroke-width="5" fill="none" stroke-linecap="square">
+    <path d="M232 410V250M282 410V250M232 250H282M232 300H282M232 355H282"/>
+    <path d="M232 250L282 300M232 300L282 355" stroke-width="3" stroke-opacity=".6"/>
+  </g>
+
+  <!-- factory building -->
+  <polygon points="30,262 30,222 76,262 76,222 122,262 122,222 168,262 168,222 214,262" fill="#1565C0"/>
+  <rect x="30" y="262" width="184" height="148" fill="#0B3A66"/>
+  <g fill="#DCEAF8" opacity=".85">
+    <rect x="46" y="282" width="26" height="18" rx="2"/><rect x="84" y="282" width="26" height="18" rx="2"/><rect x="122" y="282" width="26" height="18" rx="2"/><rect x="160" y="282" width="26" height="18" rx="2"/>
+    <rect x="46" y="314" width="26" height="18" rx="2"/><rect x="84" y="314" width="26" height="18" rx="2"/><rect x="122" y="314" width="26" height="18" rx="2"/><rect x="160" y="314" width="26" height="18" rx="2"/>
+  </g>
+  <rect x="96" y="352" width="52" height="58" fill="#EB9723"/>
+  <path d="M96 370H148M96 388H148" stroke="#0B3A66" stroke-opacity=".35" stroke-width="2"/>
+
+  <!-- chimney -->
+  <rect x="188" y="150" width="20" height="112" fill="#0B3A66"/>
+  <rect x="188" y="160" width="20" height="9" fill="#EB9723"/>
+  <rect x="188" y="182" width="20" height="9" fill="#EB9723"/>
+
+  <!-- tanks -->
+  <rect x="290" y="318" width="38" height="92" fill="#1565C0"/>
+  <ellipse cx="309" cy="318" rx="19" ry="6" fill="#4F8FD6"/>
+  <rect x="290" y="340" width="38" height="5" fill="#0B3A66" opacity=".4"/>
+  <rect x="356" y="340" width="40" height="70" fill="#1565C0"/>
+  <ellipse cx="376" cy="340" rx="20" ry="6" fill="#4F8FD6"/>
+  <path d="M214 392H290M328 392H356" stroke="#EB9723" stroke-width="6"/>
+  <path d="M214 380H290" stroke="#DCEAF8" stroke-width="4"/>
+
+  <!-- ground and pipe rack -->
+  <rect y="410" width="400" height="90" fill="#0B3A66"/>
+  <rect y="410" width="400" height="6" fill="#EB9723"/>
+  <g stroke="#DCEAF8" stroke-opacity=".35" stroke-width="2"><path d="M0 446H400M0 474H400"/></g>
+  <g fill="#DCEAF8" opacity=".9" font-family="Arial, sans-serif" font-weight="700" font-size="14">
+    <text x="24" y="458">NEW PLANT</text>
+  </g>
+  <rect x="24" y="466" width="120" height="6" rx="3" fill="#1565C0"/>
+  <rect x="24" y="466" width="96" height="6" rx="3" fill="#EB9723"/>
+  <text x="152" y="473" font-family="Arial, sans-serif" font-size="11" fill="#DCEAF8">ON SCHEDULE</text>
+</svg>

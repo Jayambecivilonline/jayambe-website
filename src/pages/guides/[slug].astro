@@ -1,0 +1,97 @@
+---
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FaqList from '../../components/FaqList.astro';
+import { guides } from '../../data/guides';
+import { company, serviceGroups } from '../../data/site';
+
+export function getStaticPaths() {
+  return guides.map((g) => ({ params: { slug: g.slug }, props: { g } }));
+}
+const { g } = Astro.props;
+const all = serviceGroups.flatMap((x) => x.services);
+const svcs = all.filter((s) => g.services.includes(s.slug));
+const others = guides.filter((x) => x.slug !== g.slug).slice(0, 3);
+const url = new URL(`/guides/${g.slug}/`, Astro.site).href;
+const allFaqs = [
+  ...g.faqs,
+  { q: "Do you offer a free site visit?", a: "Yes. Our engineer visits your site and sends a detailed quote, with no obligation." },
+  { q: "Which areas do you cover?", a: "Vadodara district, including Nandesari, Makarpura, Manjusar, Savli, Halol, Waghodia and Padra, and other parts of Gujarat such as Dahej." },
+  { q: "Who is Jay Ambe Engineering Works?", a: `An industrial construction contractor based in Nandesari, Vadodara, working since 1996, with 25+ industrial clients, our own crew, daily progress reports and zero safety incidents.` },
+];
+const schema = [
+  { '@type': 'Article', headline: g.h1, description: g.description, dateModified: g.updated, mainEntityOfPage: url,
+    author: { '@type': 'Organization', name: company.name }, publisher: { '@type': 'Organization', name: company.name, logo: { '@type': 'ImageObject', url: new URL('/logo.png', Astro.site).href } } },
+  { '@type': 'FAQPage', mainEntity: allFaqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: 'Guides', item: new URL('/guides/', Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: g.h1, item: url },
+  ] },
+];
+---
+<Base title={g.title} description={g.description} schema={schema}>
+  <section class="hero blueprint dark">
+    <div class="wrap narrow">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/guides/">Guides</a></nav>
+      <span class="eyebrow">Guide · Updated {new Date(g.updated).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+      <h1>{g.h1}</h1>
+      <p class="lead">{g.intro}</p>
+    </div>
+  </section>
+
+  <article class="section">
+    <div class="wrap layout">
+      <div class="body">
+        {g.blocks.map((b) => (
+          <section class="block">
+            <h2>{b.h}</h2>
+            {b.p && <p>{b.p}</p>}
+            {b.list && <ul>{b.list.map((li) => <li>{li}</li>)}</ul>}
+          </section>
+        ))}
+      </div>
+      <aside class="side">
+        <div class="card sticky">
+          <h3>Want an exact answer for your site?</h3>
+          <p>Our engineer visits, studies your requirement and sends a detailed quote. Free, with no obligation.</p>
+          <a href="/contact/#site-visit" class="btn btn-primary">Book Free Site Visit</a>
+          <a href={company.whatsapp} class="btn btn-outline" target="_blank" rel="noopener">💬 WhatsApp</a>
+          <h4>Related services</h4>
+          {svcs.map((s) => <a class="rel" href={`/services/${s.slug}/`}>{s.name} →</a>)}
+        </div>
+      </aside>
+    </div>
+  </article>
+
+  <FaqList faqs={allFaqs} heading="Common questions" open={2} />
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>More guides</h2>
+      <div class="grid g3">{others.map((o) => <a class="card tile" href={`/guides/${o.slug}/`}><h3>{o.h1}</h3><span>Read →</span></a>)}</div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .hero { padding: 48px 0 56px; }
+  .narrow { max-width: 900px; }
+  .crumbs { font-size: 14px; margin-bottom: 18px; color: var(--navy-soft); }
+  .crumbs a { color: var(--navy-soft); }
+  h1 { font-size: clamp(32px, 4.5vw, 50px); }
+  .layout { display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: start; }
+  .block { margin-bottom: 28px; }
+  .block h2 { font-size: 28px; }
+  .block li { margin: 6px 0; }
+  .sticky { position: sticky; top: 100px; border-top: 4px solid var(--accent); display: grid; gap: 10px; }
+  .sticky .btn { justify-content: center; }
+  .sticky h4 { margin: 12px 0 0; font-size: 18px; }
+  .rel { text-decoration: none; font-weight: 600; }
+  .tile { text-decoration: none; color: var(--ink); border-top: 4px solid var(--accent); }
+  .tile h3 { font-size: 21px; }
+  .tile span { color: var(--orange); font-weight: 600; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .sticky { position: static; } }
+</style>

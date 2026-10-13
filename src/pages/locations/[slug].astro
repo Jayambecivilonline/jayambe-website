@@ -1,0 +1,98 @@
+---
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FaqList from '../../components/FaqList.astro';
+import { locationPages } from '../../data/seoPages';
+import { company, serviceGroups, YEARS, FOUNDED } from '../../data/site';
+
+export function getStaticPaths() {
+  return locationPages.map((p) => ({ params: { slug: p.slug }, props: { page: p } }));
+}
+const { page } = Astro.props;
+const allServices = serviceGroups.flatMap((g) => g.services);
+// show the services most relevant to this area first
+const focus = page.focus ?? [];
+const all = [...allServices.filter((s) => focus.includes(s.slug)), ...allServices.filter((s) => !focus.includes(s.slug))];
+const url = new URL(`/locations/${page.slug}/`, Astro.site).href;
+const top = all.slice(0, 4).map((s) => s.name.toLowerCase()).join(", ");
+const faqs = [
+  { q: `Do you provide industrial construction in ${page.name}?`, a: `Yes. We build and maintain industrial projects in ${page.areas.join(", ")}, including ${top}.` },
+  { q: `Who is a reliable industrial contractor near me in ${page.name}?`, a: `Jay Ambe Engineering Works has worked in Gujarat since ${FOUNDED}, with 25+ industrial clients, our own crew, a daily progress report on every job and zero safety incidents.` },
+  { q: `How quickly can you visit a site in ${page.name}?`, a: "We are based in Nandesari, Vadodara. Contact us and we will arrange a free site visit at a time that suits you." },
+  { q: `Do you build industrial sheds and PEB structures in ${page.name}?`, a: "Yes, along with factory buildings, warehouses and precast compound walls from our own plant." },
+  { q: `Do you install fire fighting systems in ${page.name}?`, a: "Yes: fire hydrant, sprinkler and fire water systems, pressure-tested and documented." },
+  { q: "Is the site visit and quote free?", a: "Yes. The first site visit and quote are free, with no obligation." },
+];
+const schema = [
+  { "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
+  { '@type': 'GeneralContractor', name: company.name, url, telephone: company.phone, areaServed: page.areas.map((a) => ({ '@type': 'Place', name: `${a}, Gujarat` })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: page.name, item: url },
+  ] },
+];
+---
+<Base title={page.title} description={page.description} schema={schema}>
+  <section class="hero blueprint dark">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <span>{page.name}</span></nav>
+      <span class="eyebrow">{page.name} · Since {FOUNDED}</span>
+      <h1>{page.headline}</h1>
+      <p class="lead">{page.intro}</p>
+      <div class="btn-row"><a href="/contact/#site-visit" class="btn btn-primary">Book Free Site Visit</a><a href={company.phoneHref} class="btn btn-ghost">📞 {company.phone}</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap two">
+      <div>
+        <span class="eyebrow">Areas we cover</span>
+        <h2>Working across {page.name}</h2>
+        <div class="chips">{page.areas.map((a) => <span>📍 {a}</span>)}</div>
+        <p>Our office is in Nandesari, Vadodara, so our team can reach your site quickly for a free site visit.</p>
+      </div>
+      <div class="card">
+        {page.clients.length > 0 ? (
+          <>
+            <h3>Clients we've worked with here</h3>
+            <ul>{page.clients.map((c) => <li>{c}</li>)}</ul>
+          </>
+        ) : (
+          <>
+            <h3>Our work nearby</h3>
+            <ul>{(page.nearby ?? []).map((c) => <li>{c}</li>)}</ul>
+          </>
+        )}
+        <a href="/clients/">See all 25+ clients →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>Our services in {page.name}</h2>
+      <div class="grid g3">{all.map((s) => <a class="card svc" href={`/services/${s.slug}/`}><h3>{s.name}</h3><span>{s.name} in {page.name} →</span></a>)}</div>
+      <p class="trust">{YEARS} years · our own skilled team · a daily progress report on every job · 0 safety incidents</p>
+    </div>
+  </section>
+
+  <FaqList faqs={faqs} heading={`Industrial construction in ${page.name}: FAQs`} open={2} />
+
+  <CtaBand heading={`Planning a project in ${page.name}? Get a free site visit and quote.`} />
+</Base>
+
+<style>
+  .hero { padding: 48px 0 64px; }
+  .crumbs { font-size: 14px; margin-bottom: 18px; color: var(--navy-soft); }
+  .crumbs a { color: var(--navy-soft); }
+  .hero .btn-row { margin-top: 24px; }
+  .two { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: start; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 20px; }
+  .chips span { background: var(--tint); border-radius: 4px; padding: 8px 14px; font-weight: 600; }
+  .card { border-top: 4px solid var(--accent); }
+  .svc { text-decoration: none; color: var(--ink); border-top: 0; border-left: 4px solid var(--accent); }
+  .svc h3 { font-size: 21px; }
+  .svc span { color: var(--orange); font-weight: 600; }
+  .trust { margin-top: 28px; font-weight: 500; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+</style>

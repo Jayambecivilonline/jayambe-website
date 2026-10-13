@@ -1,0 +1,102 @@
+/* Brand palette (owner's choice, option 1): TRUST NAVY + LOGO ORANGE on white.
+   Text is black, with orange accents. No grey. */
+:root {
+  --navy: #0B3A66;        /* trust colour: dark sections, footer, outlines (matches the logo's blue) */
+  --navy-2: #1565C0;      /* lighter blue for graphics */
+  --navy-soft: #CFE0F2;   /* light text on navy */
+  --accent: #EB9723;      /* logo orange: buttons, accent borders */
+  --accent-dark: #D9860F; /* button hover */
+  --tint: #F1F6FC;        /* alternate section background (very light blue) */
+  --line: #D3E2F1;        /* borders */
+  --ink: #111111;         /* body text and headings: black */
+  --orange: #C46200;      /* orange text on white (logo orange, darkened for readability) */
+  --orange-light: #F5A623;/* orange text on navy */
+  --muted: #111111;       /* secondary text: black too (no grey) */
+  --radius: 6px;
+  --head: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --body: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--body); color: var(--ink); background: #fff; line-height: 1.6; font-size: 17px; }
+img { max-width: 100%; display: block; }
+a { color: var(--orange); }
+h1, h2, h3, h4 { font-family: var(--head); line-height: 1.08; margin: 0 0 .5em; letter-spacing: .2px; color: var(--ink); }
+h1 { font-size: clamp(38px, 6vw, 64px); }
+h2 { font-size: clamp(30px, 4vw, 44px); }
+h3 { font-size: 24px; }
+p { margin: 0 0 1em; }
+
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+.section { padding: 80px 0; }
+.section.alt { background: var(--tint); }
+.eyebrow { display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+.lead { font-size: 20px; color: var(--muted); max-width: 720px; }
+.center { text-align: center; }
+.center .lead { margin-left: auto; margin-right: auto; }
+
+/* Navy sections: everything flips to white */
+.dark { background: var(--navy); color: #fff; }
+.dark h1, .dark h2, .dark h3 { color: #fff; }
+.dark .eyebrow { color: var(--orange-light); }
+.dark .lead { color: var(--navy-soft); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border-radius: 4px; font-weight: 600; font-size: 16px; text-decoration: none; border: 2px solid transparent; cursor: pointer; transition: transform .15s, background .15s; font-family: var(--body); }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--accent); color: var(--navy); }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-outline { border-color: var(--navy); color: var(--navy); background: #fff; }
+.btn-outline:hover { background: var(--tint); }
+.btn-white { background: #fff; color: var(--navy); }
+.btn-dark { background: var(--navy); color: #fff; }
+.btn-dark:hover { background: #0E4A82; }
+.btn-white:hover { background: var(--tint); }
+.btn-ghost { border-color: rgba(255,255,255,.8); color: #fff; }
+.btn-ghost:hover { background: rgba(255,255,255,.12); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Grids & cards */
+.grid { display: grid; gap: 20px; }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.g4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+
+/* Unconfirmed-content marker (yellow on purpose so it stands out; remove before launch) */
+.todo { outline: 2px dashed #E0B000; outline-offset: 3px; background: #FFF8DC; color: var(--ink); }
+.todo-note { display: inline-block; font-size: 12px; font-weight: 600; background: #FFE27A; color: var(--ink); padding: 2px 8px; border-radius: 2px; margin: 4px 0; }
+
+/* Engineering-drawing grid texture: light version for white sections, white lines for navy ones */
+.blueprint-light {
+  background-color: #fff;
+  background-image:
+    linear-gradient(rgba(11,58,102,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11,58,102,.07) 1px, transparent 1px),
+    linear-gradient(rgba(11,58,102,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11,58,102,.035) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+}
+.blueprint {
+  background-color: var(--navy);
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+}
+
+/* Forms */
+.form { display: grid; gap: 14px; }
+.form label { font-size: 14px; font-weight: 600; display: grid; gap: 6px; color: var(--ink); }
+.form input, .form select, .form textarea { font: inherit; padding: 12px 14px; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink); width: 100%; }
+.form input:focus, .form select:focus, .form textarea:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+.form .row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+@media (max-width: 700px) {
+  body { font-size: 16px; padding-bottom: 64px; }
+  .section { padding: 56px 0; }
+  .wrap { padding: 0 16px; }
+}

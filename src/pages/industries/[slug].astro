@@ -1,0 +1,97 @@
+---
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FaqList from '../../components/FaqList.astro';
+import { industryPages } from '../../data/seoPages';
+import { company, serviceGroups, YEARS, FOUNDED } from '../../data/site';
+
+export function getStaticPaths() {
+  return industryPages.map((p) => ({ params: { slug: p.slug }, props: { page: p } }));
+}
+const { page } = Astro.props;
+const all = serviceGroups.flatMap((g) => g.services);
+const svcs = all.filter((s) => page.services.includes(s.slug));
+const url = new URL(`/industries/${page.slug}/`, Astro.site).href;
+const ind = page.name.toLowerCase();
+const allFaqs = [
+  ...page.faqs,
+  { q: `Which contractor builds ${ind} in Vadodara and Gujarat?`, a: `Jay Ambe Engineering Works has built and maintained ${ind} across Gujarat since ${FOUNDED}, from our base in Nandesari, Vadodara.` },
+  { q: `What services do you offer for ${ind}?`, a: `${svcs.map((s) => s.name).join(", ")}, plus related civil, steel and fire fighting work under one contract.` },
+  { q: `Do you work inside running ${ind}?`, a: "Yes, under your permit-to-work system, with trained supervisors and safety-first work practices. Our record is zero safety incidents." },
+  { q: "How do you report progress?", a: "With a daily progress report showing manpower, measured work executed and equipment on site." },
+  { q: "How do I get a quote?", a: "Book a free site visit. Our engineer studies your site and drawings and sends a detailed quote, with no obligation." },
+];
+const approach = [
+  { t: "Understand your plant", d: "Every site has its own process, hazards and rules. We start with a free site visit to understand yours." },
+  { t: "Plan around production", d: "New units, tie-ins and shutdown jobs are planned so they disturb your running plant as little as possible." },
+  { t: "Build with our own crew", d: "A stable, skilled team that follows your safety system from day one." },
+  { t: "Report every day", d: "A daily progress report, then tested, documented work at hand-over." },
+];
+const schema = [
+  { '@type': 'FAQPage', mainEntity: allFaqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: 'Industries', item: new URL('/industries/', Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: page.name, item: url },
+  ] },
+];
+---
+<Base title={page.title} description={page.description} schema={schema}>
+  <section class="hero blueprint dark">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/industries/">Industries</a> › <span>{page.name}</span></nav>
+      <span class="eyebrow">{page.name} · Gujarat · Since {FOUNDED}</span>
+      <h1>{page.headline} <span class="hl">{page.highlight}</span></h1>
+      <p class="lead">{page.intro}</p>
+      <div class="btn-row"><a href="/contact/#site-visit" class="btn btn-primary">Book Free Site Visit</a><a href={company.whatsapp} class="btn btn-ghost" target="_blank" rel="noopener">💬 WhatsApp Us</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">What matters in {page.name.toLowerCase()}</span>
+      <h2>What you worry about, and how we handle it</h2>
+      <div class="grid g3">{page.concerns.map((c) => <div class="card concern"><h3>{c.q}</h3><p>{c.a}</p></div>)}</div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <span class="eyebrow">Proof, not promises</span>
+      <h2>{page.name}: clients we've worked with</h2>
+      <div class="chips plain">{page.clients.map((c) => <span>{c}</span>)}</div>
+      <p>{YEARS} years in Gujarat · daily progress report on every job · 0 safety incidents · <a href="/clients/">All clients →</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Services for {page.name.toLowerCase()}</h2>
+      <div class="grid g3">{svcs.map((s) => <a class="card svc" href={`/services/${s.slug}/`}><h3>{s.name}</h3><p>{s.blurb}</p><span>{s.name} for {ind} →</span></a>)}</div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <span class="eyebrow">Our approach</span>
+      <h2>How we work in {ind}</h2>
+      <div class="grid g4">{approach.map((a, i) => <div class="card concern"><h3>{i + 1}. {a.t}</h3><p>{a.d}</p></div>)}</div>
+    </div>
+  </section>
+
+  <FaqList faqs={allFaqs} heading={`${page.name}: frequently asked questions`} open={2} />
+  <CtaBand />
+</Base>
+
+<style>
+  .hero { padding: 48px 0 64px; }
+  .crumbs { font-size: 14px; margin-bottom: 18px; color: var(--navy-soft); }
+  .crumbs a { color: var(--navy-soft); }
+  .hl { color: var(--orange-light); }
+  .hero .btn-row { margin-top: 24px; }
+  .concern { border-top: 4px solid var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 24px; }
+  .chips span { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 16px; font-weight: 600; }
+  .svc { text-decoration: none; color: var(--ink); border-left: 4px solid var(--accent); }
+  .svc span { color: var(--orange); font-weight: 600; }
+</style>

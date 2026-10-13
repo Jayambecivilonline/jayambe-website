@@ -1,0 +1,27 @@
+---
+import type { Faq } from '../data/servicePages';
+interface Props { faqs: Faq[]; heading?: string; open?: number }
+const { faqs, heading = 'Questions plant owners ask us', open = 1 } = Astro.props;
+---
+<section class="section">
+  <div class="wrap faq-wrap">
+    <span class="eyebrow">FAQ</span>
+    <h2>{heading}</h2>
+    {faqs.map((f, i) => (
+      <details open={i < open}>
+        <summary>{f.q}</summary>
+        <p>{f.a}</p>
+      </details>
+    ))}
+  </div>
+</section>
+
+<style>
+  .faq-wrap { max-width: 860px; }
+  details { border-bottom: 1px solid var(--line); padding: 16px 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 18px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; color: var(--orange); font-size: 24px; line-height: 1; }
+  details[open] summary::after { content: '–'; }
+  details p { margin: 10px 0 0; }
+</style>

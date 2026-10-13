@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company, clientHistory, FOUNDED, YEARS } from '../data/site';
+
+const running = clientHistory.filter((c) => c.running);
+const past = clientHistory.filter((c) => !c.running);
+---
+<Base title={`Clients & Track Record | ${company.short}`} description={`25+ industrial clients across Gujarat since ${FOUNDED}, including Sicgil India, Gulbrandsen Chemicals, Deepak Nitrite, Huntsman and Flint Group.`}>
+  <PageHero eyebrow="Clients & track record" title={`${YEARS} years. 25+ industrial clients. Some for decades.`} lead={`Since ${FOUNDED} we've worked for chemical, pharma, gas and petrochemical companies across Gujarat. Many of them for years at a time.`} />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="highlights">
+        <div class="hl-card"><b>{FOUNDED} – today</b><span>Sicgil India has worked with us since 1996 and still does</span></div>
+        <div class="hl-card"><b>15 years</b><span>Gulbrandsen Chemicals, Akalbara, and running now at Dahej</span></div>
+      </div>
+
+      <h2 class="sub">Running jobs</h2>
+      <div class="grid g3">
+        {running.map((c) => (
+          <div class="card job"><span class="live">● Running</span><h3>{c.name}</h3><p>{c.place}</p></div>
+        ))}
+      </div>
+
+      <h2 class="sub">Clients we've worked with</h2>
+      <div class="list">
+        {past.map((c) => (
+          <div class="row"><b>{c.name}</b><span>{c.place}</span></div>
+        ))}
+      </div>
+      <p class="note">Client names are listed for reference only. Logos and trademarks belong to their owners.</p>
+    </div>
+  </section>
+
+  <CtaBand heading="Join the clients who've trusted us for decades. Start with a free site visit." />
+</Base>
+
+<style>
+  .highlights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 56px; }
+  .hl-card { background: var(--navy); color: #fff; border-radius: var(--radius); padding: 22px; border-top: 4px solid var(--accent); }
+  .hl-card b { display: block; font-family: var(--head); font-size: 30px; color: var(--orange-light); }
+  .hl-card span { font-size: 15px; }
+  .sub { border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin: 40px 0 20px; }
+  .job { border-left: 4px solid var(--accent); }
+  .job h3 { font-size: 22px; margin: 6px 0 4px; }
+  .job p { margin: 0; }
+  .live { font-size: 12px; font-weight: 700; color: #1E7B3A; letter-spacing: .5px; text-transform: uppercase; }
+  .list { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 0 32px; }
+  .row { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .row span { font-size: 14px; }
+  .note { font-size: 13px; margin-top: 24px; }
+  @media (max-width: 700px) { .highlights { grid-template-columns: 1fr; } }
+</style>

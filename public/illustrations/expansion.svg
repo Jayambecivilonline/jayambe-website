@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Illustration of a brownfield expansion: a running plant on the left and a new unit being built beside it, connected by a tie-in pipe">
+  <defs>
+    <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#0B3A66" stroke-opacity=".07"/></pattern>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEAF8"/><stop offset="1" stop-color="#F4F8FD"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#sky)"/>
+  <rect width="400" height="500" fill="url(#g)"/>
+
+  <!-- running plant (left) -->
+  <rect x="26" y="230" width="150" height="180" fill="#0B3A66"/>
+  <rect x="46" y="176" width="22" height="54" fill="#0B3A66"/>
+  <rect x="80" y="196" width="18" height="34" fill="#0B3A66"/>
+  <g fill="#DCEAF8" opacity=".6"><circle cx="57" cy="160" r="10"/><circle cx="70" cy="146" r="13"/><circle cx="88" cy="132" r="9"/></g>
+  <g fill="#EB9723"><rect x="44" y="252" width="24" height="16" rx="2"/><rect x="82" y="252" width="24" height="16" rx="2"/><rect x="120" y="252" width="24" height="16" rx="2"/><rect x="44" y="284" width="24" height="16" rx="2"/><rect x="82" y="284" width="24" height="16" rx="2"/><rect x="120" y="284" width="24" height="16" rx="2"/></g>
+  <rect x="40" y="320" width="122" height="26" rx="4" fill="#1565C0"/>
+  <text x="101" y="338" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="11" fill="#fff">● RUNNING</text>
+
+  <!-- new unit (right), under construction -->
+  <g stroke="#EB9723" stroke-width="5" fill="none" stroke-linecap="square">
+    <path d="M226 410V230M286 410V230M346 410V230M226 230H346M226 290H346M226 350H346"/>
+  </g>
+  <g stroke="#EB9723" stroke-width="2.5" stroke-opacity=".6" fill="none">
+    <path d="M226 230L286 290M286 230L346 290M226 290L286 350M286 290L346 350"/>
+  </g>
+  <rect x="234" y="356" width="44" height="54" fill="#1565C0" opacity=".85"/>
+  <rect x="292" y="370" width="48" height="40" fill="#1565C0" opacity=".6"/>
+  <rect x="236" y="200" width="100" height="22" rx="4" fill="#fff" stroke="#EB9723" stroke-width="2"/>
+  <text x="286" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="11" fill="#0B3A66">NEW UNIT</text>
+
+  <!-- mobile crane -->
+  <g>
+    <rect x="352" y="378" width="40" height="22" rx="3" fill="#0B3A66"/>
+    <circle cx="362" cy="402" r="7" fill="#0B3A66"/><circle cx="384" cy="402" r="7" fill="#0B3A66"/>
+    <path d="M372 380L310 120" stroke="#EB9723" stroke-width="7" stroke-linecap="round"/>
+    <path d="M310 120V180" stroke="#0B3A66" stroke-width="2"/>
+    <rect x="292" y="180" width="36" height="8" fill="#0B3A66"/>
+  </g>
+
+  <!-- tie-in pipe -->
+  <path d="M176 380H226" stroke="#4F8FD6" stroke-width="12"/>
+  <rect x="194" y="368" width="6" height="24" rx="2" fill="#0B3A66"/>
+  <rect x="202" y="368" width="6" height="24" rx="2" fill="#0B3A66"/>
+  <text x="201" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="9" fill="#0B3A66">TIE-IN</text>
+
+  <!-- ground -->
+  <rect y="410" width="400" height="90" fill="#0B3A66"/>
+  <rect y="410" width="400" height="6" fill="#EB9723"/>
+  <g stroke="#DCEAF8" stroke-opacity=".35" stroke-width="2"><path d="M0 446H400M0 474H400"/></g>
+  <text x="24" y="458" font-family="Arial, sans-serif" font-weight="700" font-size="14" fill="#DCEAF8">EXPANSION</text>
+  <rect x="24" y="466" width="120" height="6" rx="3" fill="#1565C0"/>
+  <rect x="24" y="466" width="60" height="6" rx="3" fill="#EB9723"/>
+  <text x="152" y="473" font-family="Arial, sans-serif" font-size="11" fill="#DCEAF8">PRODUCTION KEEPS RUNNING</text>
+</svg>

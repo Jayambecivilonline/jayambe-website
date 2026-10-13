@@ -1,0 +1,127 @@
+---
+// Rotating MCB hero. Slides change every INTERVAL ms, pause on hover/touch/focus,
+// and stay still for visitors who prefer reduced motion.
+import { mcbs } from '../data/mcbs';
+const INTERVAL = 6000;
+---
+<section class="hero blueprint dark" aria-roledescription="carousel" aria-label="What we build" data-interval={INTERVAL}>
+  <div class="wrap">
+    <div class="slides">
+      {mcbs.map((m, i) => (
+        <div class:list={['slide', { active: i === 0 }]} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${mcbs.length}`} aria-hidden={i === 0 ? 'false' : 'true'}>
+          <div class="copy">
+            <span class="eyebrow">{m.eyebrow}</span>
+            {i === 0
+              ? <h1 class="headline">{m.headline} <span class="hl">{m.highlight}</span></h1>
+              : <p class="headline">{m.headline} <span class="hl">{m.highlight}</span></p>}
+            <ul class="hooks">{m.hooks.map((h) => <li>{h}</li>)}</ul>
+            <div class="btn-row">
+              <a href={m.cta.href} class="btn btn-primary" tabindex={i === 0 ? undefined : '-1'}>{m.cta.label}</a>
+              <a href="#site-visit" class="btn btn-ghost" tabindex={i === 0 ? undefined : '-1'}>Book Free Site Visit</a>
+            </div>
+          </div>
+          <img class="hero-photo" src={m.image} alt={m.imageAlt} width="400" height="500" loading={i === 0 ? 'eager' : 'lazy'} />
+
+        </div>
+      ))}
+    </div>
+
+    <div class="controls">
+      <button class="arrow prev" aria-label="Previous slide">‹</button>
+      <div class="dots">
+        {mcbs.map((m, i) => (
+          <button class:list={['dot', { active: i === 0 }]} aria-label={`Show slide ${i + 1}: ${m.eyebrow}`}><span></span></button>
+        ))}
+      </div>
+      <button class="arrow next" aria-label="Next slide">›</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('.hero[aria-roledescription="carousel"]');
+  if (hero) {
+    const slides = [...hero.querySelectorAll<HTMLElement>('.slide')];
+    const dots = [...hero.querySelectorAll<HTMLElement>('.dot')];
+    const interval = Number(hero.dataset.interval) || 6000;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer: number | undefined;
+
+    const show = (n: number) => {
+      current = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        const on = i === current;
+        s.classList.toggle('active', on);
+        s.setAttribute('aria-hidden', String(!on));
+        s.querySelectorAll('a').forEach((a) => (on ? a.removeAttribute('tabindex') : a.setAttribute('tabindex', '-1')));
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      restartBar();
+    };
+    // restart the progress bar on the active dot so it always matches the timer
+    const restartBar = () => {
+      hero.style.setProperty('--run', 'none');
+      void hero.offsetWidth;
+      hero.style.removeProperty('--run');
+    };
+    const play = () => { if (!still) { stop(); timer = window.setInterval(() => show(current + 1), interval); hero.classList.remove('paused'); restartBar(); } };
+    const stop = () => { window.clearInterval(timer); hero.classList.add('paused'); };
+
+    dots.forEach((d, i) => d.addEventListener('click', () => { show(i); play(); }));
+    hero.querySelector('.prev')?.addEventListener('click', () => { show(current - 1); play(); });
+    hero.querySelector('.next')?.addEventListener('click', () => { show(current + 1); play(); });
+    hero.addEventListener('mouseenter', stop);
+    hero.addEventListener('mouseleave', play);
+    hero.addEventListener('focusin', stop);
+    hero.addEventListener('focusout', play);
+
+    // swipe on phones
+    let x0: number | null = null;
+    hero.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; stop(); }, { passive: true });
+    hero.addEventListener('touchend', (e) => {
+      if (x0 !== null) {
+        const dx = e.changedTouches[0].clientX - x0;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }
+      x0 = null;
+      play();
+    });
+
+    hero.style.setProperty('--interval', `${interval}ms`);
+    if (still) hero.classList.add('paused');
+    play();
+  }
+</script>
+
+<style>
+  .hero { padding: 64px 0 40px; overflow: hidden; }
+  .slides { display: grid; }
+  .slide { grid-area: 1 / 1; display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; opacity: 0; visibility: hidden; transform: translateX(24px); transition: opacity .6s ease, transform .6s ease, visibility 0s linear .6s; }
+  .slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease, transform .6s ease, visibility 0s; }
+  .headline { font-family: var(--head); font-weight: 700; line-height: 1.08; font-size: clamp(36px, 5.5vw, 60px); color: #fff; margin: 0 0 24px; }
+  .hl { color: var(--orange-light); }
+  .hooks { list-style: none; padding: 0; margin: 0 0 32px; display: grid; gap: 12px; }
+  .hooks li { padding-left: 32px; position: relative; font-size: 18px; color: #E6EEF7; }
+  .hooks li::before { content: '✔'; position: absolute; left: 0; top: 2px; width: 22px; height: 22px; background: var(--accent); color: var(--navy); border-radius: 50%; font-size: 13px; display: grid; place-items: center; font-weight: 700; }
+  .hero-photo { aspect-ratio: 4/5; max-height: 460px; width: 100%; height: auto; object-fit: cover; border-radius: var(--radius); border: 3px solid rgba(255,255,255,.15); box-shadow: 0 20px 50px rgba(0,0,0,.25); justify-self: center; }
+
+  .controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 36px; }
+  .arrow { background: transparent; border: 1.5px solid rgba(255,255,255,.5); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; line-height: 1; cursor: pointer; }
+  .arrow:hover { border-color: var(--accent); color: var(--accent); }
+  .dots { display: flex; gap: 10px; }
+  .dot { width: 44px; height: 24px; padding: 0; background: none; border: 0; cursor: pointer; display: grid; align-items: center; }
+  .dot span { display: block; height: 4px; border-radius: 2px; background: rgba(255,255,255,.3); overflow: hidden; position: relative; }
+  .dot.active span::after { content: ''; position: absolute; inset: 0; background: var(--accent); transform-origin: left; animation: var(--run, fill) var(--interval, 6000ms) linear forwards; }
+  .paused .dot.active span::after { animation-play-state: paused; }
+  @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide.active { transition: none; transform: none; }
+    .dot.active span::after { animation: none; }
+  }
+
+  @media (max-width: 900px) {
+    .slide { grid-template-columns: 1fr; gap: 28px; }
+    .hero-photo { aspect-ratio: 16/9; }
+  }
+</style>

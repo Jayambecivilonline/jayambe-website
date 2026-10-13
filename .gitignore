@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.astro/
+# internal planning notes, not for the public repo
+plan.html
