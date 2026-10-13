@@ -8,11 +8,11 @@ export const company = {
   name: 'Jay Ambe Engineering Works',
   short: 'Jay Ambe Engg. Works',
   founder: 'Vipulbhai Padhiyar',
-  phone: '+91 73835 03062', // from old site, to confirm
+  phone: '+91 73835 03062', // confirmed by owner
   phoneHref: 'tel:+917383503062',
   whatsapp: 'https://wa.me/917383503062?text=' + encodeURIComponent('Hello Jay Ambe Engineering Works, I would like to discuss a project.'),
   email: 'info@jayambeengworks.in',
-  address: 'A/27 Nilkhant Society, Nandesari, Vadodara, Gujarat, India', // from old site, to confirm
+  address: 'A/27 Nilkhant Society, Nandesari, Vadodara, Gujarat, India', // confirmed by owner
   city: 'Vadodara',
 };
 

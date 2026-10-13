@@ -39,7 +39,7 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 ## Still to confirm
 - Optional later: total number of projects and total workforce size
 - Final list of services
-- Phone +91 7383503062, email info@jayambeengworks.in, and address A/27 Nilkhant Society, Nandesari, Vadodara (all from the old site)
+- Phone +91 73835 03062 and address A/27 Nilkhant Society, Nandesari, Vadodara: **confirmed by owner (14 Oct 2026)**
 - GST number
 
 ## SEO pages
