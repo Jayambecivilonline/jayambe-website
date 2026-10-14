@@ -6,6 +6,7 @@ import SiteVisitForm from '../components/SiteVisitForm.astro';
 import HeroSlider from '../components/HeroSlider.astro';
 import DprSample from '../components/DprSample.astro';
 import DelayCalculator from '../components/DelayCalculator.astro';
+import PourScene from '../components/PourScene.astro';
 import { company, featuredClients, stats, serviceGroups, industries, YEARS, FOUNDED } from '../data/site';
 
 const worries = [
@@ -37,10 +38,13 @@ const compare = [
   <!-- ============ PHASE 1: Intro + story (the CUSTOMER is the hero) + trust ============ -->
   <section class="section" id="story">
     <div class="wrap">
+      <div class="intro-grid">
       <div class="story-intro">
         <span class="eyebrow">Before you choose a contractor</span>
         <h2>Why do some new plants start on time, while others run months late?</h2>
         <p class="lead">It's rarely the budget or the drawings. In {YEARS} years of building plants in Gujarat, we've seen the difference decided <i>before the first foundation is poured.</i></p>
+      </div>
+      <PourScene />
       </div>
 
       <h3 class="wrong-h">What usually goes wrong</h3>
@@ -197,7 +201,8 @@ const compare = [
 
 <style>
 
-  .story-intro { max-width: 820px; margin-bottom: 28px; }
+  .intro-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 40px; align-items: center; margin-bottom: 36px; }
+  .story-intro { max-width: 620px; }
   .wrong-h { margin-bottom: 14px; }
   .wrong { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 48px; }
   .wrong div { background: var(--tint); border-radius: var(--radius); padding: 18px; font-weight: 500; }
@@ -256,7 +261,7 @@ const compare = [
   .direct { margin: 24px 0 10px; font-weight: 600; }
 
   @media (max-width: 900px) {
-    .compare, .offer-grid, .decisions { grid-template-columns: 1fr; }
+    .compare, .offer-grid, .decisions, .intro-grid { grid-template-columns: 1fr; }
     .wrong { grid-template-columns: 1fr 1fr; }
     .stats { grid-template-columns: repeat(2, 1fr); }
   }

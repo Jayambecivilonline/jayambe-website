@@ -1,97 +1,158 @@
 ---
-// Live hero scene: an RMC transit mixer reverses in, its drum turning, and pours concrete into a pump.
-// Concrete pulses up the pump line, the slab fills floor by floor, columns rise, and the building tops out.
-// The lights come on, an "ON TIME" flag goes up, the truck leaves, and the loop starts again.
-// Layered SVG driven by one GSAP timeline. It pauses when off-screen and shows the finished building
-// (no motion) for visitors who prefer reduced motion.
+// Realistic live pour scene (no background box: it stands directly on the page).
+// A transit mixer reverses in and feeds a truck-mounted concrete boom pump. The boom moves (2-segment
+// inverse kinematics) and places concrete floor by floor: plywood formwork on steel props, rebar mesh,
+// wet concrete that cures lighter, and workers guiding the hose. Then walls, lit windows and an "ON TIME" flag.
+// One GSAP timeline. It pauses off-screen and shows the finished building for reduced motion.
 
-// geometry (scene units 640 × 520, ground at y = 470)
-const X0 = 330, W = 260;                       // building left edge and width
-const BASE = 458;                              // top of the ground slab
-const FLOOR = 78, SLAB = 12;
-const slabs = [1, 2, 3, 4].map((k) => BASE - FLOOR * k);             // 380, 302, 224, 146
+const GROUND = 400;
+const X0 = 500, W = 260, SLAB = 12, FLOOR = 70;
+const BASE = GROUND - SLAB;                                              // ground slab top = 388
+const tops = [0, 1, 2, 3, 4].map((k) => BASE - FLOOR * k);              // 388, 318, 248, 178, 108
 const colX = [X0 + 8, X0 + W / 2 - 6, X0 + W - 20];
-const floors = slabs.map((y, i) => ({ y, low: BASE - FLOOR * i }));  // columns run from y+SLAB down to low
-const winX = [X0 + 34, X0 + 76, X0 + 152, X0 + 194];
+const propX = [X0 + 40, X0 + 80, X0 + 175, X0 + 215];
+const winX = [X0 + 28, X0 + 66, X0 + 150, X0 + 188];
+const D = 12, DY = 7;                                                    // depth offset for 3D top faces
 ---
-<div class="pour" aria-hidden="true">
-  <svg viewBox="0 0 640 520" role="img">
+<figure class="pour" aria-label="Animation: an RMC transit mixer and a concrete boom pump building a structure floor by floor">
+  <figcaption class="cap"><span class="dot"></span> Live: RMC pour in progress · floor <b id="ps-floor">1</b> of 4</figcaption>
+  <svg viewBox="0 0 800 440" aria-hidden="true">
     <defs>
-      <linearGradient id="ps-sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#0f4a80" /><stop offset="1" stop-color="#1d5f9c" />
-      </linearGradient>
-      <pattern id="ps-stripes" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(28)">
-        <rect width="26" height="26" fill="#e9f1fa" /><rect width="11" height="26" fill="#EB9723" />
-      </pattern>
-      <clipPath id="ps-drum"><path d="M126 432 L140 372 Q200 344 268 360 L286 392 L276 432 Z" /></clipPath>
-      <filter id="ps-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+      <linearGradient id="pz-ground" x1="0" x2="1"><stop offset="0" stop-color="#6b5236" stop-opacity="0" /><stop offset=".12" stop-color="#6b5236" /><stop offset=".88" stop-color="#6b5236" /><stop offset="1" stop-color="#6b5236" stop-opacity="0" /></linearGradient>
+      <radialGradient id="pz-shadow"><stop offset="0" stop-color="#0B3A66" stop-opacity=".28" /><stop offset="1" stop-color="#0B3A66" stop-opacity="0" /></radialGradient>
+      <linearGradient id="pz-col" x1="0" x2="1"><stop offset="0" stop-color="#eef3f8" /><stop offset=".6" stop-color="#cfdae6" /><stop offset="1" stop-color="#a9bccf" /></linearGradient>
+      <linearGradient id="pz-wet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb2c6" /><stop offset="1" stop-color="#7f94aa" /></linearGradient>
+      <linearGradient id="pz-dry" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9eff5" /><stop offset="1" stop-color="#c4d1de" /></linearGradient>
+      <linearGradient id="pz-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5f8fc0" /><stop offset=".5" stop-color="#2c5d8f" /><stop offset="1" stop-color="#1b4472" /></linearGradient>
+      <linearGradient id="pz-lit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd27a" /><stop offset="1" stop-color="#F5A623" /></linearGradient>
+      <linearGradient id="pz-drumshade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55" /><stop offset=".35" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#0B3A66" stop-opacity=".35" /></linearGradient>
+      <linearGradient id="pz-boomgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5A623" /><stop offset="1" stop-color="#D9860F" /></linearGradient>
+      <pattern id="pz-finpat" width="30" height="30" patternUnits="userSpaceOnUse" patternTransform="rotate(32)"><rect width="30" height="30" fill="#f4f7fb" /><rect width="9" height="30" fill="#EB9723" /></pattern>
+      <pattern id="pz-rebarpat" width="10" height="6" patternUnits="userSpaceOnUse"><path d="M0 3H10M5 0V6" stroke="#a5582a" stroke-width="1.2" /></pattern>
+      <clipPath id="pz-drumclip"><path d="M122 330 L134 274 Q196 246 262 262 L280 292 L270 330 Z" /></clipPath>
     </defs>
 
-    <rect width="640" height="520" fill="url(#ps-sky)" />
-    <path d="M0 470V420h40v-22h16v22h60v-36h26v36h70v-16h40v16h60v-52h12v52h100v-30h50v30h80v-44h20v44h66v50z" fill="#0B3A66" opacity=".55" />
-    <rect y="470" width="640" height="50" fill="#5c4632" />
-    <rect y="468" width="640" height="4" fill="#EB9723" opacity=".5" />
+    <!-- ground (fades out at the sides, so there is no box) and soft shadows -->
+    <rect x="0" y={GROUND} width="800" height="10" fill="url(#pz-ground)" />
+    <rect x="40" y={GROUND - 2} width="720" height="3" fill="#EB9723" opacity=".35" />
+    <ellipse cx={X0 + W / 2} cy={GROUND + 2} rx="170" ry="10" fill="url(#pz-shadow)" />
+    <ellipse cx="380" cy={GROUND + 2} rx="110" ry="8" fill="url(#pz-shadow)" />
+    <ellipse class="mixmove" cx="170" cy={GROUND + 2} rx="140" ry="8" fill="url(#pz-shadow)" />
 
-    <!-- ground slab + floors -->
-    <g id="ps-bldg">
-      <rect class="form" data-k="0" x={X0} y={BASE} width={W} height={SLAB} />
-      <rect class="slab" data-k="0" x={X0} y={BASE} width={W} height={SLAB} />
-      {floors.map((f, i) => (
+    <!-- ================= BUILDING ================= -->
+    <g id="pz-bldg">
+      {[1, 2, 3, 4].map((k) => (
         <g>
-          <!-- infill walls with windows (appear at the end) -->
-          <g class="wall" data-k={i + 1}>
-            <rect x={X0} y={f.y + SLAB} width={W} height={f.low - f.y - SLAB} fill="#12406d" />
-            {winX.map((x) => <rect class="win" x={x} y={f.y + SLAB + 16} width="28" height="30" rx="2" fill="#0a2747" />)}
+          <!-- infill walls with glazing (appear at top-out) -->
+          <g class="wall" data-k={k}>
+            <rect x={X0} y={tops[k] + SLAB} width={W} height={FLOOR - SLAB} fill="#2a5a8a" />
+            <rect x={X0} y={tops[k] + SLAB} width={W} height="6" fill="#0B3A66" opacity=".5" />
+            {winX.map((x) => (
+              <g>
+                <rect x={x} y={tops[k] + SLAB + 14} width="32" height="34" fill="url(#pz-glass)" />
+                <rect class="lit" x={x} y={tops[k] + SLAB + 14} width="32" height="34" fill="url(#pz-lit)" />
+                <path d={`M${x + 16} ${tops[k] + SLAB + 14}v34M${x} ${tops[k] + SLAB + 31}h32`} stroke="#0B3A66" stroke-width="1.5" />
+                <path d={`M${x + 3} ${tops[k] + SLAB + 17}l10 0l-10 12z`} fill="#fff" opacity=".18" />
+              </g>
+            ))}
           </g>
-          {colX.map((x) => <rect class="col" data-k={i + 1} x={x} y={f.y + SLAB} width="12" height={f.low - f.y - SLAB} fill="#CFE0F2" />)}
-          <rect class="form" data-k={i + 1} x={X0 - 4} y={f.y} width={W + 8} height={SLAB} />
-          <rect class="slab" data-k={i + 1} x={X0} y={f.y} width={W} height={SLAB} />
+          <!-- steel props holding up this floor's formwork -->
+          {propX.map((x) => <rect class="prop" data-k={k} x={x} y={tops[k] + SLAB} width="3" height={FLOOR - SLAB} fill="#7f9bb8" />)}
+          <!-- columns rising from the slab below -->
+          {colX.map((x) => (
+            <g class="col" data-k={k}>
+              <rect x={x} y={tops[k] + SLAB} width="12" height={FLOOR - SLAB} fill="url(#pz-col)" />
+              <path d={`M${x + 12} ${tops[k] + SLAB}l5 -3v${FLOOR - SLAB}l-5 3z`} fill="#93a9bf" />
+            </g>
+          ))}
         </g>
       ))}
+
+      {[0, 1, 2, 3, 4].map((k) => (
+        <g>
+          <!-- plywood formwork deck + rebar mesh (before the pour) -->
+          <g class="deck" data-k={k}>
+            <path d={`M${X0 - 4} ${tops[k]}h${W + 8}l${D} -${DY}h-${W + 8}z`} fill="#d9b47c" />
+            <rect x={X0 - 4} y={tops[k]} width={W + 8} height={SLAB} fill="#c49a5e" />
+            <rect class="rebar" data-k={k} x={X0 + 2} y={tops[k] - 6} width={W - 4} height="6" fill="url(#pz-rebarpat)" />
+          </g>
+          <!-- concrete slab (top face + front + end), poured left to right -->
+          <g class="slab" data-k={k}>
+            <path class="cface" d={`M${X0} ${tops[k]}h${W}l${D} -${DY}h-${W}z`} fill="url(#pz-wet)" />
+            <rect class="cface" x={X0} y={tops[k]} width={W} height={SLAB} fill="url(#pz-wet)" />
+            <path d={`M${X0 + W} ${tops[k]}l${D} -${DY}v${SLAB}l-${D} ${DY}z`} fill="#8ea3b8" />
+          </g>
+        </g>
+      ))}
+
       <!-- roof flag -->
-      <g id="ps-flag" transform={`translate(${X0 + W - 30} ${slabs[3]})`}>
-        <line x1="0" y1="0" x2="0" y2="-46" stroke="#e9f1fa" stroke-width="3" />
-        <path d="M0 -46h62v24H0z" fill="#EB9723" />
-        <text x="31" y="-29" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="14" fill="#0B3A66">ON TIME ✓</text>
+      <g id="pz-flag" transform={`translate(${X0 + W - 24} ${tops[4] - DY})`}>
+        <line x1="0" y1="0" x2="0" y2="-54" stroke="#0B3A66" stroke-width="3" />
+        <path d="M0 -54h70v26H0z" fill="#EB9723" />
+        <text x="35" y="-36" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="15" fill="#0B3A66">ON TIME ✓</text>
       </g>
     </g>
 
-    <!-- concrete pump line, placing hose and stream -->
-    <path d="M298 446h40l-8 24h-24z" fill="#0B3A66" stroke="#e9f1fa" stroke-width="1.5" />
-    <rect id="ps-pipe" x="314" y="446" width="8" height="24" fill="#EB9723" />
-    <path id="ps-hose" d="" fill="none" stroke="#EB9723" stroke-width="6" stroke-linejoin="round" />
-    <circle id="ps-pulse" cx="318" cy="470" r="5" fill="#d9e5f2" filter="url(#ps-glow)" opacity="0" />
-    <path id="ps-drop" d="" stroke="#a9bfd6" stroke-width="5" stroke-linecap="round" opacity="0" />
-
-    <!-- RMC transit mixer (reverses in, rear facing the pump) -->
-    <g id="ps-truck">
-      <rect x="40" y="430" width="250" height="16" rx="3" fill="#0B3A66" />
-      <!-- cab -->
-      <path d="M40 446V394q0-10 10-10h52l16 30v32z" fill="#EB9723" />
-      <path d="M56 394h40l12 22H56z" fill="#cfe5fb" opacity=".9" />
-      <rect x="40" y="430" width="78" height="6" fill="#D9860F" />
-      <!-- drum: stripes slide across inside the clip, which reads as the drum turning -->
-      <g clip-path="url(#ps-drum)">
-        <rect id="ps-drumskin" x="60" y="330" width="300" height="120" fill="url(#ps-stripes)" />
-        <path d="M126 432 L140 372 Q200 344 268 360 L286 392 L276 432 Z" fill="#0B3A66" opacity=".12" />
+    <!-- workers on the slab: one guides the hose, one vibrates the concrete -->
+    <g id="pz-crew">
+      <g id="pz-w1">
+        <circle cx="0" cy="-27" r="4.2" fill="#e8b88a" /><path d="M-5 -29a5 5 0 0 1 10 0z" fill="#EB9723" />
+        <rect x="-4" y="-23" width="8" height="12" rx="2" fill="#0B3A66" /><rect x="-4" y="-19" width="8" height="2" fill="#F5A623" />
+        <path d="M-3 -11l-2 11M3 -11l2 11" stroke="#1b2b3a" stroke-width="2.4" stroke-linecap="round" />
+        <path d="M4 -20l9 -6" stroke="#0B3A66" stroke-width="2.4" stroke-linecap="round" />
       </g>
-      <path d="M126 432 L140 372 Q200 344 268 360 L286 392 L276 432 Z" fill="none" stroke="#0B3A66" stroke-width="2" />
-      <rect x="132" y="426" width="150" height="8" fill="#0B3A66" />
-      <!-- chute down to the hopper -->
-      <path d="M284 384 L300 438" stroke="#0B3A66" stroke-width="7" stroke-linecap="round" />
-      <path id="ps-chute" d="M284 384 L300 438" stroke="#a9bfd6" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 6" opacity="0" />
-      <!-- wheels -->
-      {[78, 206, 252].map((x) => (
-        <g class="wheel" data-x={x}>
-          <circle cx={x} cy="456" r="14" fill="#0a2747" />
-          <circle cx={x} cy="456" r="6" fill="#CFE0F2" />
-          <rect x={x - 1.5} y="444" width="3" height="24" fill="#5f7fa3" />
-        </g>
-      ))}
+      <g id="pz-w2">
+        <circle cx="0" cy="-27" r="4.2" fill="#c98f62" /><path d="M-5 -29a5 5 0 0 1 10 0z" fill="#fff" />
+        <rect x="-4" y="-23" width="8" height="12" rx="2" fill="#1565C0" /><rect x="-4" y="-19" width="8" height="2" fill="#F5A623" />
+        <path d="M-3 -11l-2 11M3 -11l2 11" stroke="#1b2b3a" stroke-width="2.4" stroke-linecap="round" />
+        <path d="M-4 -19l-6 12" stroke="#0B3A66" stroke-width="2.4" stroke-linecap="round" /><path d="M-10 -7v8" stroke="#7f9bb8" stroke-width="2" />
+      </g>
+    </g>
+
+    <!-- ================= BOOM PUMP TRUCK (cab facing the building) ================= -->
+    <g id="pz-pump">
+      <path d="M318 352l-22 44M452 352l22 44" stroke="#0B3A66" stroke-width="6" stroke-linecap="round" />
+      <rect x="286" y="394" width="22" height="5" rx="2" fill="#0B3A66" /><rect x="466" y="394" width="22" height="5" rx="2" fill="#0B3A66" />
+      <rect x="300" y="336" width="160" height="22" rx="3" fill="#0B3A66" />
+      <rect x="306" y="322" width="112" height="16" rx="2" fill="#1565C0" />
+      <path d="M418 358V318q0-8 8-8h26l18 26v22z" fill="#EB9723" />
+      <path d="M428 318h22l12 18h-34z" fill="#cfe5fb" />
+      <rect x="418" y="346" width="52" height="5" fill="#D9860F" />
+      <path d="M296 330h26l-5 22h-16z" fill="#0B3A66" /><path d="M299 333h20l-2 6h-16z" fill="#7f94aa" />
+      {[322, 352, 444].map((x) => <g><circle cx={x} cy="372" r="13" fill="#14243a" /><circle cx={x} cy="372" r="5" fill="#cfdae6" /></g>)}
+      <rect x="384" y="306" width="22" height="18" rx="3" fill="#0B3A66" />
+    </g>
+    <!-- the boom is redrawn from the inverse-kinematics solution every frame -->
+    <g id="pz-boom" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path id="pz-boomshadow" stroke="#0B3A66" stroke-width="13" opacity=".22" />
+      <path id="pz-boomarm" stroke="url(#pz-boomgrad)" stroke-width="10" />
+      <path id="pz-boomline" stroke="#0B3A66" stroke-width="2" opacity=".55" />
+      <path id="pz-flowline" stroke="#d6e0ea" stroke-width="3" stroke-dasharray="4 10" />
+      <circle id="pz-j0" r="7" fill="#0B3A66" /><circle id="pz-j1" r="6" fill="#0B3A66" />
+      <path id="pz-hose" stroke="#1b2b3a" stroke-width="5" />
+      <path id="pz-drop" stroke="#8fa6bd" stroke-width="6" />
+    </g>
+
+    <!-- ================= TRANSIT MIXER (reverses in, rear chute into the pump hopper) ================= -->
+    <g id="pz-mixer" class="mixmove">
+      <rect x="40" y="330" width="250" height="16" rx="3" fill="#0B3A66" />
+      <path d="M40 346V292q0-10 10-10h50l18 30v34z" fill="#EB9723" />
+      <path d="M54 292h40l12 22H54z" fill="#cfe5fb" /><path d="M58 296h12l-8 14h-4z" fill="#fff" opacity=".35" />
+      <rect x="40" y="334" width="80" height="6" fill="#D9860F" />
+      <rect x="34" y="318" width="8" height="14" rx="2" fill="#0B3A66" />
+      <g clip-path="url(#pz-drumclip)">
+        <rect id="pz-fins" x="60" y="230" width="300" height="120" fill="url(#pz-finpat)" />
+        <rect x="100" y="240" width="200" height="100" fill="url(#pz-drumshade)" />
+      </g>
+      <path d="M122 330 L134 274 Q196 246 262 262 L280 292 L270 330 Z" fill="none" stroke="#0B3A66" stroke-width="2" />
+      <path d="M262 262l18 30" stroke="#0B3A66" stroke-width="4" />
+      <rect x="128" y="326" width="150" height="8" fill="#0B3A66" />
+      <path d="M278 286 L304 330" stroke="#0B3A66" stroke-width="7" stroke-linecap="round" />
+      <path id="pz-chute" d="M278 286 L304 330" stroke="#c9d6e3" stroke-width="4" stroke-linecap="round" stroke-dasharray="5 6" />
+      {[80, 206, 250].map((x) => <g class="mwheel"><circle cx={x} cy="356" r="15" fill="#14243a" /><circle cx={x} cy="356" r="6" fill="#cfdae6" /><rect x={x - 1.5} y="343" width="3" height="26" fill="#5f7fa3" /></g>)}
     </g>
   </svg>
-  <p class="caption"><span>●</span> RMC pour in progress · floor <b id="ps-floor">1</b> of 4</p>
-</div>
+</figure>
 
 <script>
   import { gsap } from 'gsap';
@@ -99,100 +160,123 @@ const winX = [X0 + 34, X0 + 76, X0 + 152, X0 + 194];
   const root = document.querySelector<HTMLElement>('.pour');
   if (root) {
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const q = <T extends Element = SVGElement>(s: string) => [...root.querySelectorAll(s)] as unknown as T[];
-    const one = <T extends Element = SVGElement>(s: string) => root.querySelector(s) as unknown as T;
-    const BASE = 458, FLOOR = 78, SLAB = 12, X0 = 330, W = 260;
-    const levels = [BASE, ...[1, 2, 3, 4].map((k) => BASE - FLOOR * k)];
+    const $ = (s: string) => root.querySelector(s) as SVGElement;
+    const $$ = (s: string) => [...root.querySelectorAll(s)] as SVGElement[];
+    const GROUND = 400, X0 = 500, W = 260, SLAB = 12, FLOOR = 70, BASE = GROUND - SLAB;
+    const tops = [0, 1, 2, 3, 4].map((k) => BASE - FLOOR * k);
+    const HOSE = 30;
 
-    const truck = one('#ps-truck'), pipe = one('#ps-pipe'), hose = one('#ps-hose'), pulse = one('#ps-pulse');
-    const drop = one('#ps-drop'), chute = one('#ps-chute'), flag = one('#ps-flag'), bldg = one('#ps-bldg');
-    const floorLabel = one<HTMLElement>('#ps-floor');
-    const byK = (cls: string, k: number) => q(`.${cls}[data-k="${k}"]`);
-
-    // the pump line + placing hose are drawn from one small state object
-    const st = { top: BASE, x: X0 + 10, flow: 0 };
-    const render = () => {
-      const pt = st.top - 16;
-      pipe.setAttribute('y', String(pt));
-      pipe.setAttribute('height', String(470 - pt));
-      hose.setAttribute('d', `M318 ${pt} H${st.x} V${st.top - 6}`);
-      drop.setAttribute('d', `M${st.x} ${st.top - 5} V${st.top + 2}`);
+    // ---------- boom: 2-segment inverse kinematics from the turret ----------
+    const S = { x: 395, y: 306 }, L1 = 240, L2 = 232;
+    const REST = { x: 470, y: 300 };                     // boom parked: raised in an inverted V, tip resting toward the cab
+    const st = { ...REST, flow: 0, crew: 0 };            // hose tip target, concrete flow, crew visibility
+    const arm = $('#pz-boomarm'), shadow = $('#pz-boomshadow'), line = $('#pz-boomline'), flowline = $('#pz-flowline');
+    const j0 = $('#pz-j0'), j1 = $('#pz-j1'), hose = $('#pz-hose'), drop = $('#pz-drop'), chute = $('#pz-chute');
+    const crew = $('#pz-crew'), w1 = $('#pz-w1'), w2 = $('#pz-w2');
+    const f = (n: number) => n.toFixed(1);
+    function render() {
+      const px = st.x, py = st.y - HOSE;
+      const dx = px - S.x, dy = py - S.y;
+      const d = Math.min(Math.max(Math.hypot(dx, dy), Math.abs(L1 - L2) + 2), L1 + L2 - 2);
+      const a = Math.atan2(dy, dx);
+      const b = Math.acos((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d));
+      const t1 = a - b;                                   // elbow up
+      const ex = S.x + L1 * Math.cos(t1), ey = S.y + L1 * Math.sin(t1);
+      const a2 = Math.atan2(py - ey, px - ex);
+      const tx = ex + L2 * Math.cos(a2), ty = ey + L2 * Math.sin(a2);
+      const path = `M${S.x} ${S.y}L${f(ex)} ${f(ey)}L${f(tx)} ${f(ty)}`;
+      arm.setAttribute('d', path); line.setAttribute('d', path); flowline.setAttribute('d', path);
+      shadow.setAttribute('d', `M${S.x + 4} ${S.y + 6}L${f(ex + 4)} ${f(ey + 6)}L${f(tx + 4)} ${f(ty + 6)}`);
+      j0.setAttribute('cx', String(S.x)); j0.setAttribute('cy', String(S.y));
+      j1.setAttribute('cx', f(ex)); j1.setAttribute('cy', f(ey));
+      hose.setAttribute('d', `M${f(tx)} ${f(ty)}q4 ${HOSE / 2} 0 ${HOSE - 6}`);
+      drop.setAttribute('d', `M${f(tx)} ${f(ty + HOSE - 6)}V${st.y - 3}`);
       drop.setAttribute('opacity', String(st.flow));
+      flowline.setAttribute('opacity', String(st.flow * 0.9));
       chute.setAttribute('opacity', String(st.flow));
-    };
+      crew.setAttribute('opacity', String(st.crew));
+      w1.setAttribute('transform', `translate(${f(tx - 14)} ${st.y - 7})`);
+      w2.setAttribute('transform', `translate(${f(tx + 34)} ${st.y - 7})`);
+    }
+
+    const k$ = (sel: string, k: number) => $$(`${sel}[data-k="${k}"]`);
+    const setFloor = (n: number) => { const el = root.querySelector('#ps-floor'); if (el) el.textContent = String(n); };
 
     const tl = gsap.timeline({ repeat: -1, defaults: { ease: 'power2.inOut' }, onUpdate: render });
+    // reset to bare ground
+    tl.set($$('.slab'), { scaleX: 0, transformOrigin: '0% 50%' })
+      .set($$('.cface'), { attr: { fill: 'url(#pz-wet)' } })
+      .set($$('.deck'), { opacity: 0 })
+      .set($$('.rebar'), { opacity: 0 })
+      .set($$('.prop'), { scaleY: 0, opacity: 1, transformOrigin: '50% 100%' })
+      .set($$('.col'), { scaleY: 0, transformOrigin: '50% 100%' })
+      .set($$('.wall'), { opacity: 0 })
+      .set($$('.lit'), { opacity: 0 })
+      .set('#pz-flag', { scaleY: 0, transformOrigin: '0% 100%' })
+      .set('#pz-bldg', { opacity: 1 })
+      .set($$('.mixmove'), { x: -340 })
+      .set(st, { ...REST, flow: 0, crew: 0 })
+      .call(() => setFloor(1));
 
-    // reset everything to bare ground
-    tl.set('.pour .slab', { scaleX: 0, transformOrigin: '0% 50%', fill: '#8fa9c4' })
-      .set('.pour .col', { scaleY: 0, transformOrigin: '50% 100%' })
-      .set('.pour .form', { opacity: 0 })
-      .set('.pour .wall', { opacity: 0 })
-      .set('.pour .win', { fill: '#0a2747' })
-      .set(flag, { scaleY: 0, transformOrigin: '0% 100%' })
-      .set(bldg, { opacity: 1 })
-      .set(truck, { x: -380 })
-      .set(st, { top: BASE, x: X0 + 10, flow: 0 })
-      .call(() => { floorLabel.textContent = '1'; });
+    // the mixer reverses in to the pump hopper
+    tl.to($$('.mixmove'), { x: 0, duration: 2.2, ease: 'power2.out' }, 'in')
+      .to($$('.mwheel'), { rotation: 720, transformOrigin: '50% 50%', duration: 2.2, ease: 'power2.out' }, 'in');
 
-    // truck reverses in, wheels turning
-    tl.to(truck, { x: 0, duration: 2.2, ease: 'power2.out' }, 'in')
-      .to('.pour .wheel', { rotation: 720, transformOrigin: '50% 50%', duration: 2.2, ease: 'power2.out' }, 'in');
+    // each level: columns + props → formwork deck → rebar → boom to the start → pour sweep → cure
+    [0, 1, 2, 3, 4].forEach((k) => {
+      const y = tops[k];
+      tl.add(`L${k}`);
+      if (k > 0) {
+        tl.to(k$('.col', k), { scaleY: 1, duration: 0.7, stagger: 0.12, ease: 'power3.out' }, `L${k}`)
+          .to(k$('.prop', k), { scaleY: 1, duration: 0.4, stagger: 0.06 }, '<0.3');
+      }
+      tl.to(k$('.deck', k), { opacity: 1, duration: 0.35 })
+        .to(k$('.rebar', k), { opacity: 1, duration: 0.35 })
+        .call(() => setFloor(Math.max(1, k)))
+        .to(st, { x: X0 + 14, y, duration: 0.9 }, '<')
+        .to(st, { crew: 1, flow: 1, duration: 0.15 })
+        .to(k$('.slab', k), { scaleX: 1, duration: 1.7, ease: 'none' }, '<')
+        .to(st, { x: X0 + W - 6, duration: 1.7, ease: 'none' }, '<')
+        .to(st, { crew: 0, flow: 0, duration: 0.15 })
+        .set(root.querySelectorAll(`.slab[data-k="${k}"] .cface`), { attr: { fill: 'url(#pz-dry)' } }, '+=0.4')
+        .to(k$('.deck', k), { opacity: 0, duration: 0.3 }, '<');
+      if (k > 1) tl.to(k$('.prop', k - 1), { opacity: 0, duration: 0.3 }, '<');   // strip props once the slab above is cast
+    });
 
-    // pour one level: formwork, pipe up, pulse, fill the slab while the hose sweeps across
-    const pour = (k: number) => {
-      const y = levels[k];
-      const lbl = `L${k}`;
-      tl.add(lbl);
-      if (k > 0) tl.to(byK('col', k), { scaleY: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, lbl);
-      tl.to(byK('form', k), { opacity: 1, duration: 0.3 }, k > 0 ? '>-0.2' : lbl)
-        .to(st, { top: y, x: X0 + 10, duration: 0.6 }, '<')
-        .call(() => { floorLabel.textContent = String(Math.max(1, k)); })
-        .fromTo(pulse, { attr: { cy: 470 }, opacity: 1 }, { attr: { cy: y - 16 }, duration: 0.6, ease: 'power1.in' })
-        .set(pulse, { opacity: 0 })
-        .to(st, { flow: 1, duration: 0.15 })
-        .to(byK('slab', k), { scaleX: 1, duration: 1.3, ease: 'none' }, '<')
-        .to(st, { x: X0 + W - 10, duration: 1.3, ease: 'none' }, '<')
-        .to(st, { flow: 0, duration: 0.15 })
-        .to(byK('slab', k), { fill: '#dbe7f3', duration: 0.8 }, '<')   // wet concrete cures lighter
-        .to(byK('form', k), { opacity: 0, duration: 0.4 }, '<');
-    };
-    [0, 1, 2, 3, 4].forEach(pour);
+    // top-out: boom folds back, props cleared, walls and glazing, lights on, flag up
+    tl.to(st, { ...REST, duration: 1.1 })
+      .to(k$('.prop', 4), { opacity: 0, duration: 0.3 }, '<')
+      .to($$('.wall'), { opacity: 1, duration: 0.5, stagger: 0.15 }, '<0.2')
+      .to($$('.lit'), { opacity: 1, duration: 0.25, stagger: 0.04 })
+      .to('#pz-flag', { scaleY: 1, duration: 0.5, ease: 'back.out(2)' })
+      .call(() => setFloor(4))
+      .to($$('.mixmove'), { x: -340, duration: 2, ease: 'power2.in' }, '+=0.5')
+      .to($$('.mwheel'), { rotation: '-=720', transformOrigin: '50% 50%', duration: 2, ease: 'power2.in' }, '<')
+      .to('#pz-bldg', { opacity: 0, duration: 0.8 }, '+=1.8');
 
-    // top out: pipe comes down, walls go in, lights on floor by floor, flag up
-    tl.to(st, { top: BASE, x: X0 + 10, duration: 0.6 })
-      .to('.pour .wall', { opacity: 1, duration: 0.5, stagger: 0.15 }, '<')
-      .to('.pour .win', { fill: '#F5A623', duration: 0.2, stagger: { each: 0.05, from: 'start' } })
-      .to(flag, { scaleY: 1, duration: 0.5, ease: 'back.out(2)' })
-      .call(() => { floorLabel.textContent = '4'; })
-      // truck drives away, hold the finished building, then fade for the next loop
-      .to(truck, { x: -380, duration: 2, ease: 'power2.in' }, '+=0.4')
-      .to('.pour .wheel', { rotation: '-=720', transformOrigin: '50% 50%', duration: 2, ease: 'power2.in' }, '<')
-      .to(bldg, { opacity: 0, duration: 0.8 }, '+=1.6');
+    // the drum turns continuously
+    const fins = gsap.to('#pz-fins', { x: -30 / Math.cos((32 * Math.PI) / 180), duration: 0.85, ease: 'none', repeat: -1 });
 
     // dev-only hook so the sequence can be stepped through in tests (removed from production builds)
     if (import.meta.env.DEV) (window as unknown as { __pour: typeof tl }).__pour = tl;
 
-    // the drum keeps turning the whole time
-    const drum = gsap.to(one('#ps-drumskin'), { x: -26 / Math.cos((28 * Math.PI) / 180), duration: 0.9, ease: 'none', repeat: -1 });
-
+    render();
     if (still) {
-      tl.progress(0.93).pause();        // finished building, lights on, no motion
-      drum.pause();
+      tl.progress(0.92).pause();
+      fins.pause();
       render();
     } else {
-      // save battery: only animate while the scene is on screen
-      new IntersectionObserver(([e]) => { if (e.isIntersecting) { tl.play(); drum.play(); } else { tl.pause(); drum.pause(); } }).observe(root);
+      new IntersectionObserver(([e]) => { if (e.isIntersecting) { tl.play(); fins.play(); } else { tl.pause(); fins.pause(); } }, { threshold: 0.15 }).observe(root);
     }
   }
 </script>
 
 <style>
-  .pour { position: relative; border-radius: 10px; overflow: hidden; border: 3px solid rgba(255,255,255,.15); box-shadow: 0 24px 60px rgba(2,12,28,.4); }
-  .pour svg { display: block; width: 100%; height: auto; }
-  .form { fill: none; stroke: #EB9723; stroke-width: 2; stroke-dasharray: 6 4; }
-  .caption { position: absolute; left: 12px; top: 10px; margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .4px; color: #fff; background: rgba(7,33,59,.6); padding: 5px 10px; border-radius: 4px; backdrop-filter: blur(4px); }
-  .caption span { color: #F5A623; animation: blink 1.4s ease-in-out infinite; }
-  @keyframes blink { 50% { opacity: .2; } }
-  @media (prefers-reduced-motion: reduce) { .caption span { animation: none; } }
+  .pour { margin: 0; position: relative; }
+  .pour svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .cap { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--navy); background: var(--tint); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; margin-bottom: 6px; }
+  .cap b { color: var(--orange); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: live 1.6s infinite; }
+  @keyframes live { 0% { box-shadow: 0 0 0 0 rgba(235,151,35,.6); } 70%, 100% { box-shadow: 0 0 0 8px rgba(235,151,35,0); } }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
 </style>
