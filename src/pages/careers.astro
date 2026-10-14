@@ -1,0 +1,46 @@
+---
+// Careers page. General invitation only: no specific openings, salaries or benefits are claimed.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { company, FOUNDED, YEARS } from '../data/site';
+
+const roles = ['Welders', 'Pipe fitters', 'Structural fitters', 'Riggers', 'Civil supervisors', 'Site engineers', 'Safety supervisors', 'Helpers and skilled workers'];
+const apply = 'https://wa.me/917383503062?text=' + encodeURIComponent('Hello, I am interested in working with Jay Ambe Engineering Works. My name, trade and experience: ');
+---
+<Base title="Careers | Jay Ambe Engineering Works, Vadodara" description="Work with an industrial contractor in Vadodara since 1996: welders, fitters, riggers, supervisors and site engineers on industrial projects in Gujarat.">
+  <PageHero eyebrow="Careers" title="Build Gujarat’s industries with us." lead={`For ${YEARS} years our own skilled crew has built and maintained plants across Gujarat. If you are good at your trade and take safety seriously, we would like to hear from you.`} />
+
+  <section class="section">
+    <div class="wrap two">
+      <div>
+        <h2>Who we work with</h2>
+        <p>We work on industrial sites in Vadodara district and across Gujarat: new plants, sheds, piping, steel, fire fighting and maintenance. People we regularly work with include:</p>
+        <div class="chips">{roles.map((r) => <span>{r}</span>)}</div>
+        <h2 class="mt">Why work with us</h2>
+        <ul>
+          <li>Since {FOUNDED}, with long-running industrial clients</li>
+          <li>Industrial work: chemical, pharma and gas plants</li>
+          <li>A safety-first site culture, with a record of zero safety incidents</li>
+          <li>Based in Nandesari, Vadodara</li>
+        </ul>
+      </div>
+      <div class="card apply">
+        <h3>Send us your details</h3>
+        <p>Send your name, trade, years of experience and location on WhatsApp. We will contact you when there is suitable work.</p>
+        <a class="btn btn-primary" href={apply} target="_blank" rel="noopener">💬 Apply on WhatsApp</a>
+        <p class="small">Or call <a href={company.phoneHref}>{company.phone}</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .two { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+  .chips span { background: var(--tint); border-radius: 4px; padding: 8px 14px; font-weight: 600; }
+  .mt { margin-top: 32px; }
+  .apply { border-top: 4px solid var(--accent); position: sticky; top: 100px; }
+  .apply .btn { justify-content: center; width: 100%; }
+  .small { font-size: 14px; margin-top: 12px; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } .apply { position: static; } }
+</style>

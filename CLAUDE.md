@@ -65,3 +65,9 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - `/experience/` (`src/pages/experience.astro`) is a TEST page: a scroll-driven scene where a plant builds itself from dawn to night (GSAP ScrollTrigger + Lenis, layered SVG, dust canvas). It is `noindex` and excluded from the sitemap. It is not linked from the menu until the owner approves it.
 - `src/components/BreakerCursor.astro` is the jackhammer cursor (desktop mouse only). Clicking or holding shakes it, throws debris and leaves a crack. On touch screens, taps vibrate where supported. It respects `prefers-reduced-motion`.
 - `src/scripts/fx.ts` is the shared particle engine (sparks, debris, dust).
+
+## Competitor-matching content (14 Oct 2026)
+- Owner asked to match the content types that rank (DCEC, Patel Infraspace, Rudrani, ARB, AK Construction). Match **topics and page types** only, never copy their text.
+- Added: 8 more guide articles (14 total), `/safety-quality/`, `/faq/` (hub of all FAQs, de-duplicated) and `/careers/` (general, with no invented openings).
+- **Do NOT create mass city pages** like ARB's "EPC contractor in <20 cities>". Google treats them as doorway pages, and the owner doesn't work in most of those cities. Add a location only where the owner really works.
+- Still needs real owner content: **project case studies** (client or anonymised, location, scope, year, photos), **testimonials** (name, designation, company), a gallery, team and certificates (ISO only if really certified).

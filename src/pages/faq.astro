@@ -1,0 +1,68 @@
+---
+// Central FAQ hub: gathers questions from every service (de-duplicated) plus general company questions.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { servicePages } from '../data/servicePages';
+import { serviceFaqs } from '../data/serviceFaqs';
+import { serviceGroups, FOUNDED } from '../data/site';
+
+const names = Object.fromEntries(serviceGroups.flatMap((g) => g.services).map((s) => [s.slug, s.name]));
+const general = [
+  { q: 'Who is Jay Ambe Engineering Works?', a: `An industrial construction contractor based in Nandesari, Vadodara, working since ${FOUNDED} for chemical, pharma, gas and process plants across Gujarat.` },
+  { q: 'What do you build?', a: 'Factories, industrial sheds, PEB structures, warehouses, plant buildings, civil works, structural steel, process piping, fire fighting systems and precast compound walls. We also do plant maintenance and shutdowns.' },
+  { q: 'Do you build houses or apartments?', a: 'No. We focus on industrial projects.' },
+  { q: 'Which areas do you serve?', a: 'Vadodara district, including Nandesari, Makarpura, Manjusar, Savli, Halol, Waghodia and Padra, and other parts of Gujarat such as Dahej.' },
+  { q: 'Is the site visit and quote free?', a: 'Yes. The first site visit and quote are free, with no obligation.' },
+  { q: 'How do you report progress?', a: 'With a daily progress report showing manpower, measured work executed and equipment on site.' },
+  { q: 'What is your safety record?', a: 'Zero safety incidents.' },
+];
+const seen = new Set(general.map((f) => f.q));
+const groups = servicePages.map((p) => ({
+  slug: p.slug,
+  name: names[p.slug] ?? p.eyebrow,
+  faqs: [...p.faqs, ...(serviceFaqs[p.slug] ?? [])].filter((f) => (seen.has(f.q) ? false : (seen.add(f.q), true))),
+}));
+const all = [...general, ...groups.flatMap((g) => g.faqs)];
+const schema = [{ '@type': 'FAQPage', mainEntity: all.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }];
+---
+<Base title="FAQ: Industrial Construction in Vadodara | Jay Ambe" description="Answers to common questions about industrial construction, sheds, PEB, warehouses, piping, fire fighting and precast walls in Vadodara and Gujarat." schema={schema}>
+  <PageHero eyebrow="Frequently asked questions" title="Questions plant owners ask us." lead={`${all.length} straight answers about our services, pricing, safety and how we work.`} />
+
+  <section class="section">
+    <div class="wrap layout">
+      <nav class="toc" aria-label="FAQ topics">
+        <a href="#general">General</a>
+        {groups.map((g) => <a href={`#${g.slug}`}>{g.name}</a>)}
+      </nav>
+      <div>
+        <section id="general" class="grp">
+          <h2>General</h2>
+          {general.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+        </section>
+        {groups.map((g) => (
+          <section id={g.slug} class="grp">
+            <h2>{g.name}</h2>
+            {g.faqs.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+            <a class="go" href={`/services/${g.slug}/`}>More about {g.name} →</a>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand heading="Still have a question? Ask our engineer during a free site visit." />
+</Base>
+
+<style>
+  .layout { display: grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: start; }
+  .toc { position: sticky; top: 100px; display: grid; gap: 4px; }
+  .toc a { text-decoration: none; color: var(--ink); padding: 6px 10px; border-left: 3px solid var(--line); font-size: 15px; }
+  .toc a:hover { border-color: var(--accent); color: var(--orange); }
+  .grp { margin-bottom: 40px; scroll-margin-top: 100px; }
+  .grp h2 { font-size: 30px; border-bottom: 3px solid var(--accent); padding-bottom: 8px; }
+  details { border-bottom: 1px solid var(--line); padding: 14px 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 17px; }
+  details p { margin: 8px 0 0; }
+  .go { display: inline-block; margin-top: 12px; font-weight: 600; text-decoration: none; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .toc { position: static; grid-template-columns: 1fr 1fr; } }
+</style>

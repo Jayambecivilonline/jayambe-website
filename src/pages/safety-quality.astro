@@ -1,0 +1,75 @@
+---
+// Safety & Quality page. Only confirmed facts: zero safety incidents, daily progress report,
+// own crew, permit-to-work practice, testing and documentation at hand-over. No certifications are claimed.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import FaqList from '../components/FaqList.astro';
+import { company, FOUNDED, YEARS } from '../data/site';
+
+const safety = [
+  { t: 'Permit-to-work, always', d: 'In running plants, every hot job, height job and confined-space job goes through the client’s permit system. We work inside it, never around it.' },
+  { t: 'Trained supervision on every shift', d: 'Experienced supervisors who know both the job and its hazards are on site whenever work is going on.' },
+  { t: 'Planned lifts', d: 'Crane lifts are planned in advance, especially near live equipment and pipe racks.' },
+  { t: 'Safe work beside live plants', d: 'Tie-ins and work near running equipment are coordinated with your operations team, with isolation and clear boundaries.' },
+  { t: 'Housekeeping and PPE', d: 'Clean, well-organised sites and the right protective equipment for every task.' },
+  { t: 'Our own crew', d: 'A stable team that already knows our safety standards, not new labour hired job by job.' },
+];
+const quality = [
+  { t: 'Work to drawing and specification', d: 'We build to your approved drawings and your consultant’s specifications.' },
+  { t: 'Measured daily progress report', d: 'Manpower, measured work executed and equipment deployed, sent to you every day of the job.' },
+  { t: 'Testing before hand-over', d: 'Piping and fire fighting systems are pressure-tested, and work is checked before hand-over.' },
+  { t: 'Documentation', d: 'Test records and documentation are handed over with the job, ready for audits and inspections.' },
+];
+const faqs = [
+  { q: 'What is your safety record?', a: 'Zero safety incidents.' },
+  { q: 'Do you work under our permit-to-work system?', a: 'Yes. In running plants, all relevant work goes through your permit system.' },
+  { q: 'How do you report quality and progress?', a: 'Through a daily progress report with measured quantities, manpower and equipment, and test records at hand-over.' },
+  { q: 'Do you pressure-test piping and fire systems?', a: 'Yes, and the results are documented.' },
+];
+const schema = [
+  { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: 'Safety & Quality', item: new URL('/safety-quality/', Astro.site).href },
+  ] },
+];
+---
+<Base title="Safety & Quality | Jay Ambe Engineering Works, Vadodara" description="Zero safety incidents, permit-to-work practice, trained supervision, daily progress reports, testing and documentation on every industrial job." schema={schema}>
+  <PageHero eyebrow="Safety & quality" title="Zero safety incidents. Every job reported daily." lead={`How we keep people safe and work right first time, on industrial sites across Gujarat since ${FOUNDED}.`} />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="big-stats">
+        <div><b>0</b><span>safety incidents</span></div>
+        <div><b>Daily</b><span>progress report to every client</span></div>
+        <div><b>{YEARS}</b><span>years on industrial sites</span></div>
+      </div>
+      <span class="eyebrow">Safety</span>
+      <h2>How we keep industrial sites safe</h2>
+      <div class="grid g3">{safety.map((s) => <div class="card c"><h3>{s.t}</h3><p>{s.d}</p></div>)}</div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <span class="eyebrow">Quality</span>
+      <h2>How we make sure it’s done right first time</h2>
+      <div class="grid g4">{quality.map((s) => <div class="card c"><h3>{s.t}</h3><p>{s.d}</p></div>)}</div>
+      <p class="more">See a real daily progress report on our <a href="/#decisions">homepage</a>, or read our guide to <a href="/guides/construction-site-safety-industrial/">safety on industrial construction sites</a>.</p>
+    </div>
+  </section>
+
+  <FaqList faqs={faqs} heading="Safety & quality: common questions" open={2} />
+  <CtaBand />
+</Base>
+
+<style>
+  .big-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px; }
+  .big-stats div { background: var(--navy); color: #fff; border-radius: var(--radius); padding: 24px; text-align: center; border-top: 4px solid var(--accent); }
+  .big-stats b { display: block; font-family: var(--head); font-size: 48px; color: var(--orange-light); line-height: 1; }
+  .c { border-top: 4px solid var(--accent); }
+  .c h3 { font-size: 22px; }
+  .more { margin-top: 24px; }
+  @media (max-width: 700px) { .big-stats { grid-template-columns: 1fr; } }
+</style>
