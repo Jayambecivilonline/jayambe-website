@@ -10,10 +10,11 @@ const INTERVAL = 6000;
       {mcbs.map((m, i) => (
         <div class:list={['slide', { active: i === 0 }]} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${mcbs.length}`} aria-hidden={i === 0 ? 'false' : 'true'}>
           <div class="copy">
-            <span class="eyebrow">{m.eyebrow}</span>
             {i === 0
-              ? <h1 class="headline">{m.headline} <span class="hl">{m.highlight}</span></h1>
-              : <p class="headline">{m.headline} <span class="hl">{m.highlight}</span></p>}
+              /* slide 1 carries the page h1 with the primary keyword, styled as the small label */
+              ? <h1 class="eyebrow h1-label">Industrial Construction Company in Vadodara, Gujarat · {m.eyebrow}</h1>
+              : <span class="eyebrow">{m.eyebrow}</span>}
+            <p class="headline">{m.headline} <span class="hl">{m.highlight}</span></p>
             <ul class="hooks">{m.hooks.map((h) => <li>{h}</li>)}</ul>
             <div class="btn-row">
               <a href={m.cta.href} class="btn btn-primary" tabindex={i === 0 ? undefined : '-1'}>{m.cta.label}</a>
@@ -99,6 +100,7 @@ const INTERVAL = 6000;
   .slides { display: grid; }
   .slide { grid-area: 1 / 1; display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; opacity: 0; visibility: hidden; transform: translateX(24px); transition: opacity .6s ease, transform .6s ease, visibility 0s linear .6s; }
   .slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease, transform .6s ease, visibility 0s; }
+  .h1-label { font-family: var(--body); font-size: 13px; line-height: 1.5; margin: 0 0 12px; }
   .headline { font-family: var(--head); font-weight: 700; line-height: 1.08; font-size: clamp(36px, 5.5vw, 60px); color: #fff; margin: 0 0 24px; }
   .hl { color: var(--orange-light); }
   .hooks { list-style: none; padding: 0; margin: 0 0 32px; display: grid; gap: 12px; }
