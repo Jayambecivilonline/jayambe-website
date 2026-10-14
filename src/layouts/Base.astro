@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { company, serviceGroups, FOUNDED } from '../data/site';
+import { industryPages } from '../data/seoPages';
 
 interface Props {
   title: string;
@@ -65,7 +66,29 @@ const nav = [
       </a>
       <button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
       <nav class="nav">
-        {nav.map((n) => (
+        {nav.map((n) => n.href === '/services/' ? (
+          <div class="has-mega">
+            <a href={n.href} class:list={['mega-top', { active: path.startsWith(n.href) }]} aria-haspopup="true">{n.label} <span class="caret" aria-hidden="true">▾</span></a>
+            <button class="sub-toggle" type="button" aria-expanded="false" aria-label="Show all services">▾</button>
+            <!-- mega menu: slides down on hover / keyboard focus (desktop), expands on tap (mobile) -->
+            <div class="mega">
+              <div class="wrap mega-cols">
+                {serviceGroups.map((g) => (
+                  <div class="mcol">
+                    <p class="mhead">{g.name}</p>
+                    {g.services.map((s) => <a href={`/services/${s.slug}/`}>{s.name}</a>)}
+                  </div>
+                ))}
+              </div>
+              <div class="mega-foot">
+                <div class="wrap mega-foot-in">
+                  <span><b>Industries:</b> {industryPages.map((i) => <a href={`/industries/${i.slug}/`}>{i.name}</a>)}</span>
+                  <a href="/contact/#site-visit" class="btn btn-primary">Book Free Site Visit</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
           <a href={n.href} class:list={[{ active: n.href === '/' ? path === '/' : path.startsWith(n.href) }]}>{n.label}</a>
         ))}
         <a href="/contact/#site-visit" class="btn btn-primary nav-cta">Book Free Site Visit</a>
@@ -131,6 +154,13 @@ const nav = [
       const open = nav?.classList.toggle('open');
       btn.setAttribute('aria-expanded', String(!!open));
     });
+    // mobile: tap the arrow to expand the services list
+    document.querySelectorAll<HTMLButtonElement>('.sub-toggle').forEach((t) => t.addEventListener('click', () => {
+      const open = t.parentElement!.classList.toggle('open');
+      t.setAttribute('aria-expanded', String(open));
+    }));
+    // desktop: Escape closes the mega menu
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') (document.activeElement as HTMLElement | null)?.blur(); });
   </script>
 </body>
 </html>
@@ -147,6 +177,27 @@ const nav = [
   .nav a:not(.btn) { color: var(--ink); text-decoration: none; font-weight: 500; font-size: 15px; }
   .nav a:not(.btn):hover, .nav a.active { color: var(--orange); }
   .nav-cta { padding: 10px 18px; font-size: 15px; }
+  /* ----- services mega menu (desktop: slides down on hover / focus) ----- */
+  .has-mega { align-self: stretch; display: flex; align-items: center; }
+  .mega-top .caret { font-size: 11px; display: inline-block; transition: transform .2s; }
+  .has-mega:hover .caret, .has-mega:focus-within .caret { transform: rotate(180deg); }
+  .sub-toggle { display: none; }
+  .mega { position: absolute; left: 0; right: 0; top: 100%; background: #fff; box-shadow: 0 24px 48px rgba(11,58,102,.18); border-top: 1px solid var(--line);
+          opacity: 0; visibility: hidden; transform: translateY(-14px); transition: opacity .22s ease, transform .28s cubic-bezier(.2,.8,.2,1), visibility 0s linear .28s; pointer-events: none; }
+  .mega::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; height: 12px; } /* bridge so the menu doesn't close on the way down */
+  .has-mega:hover .mega, .has-mega:focus-within .mega { opacity: 1; visibility: visible; transform: none; transition: opacity .22s ease, transform .28s cubic-bezier(.2,.8,.2,1), visibility 0s; pointer-events: auto; }
+  .mega-cols { display: grid; grid-template-columns: repeat(4, 1fr); padding-top: 0; padding-bottom: 0; }
+  .mcol { padding: 24px 22px 22px; }
+  .mcol:nth-child(even) { background: var(--tint); }
+  .mhead { font-family: var(--head); font-size: 20px; font-weight: 700; color: var(--navy); letter-spacing: .5px; text-transform: uppercase; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+  .nav .mcol a { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 15px; transition: color .15s, padding-left .15s; }
+  .nav .mcol a:hover { color: var(--orange); padding-left: 6px; }
+  .mega-foot { background: var(--navy); }
+  .mega-foot-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 12px; padding-bottom: 12px; color: #fff; font-size: 14px; }
+  .mega-foot-in b { color: var(--orange-light); }
+  .nav .mega-foot-in span a { color: #fff; margin-left: 12px; font-size: 14px; }
+  .nav .mega-foot-in span a:hover { color: var(--orange-light); }
+  .mega-foot .btn { padding: 8px 16px; font-size: 14px; }
   .menu-btn { display: none; background: none; border: 0; color: var(--navy); font-size: 28px; cursor: pointer; }
 
   .site-footer { background: var(--navy); color: #fff; padding: 56px 0 24px; }
@@ -163,11 +214,25 @@ const nav = [
   @media (max-width: 1080px) {
     .menu-btn { display: block; }
     .nav { display: none; position: absolute; top: 80px; left: 0; right: 0; background: #fff; flex-direction: column; align-items: stretch; padding: 12px 16px 20px; gap: 4px; border-bottom: 4px solid var(--accent); box-shadow: 0 10px 20px rgba(11,58,102,.12); }
-    .nav.open { display: flex; }
+    .nav.open { display: flex; max-height: calc(100vh - 84px); overflow-y: auto; overscroll-behavior: contain; } /* long menus scroll inside */
     .nav a:not(.btn) { padding: 12px 4px; border-bottom: 1px solid var(--line); }
     .nav-cta { justify-content: center; margin-top: 10px; }
+    /* mega menu on phones: tap the arrow to expand */
+    .has-mega { flex-wrap: wrap; align-self: auto; }
+    .has-mega .mega-top { flex: 1; }
+    .mega-top .caret { display: none; }
+    .sub-toggle { display: block; background: none; border: 0; font-size: 18px; color: var(--navy); padding: 8px 14px; cursor: pointer; border-bottom: 1px solid var(--line); }
+    .has-mega.open .sub-toggle { transform: rotate(180deg); }
+    .mega { position: static; flex-basis: 100%; display: none; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0; pointer-events: auto; transition: none; }
+    .has-mega.open .mega { display: block; }
+    .mega-cols { grid-template-columns: 1fr; padding: 0; }
+    .mcol { padding: 10px 6px; background: none !important; }
+    .mhead { font-size: 16px; margin-bottom: 4px; }
+    .nav .mcol a { padding: 9px 4px 9px 12px; font-size: 15px; }
+    .mega-foot { display: none; }
   }
   @media (max-width: 700px) {
+    .nav.open { max-height: calc(100vh - 84px - 64px); } /* stop above the Call/WhatsApp bar */
     .mobile-bar { display: grid; grid-template-columns: 1fr 1fr 1.3fr; position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: var(--navy); border-top: 3px solid var(--accent); }
     .mobile-bar a { color: #fff; text-decoration: none; text-align: center; padding: 16px 4px; font-weight: 600; font-size: 15px; }
     .mobile-bar a.hl { background: var(--accent); color: var(--navy); }

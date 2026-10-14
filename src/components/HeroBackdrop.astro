@@ -1,0 +1,120 @@
+---
+// Live construction scene behind the homepage MCB slider: a drifting blueprint grid, two tower cranes
+// swinging and lifting, a plant wireframe that draws itself on a loop, welding flashes and floating dust.
+// Pure SVG + CSS animation (no video, no libraries). Kept faint so the headline stays readable.
+// Everything stops for visitors who prefer reduced motion.
+const motes = Array.from({ length: 14 }, (_, i) => ({ x: (i * 113) % 1600, d: (i % 7) * 1.3, s: 9 + (i % 5) * 2, r: 1.2 + (i % 3) * 0.6 }));
+---
+<div class="backdrop" aria-hidden="true">
+  <div class="grid-drift"></div>
+  <div class="sweep"></div>
+  <svg viewBox="0 0 1600 700" preserveAspectRatio="xMidYMax slice">
+    <!-- far skyline -->
+    <path class="skyline" d="M0 700V610h60v-30h22v30h80v-50h36v50h110v-26h54v26h74v-80h16v80h130v-44h64v44h110v-62h28v62h92v-36h84v36h102v-90h20v90h140v-54h74v54h88v-28h70v28h90v90z" />
+
+    <!-- plant wireframe that draws itself, holds, then fades and repeats -->
+    <g class="wire" fill="none" stroke-linecap="round">
+      <path class="w w1" d="M430 700V430M550 700V430M670 700V430M790 700V430M910 700V430" />
+      <path class="w w2" d="M430 560H910M430 430H910M430 430L670 370L910 430" />
+      <path class="w w3" d="M940 700V250M968 700V250M1010 700V520H1090V700M1120 700V480H1210V700" />
+      <path class="w w4" d="M910 600H1010M1090 620H1120M1210 640H1400V700" />
+    </g>
+    <circle class="weld" cx="670" cy="372" r="5" />
+    <circle class="weld w-b" cx="910" cy="430" r="4" />
+    <circle class="weld w-c" cx="430" cy="560" r="4" />
+
+    <!-- crane 1 (right) -->
+    <g class="crane c1">
+      <path class="mast" d="M1262 700V170M1282 700V170M1262 700L1282 670L1262 640L1282 610L1262 580L1282 550L1262 520L1282 490L1262 460L1282 430L1262 400L1282 370L1262 340L1282 310L1262 280L1282 250L1262 220L1282 190" />
+      <g class="jib">
+        <path d="M900 170H1400M900 182H1272M900 182L925 170L950 182L975 170L1000 182L1025 170L1050 182L1075 170L1100 182L1125 170L1150 182L1175 170L1200 182L1225 170L1250 182M1272 170V136L900 170M1272 136L1400 170" />
+        <rect class="cw" x="1360" y="172" width="34" height="22" />
+        <g class="trolley">
+          <rect x="1000" y="180" width="18" height="7" />
+          <g class="hook">
+            <line x1="1009" y1="187" x2="1009" y2="420" />
+            <rect class="beam" x="969" y="420" width="80" height="7" />
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <!-- crane 2 (left, smaller, out of phase) -->
+    <g class="crane c2">
+      <path class="mast" d="M232 700V260M248 700V260M232 700L248 676L232 652L248 628L232 604L248 580L232 556L248 532L232 508L248 484L232 460L248 436L232 412L248 388L232 364L248 340L232 316L248 292L232 268" />
+      <g class="jib">
+        <path d="M120 260H520M240 270H520M240 270L260 260L280 270L300 260L320 270L340 260L360 270L380 260L400 270L420 260L440 270L460 260L480 270L500 260L520 270M240 260V232L520 260M240 232L120 260" />
+        <rect class="cw" x="124" y="262" width="28" height="18" />
+        <g class="trolley t2">
+          <rect x="420" y="268" width="16" height="6" />
+          <g class="hook h2">
+            <line x1="428" y1="274" x2="428" y2="470" />
+            <rect class="beam" x="398" y="470" width="60" height="6" />
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <!-- dust floating up through the light -->
+    <g class="motes">{motes.map((m) => <circle cx={m.x} cy="700" r={m.r} style={`--d:${m.d}s;--s:${m.s}s`} />)}</g>
+  </svg>
+</div>
+
+<style>
+  .backdrop { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .backdrop svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* blueprint grid slowly drifting */
+  .grid-drift { position: absolute; inset: -80px; opacity: .55;
+    background-image: linear-gradient(rgba(245,166,35,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(245,166,35,.07) 1px, transparent 1px);
+    background-size: 80px 80px; animation: drift 30s linear infinite; }
+  @keyframes drift { to { transform: translate(80px, 80px); } }
+
+  /* a soft warm light sweeping across, like sunrise on site */
+  .sweep { position: absolute; top: -30%; left: -40%; width: 60%; height: 160%; background: radial-gradient(closest-side, rgba(245,166,35,.13), transparent); animation: sweep 18s ease-in-out infinite alternate; }
+  @keyframes sweep { to { transform: translateX(150%); } }
+
+  .skyline { fill: rgba(207,224,242,.06); }
+
+  /* the plant wireframe: draw → hold → fade → repeat */
+  .w { stroke: rgba(245,166,35,.42); stroke-width: 3; stroke-dasharray: 2600; stroke-dashoffset: 2600; animation: draw 16s ease-in-out infinite; }
+  .w2 { animation-delay: 1.4s; } .w3 { animation-delay: 2.6s; } .w4 { animation-delay: 3.8s; stroke: rgba(159,208,255,.45); }
+  @keyframes draw { 0% { stroke-dashoffset: 2600; opacity: 1; } 45% { stroke-dashoffset: 0; opacity: 1; } 80% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+
+  /* welding flashes at the joints */
+  .weld { fill: #ffd27a; opacity: 0; filter: drop-shadow(0 0 6px #F5A623); animation: weld 5s steps(1) infinite; }
+  .w-b { animation-delay: 1.7s; } .w-c { animation-delay: 3.3s; }
+  @keyframes weld { 0%, 100% { opacity: 0; } 62% { opacity: .95; } 64% { opacity: .2; } 66% { opacity: .9; } 70% { opacity: 0; } }
+
+  /* cranes */
+  .crane path, .crane line { stroke: rgba(245,166,35,.5); stroke-width: 2.5; fill: none; }
+  .crane rect { fill: rgba(207,224,242,.35); }
+  .crane .cw { fill: rgba(207,224,242,.25); }
+  .crane .beam { fill: rgba(245,166,35,.55); }
+  /* the jib swings (a 2D trick: scaling across the mast reads as rotation) */
+  .jib { transform-box: view-box; animation: swing 16s ease-in-out infinite; }
+  .c1 .jib { transform-origin: 1272px 170px; }
+  .c2 .jib { transform-origin: 240px 260px; animation-duration: 20s; animation-delay: -6s; }
+  @keyframes swing { 0%, 100% { transform: scaleX(1); } 30% { transform: scaleX(.55); } 55% { transform: scaleX(-.35); } 75% { transform: scaleX(.8); } }
+  .trolley { transform-box: view-box; animation: trolley 16s ease-in-out infinite; }
+  .t2 { animation-duration: 20s; animation-delay: -6s; }
+  @keyframes trolley { 0%, 100% { transform: translateX(0); } 40% { transform: translateX(170px); } 70% { transform: translateX(60px); } }
+  /* the hook lowers, lifts the beam, and swings slightly */
+  .hook { transform-box: view-box; transform-origin: 1009px 187px; animation: hook 8s ease-in-out infinite; }
+  .h2 { transform-origin: 428px 274px; animation-duration: 10s; animation-delay: -3s; }
+  @keyframes hook { 0%, 100% { transform: scaleY(1) rotate(0deg); } 25% { transform: scaleY(.55) rotate(1.5deg); } 50% { transform: scaleY(.6) rotate(-1.5deg); } 75% { transform: scaleY(.9) rotate(.6deg); } }
+
+  /* dust motes */
+  .motes circle { fill: rgba(255,232,194,.7); animation: mote var(--s) linear infinite; animation-delay: calc(var(--d) * -1); }
+  @keyframes mote { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: .8; } 90% { opacity: .5; } 100% { transform: translate(60px, -640px); opacity: 0; } }
+
+  @media (max-width: 800px) {
+    .backdrop { opacity: .6; }
+    .c2 { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .grid-drift, .sweep, .w, .weld, .jib, .trolley, .hook, .motes circle { animation: none; }
+    .w { stroke-dashoffset: 0; }
+    .motes { display: none; }
+  }
+</style>

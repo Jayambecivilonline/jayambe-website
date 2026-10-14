@@ -71,3 +71,7 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - Added: 8 more guide articles (14 total), `/safety-quality/`, `/faq/` (hub of all FAQs, de-duplicated) and `/careers/` (general, with no invented openings).
 - **Do NOT create mass city pages** like ARB's "EPC contractor in <20 cities>". Google treats them as doorway pages, and the owner doesn't work in most of those cities. Add a location only where the owner really works.
 - Still needs real owner content: **project case studies** (client or anonymised, location, scope, year, photos), **testimonials** (name, designation, company), a gallery, team and certificates (ISO only if really certified).
+
+## Header mega menu & hero backdrop (14 Oct 2026)
+- **Services mega menu** (in `src/layouts/Base.astro`): on desktop it slides down on hover or keyboard focus, with 4 columns from `serviceGroups` plus a navy strip of industries and a CTA. On phones it's a tap-to-expand list (`.sub-toggle`), and the open menu scrolls inside and stops above the Call/WhatsApp bar. New services appear in it automatically.
+- **`src/components/HeroBackdrop.astro`**: live construction animation behind the homepage MCB slider (drifting grid, light sweep, two swinging cranes lifting beams, plant wireframe drawing on a loop, welding flashes, dust). Pure SVG + CSS, kept faint for readability, lighter on phones, and off with reduced motion.

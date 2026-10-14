@@ -2,10 +2,12 @@
 // Rotating MCB hero. Slides change every INTERVAL ms, pause on hover/touch/focus,
 // and stay still for visitors who prefer reduced motion.
 import { mcbs } from '../data/mcbs';
+import HeroBackdrop from './HeroBackdrop.astro';
 const INTERVAL = 6000;
 ---
 <section class="hero blueprint dark" aria-roledescription="carousel" aria-label="What we build" data-interval={INTERVAL}>
-  <div class="wrap">
+  <HeroBackdrop />
+  <div class="wrap hero-front">
     <div class="slides">
       {mcbs.map((m, i) => (
         <div class:list={['slide', { active: i === 0 }]} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${mcbs.length}`} aria-hidden={i === 0 ? 'false' : 'true'}>
@@ -96,7 +98,8 @@ const INTERVAL = 6000;
 </script>
 
 <style>
-  .hero { padding: 64px 0 40px; overflow: hidden; }
+  .hero { padding: 64px 0 40px; overflow: hidden; position: relative; }
+  .hero-front { position: relative; z-index: 1; }
   .slides { display: grid; }
   .slide { grid-area: 1 / 1; display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; opacity: 0; visibility: hidden; transform: translateX(24px); transition: opacity .6s ease, transform .6s ease, visibility 0s linear .6s; }
   .slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease, transform .6s ease, visibility 0s; }
