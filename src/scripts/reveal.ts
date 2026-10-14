@@ -36,7 +36,7 @@ function splitWords(el: Element) {
   el.classList.add('split');
 }
 
-const SKIP = '.exp, .pour, .mega, .visit-form *, .backdrop, .controls, .dpr *, .calc *, .toc';
+const SKIP = '.exp, .pour, .road, .mega, .visit-form *, .backdrop, .controls, .dpr *, .calc *, .toc';
 
 function init() {
   if (reduce) return;
@@ -51,7 +51,7 @@ function init() {
   heads.forEach(splitWords);
 
   // ---------- blocks: fade + rise, staggered inside grids ----------
-  const BLOCKS = 'main p, main li, main h3, main .card, main .btn-row, main .stat, main .worry, main details, main figure, main table, main .eyebrow, main .client, main .loyal, main .tease, main .dpr-wrap, main form.visit-form, main iframe, main .chips > *, main .item, main .hl-card, main .big-stats > div, main .path, main .dec-list > li, main .steps > li, main .wrong > div';
+  const BLOCKS = 'main .col, main p, main li, main h3, main .card, main .btn-row, main .stat, main .worry, main details, main figure, main table, main .eyebrow, main .client, main .loyal, main .tease, main .dpr-wrap, main form.visit-form, main iframe, main .chips > *, main .item, main .hl-card, main .big-stats > div, main .path, main .dec-list > li, main .steps > li, main .wrong > div';
   const blocks: HTMLElement[] = [];
   document.querySelectorAll<HTMLElement>(BLOCKS).forEach((el) => {
     if (el.closest(SKIP) || el.closest('.slide') || el.closest('.hero')) return;

@@ -1,0 +1,118 @@
+---
+// "Two ways your next project can go": an RCC road comes down the page and forks.
+// Left fork (lowest bidder): worn, cracked, potholes, cones and a DELAYED barricade.
+// Right fork (Jay Ambe): clean RCC panels with expansion joints, a glowing centre line and an ON TIME sign.
+// Scroll lays the road (GSAP ScrollTrigger scrub) and an RMC truck drives it, taking the right fork.
+// Fork ends line up with the two cards below (25% / 75% of the width).
+const trunk = 'M500 0 V70';
+const left = 'M500 70 C500 140 250 120 250 240';
+const right = 'M500 70 C500 140 750 120 750 240';
+---
+<div class="road" aria-hidden="true">
+  <svg viewBox="0 0 1000 240" preserveAspectRatio="xMidYMin meet">
+    <defs>
+      <mask id="rt-m-trunk" maskUnits="userSpaceOnUse"><path class="rt-mask" d={trunk} pathLength="1" stroke="#fff" stroke-width="80" fill="none" /></mask>
+      <mask id="rt-m-left" maskUnits="userSpaceOnUse"><path class="rt-mask" d={left} pathLength="1" stroke="#fff" stroke-width="80" fill="none" /></mask>
+      <mask id="rt-m-right" maskUnits="userSpaceOnUse"><path class="rt-mask" d={right} pathLength="1" stroke="#fff" stroke-width="80" fill="none" /></mask>
+      <filter id="rt-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+    </defs>
+
+    <!-- LEFT: worn road of the lowest bidder -->
+    <g mask="url(#rt-m-left)" fill="none">
+      <path d={left} stroke="#04182c" stroke-width="66" />
+      <path d={left} stroke="#6e8299" stroke-width="56" />
+      <path d={left} stroke="#5a6d82" stroke-width="56" stroke-dasharray="1.5 23 1.5 41" />
+      <path d={left} stroke="#F5A623" stroke-width="3" stroke-dasharray="10 30 4 40" opacity=".35" />
+    </g>
+    <!-- RIGHT: clean RCC road -->
+    <g mask="url(#rt-m-right)" fill="none">
+      <path d={right} stroke="#04182c" stroke-width="66" />
+      <path d={right} stroke="#dbe5ef" stroke-width="56" />
+      <path d={right} stroke="#b9c8d8" stroke-width="56" stroke-dasharray="1.5 34" />
+      <path class="rt-centre" d={right} stroke="#F5A623" stroke-width="3.5" stroke-dasharray="16 14" filter="url(#rt-glow)" />
+    </g>
+    <!-- TRUNK: the road leading down from the section above -->
+    <g mask="url(#rt-m-trunk)" fill="none">
+      <path d={trunk} stroke="#04182c" stroke-width="66" />
+      <path d={trunk} stroke="#dbe5ef" stroke-width="56" />
+      <path d={trunk} stroke="#b9c8d8" stroke-width="56" stroke-dasharray="1.5 34" />
+      <path class="rt-centre" d={trunk} stroke="#F5A623" stroke-width="3.5" stroke-dasharray="16 14" filter="url(#rt-glow)" />
+    </g>
+
+    <!-- left hazards: cracks, potholes, cones, barricade -->
+    <g class="rt-bad">
+      <path d="M398 112l10 8-6 6 12 7M318 150l8 10-9 4 7 9M262 196l-6 9 8 5" stroke="#04182c" stroke-width="2" fill="none" />
+      <ellipse cx="420" cy="128" rx="11" ry="6" fill="#2a3a4c" /><ellipse cx="300" cy="168" rx="13" ry="7" fill="#2a3a4c" />
+      <ellipse cx="272" cy="186" rx="7" ry="4" fill="#2a3a4c" />
+      {[[212, 176], [292, 196], [226, 204]].map(([x, y]) => (
+        <g transform={`translate(${x} ${y})`}><path d="M-7 8L0 -10 7 8z" fill="#EB9723" /><rect x="-4" y="-2" width="8" height="2.5" fill="#fff" /><rect x="-8" y="8" width="16" height="3" fill="#04182c" /></g>
+      ))}
+      <g transform="translate(250 222)">
+        <rect x="-44" y="-10" width="88" height="16" rx="2" fill="#EB9723" />
+        <path d="M-36 -10l-8 16M-20 -10l-8 16M-4 -10l-8 16M12 -10l-8 16M28 -10l-8 16M44 -10l-8 16" stroke="#04182c" stroke-width="5" />
+        <rect x="-30" y="-27" width="60" height="16" rx="2" fill="#04182c" />
+        <text x="0" y="-15" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="13" fill="#F5A623">DELAYED</text>
+      </g>
+    </g>
+
+    <!-- right: ON TIME sign -->
+    <g class="rt-good" transform="translate(842 196)">
+      <rect x="-2" y="-6" width="4" height="40" fill="#cfdae6" />
+      <rect x="-46" y="-34" width="92" height="30" rx="4" fill="#EB9723" />
+      <text x="0" y="-13" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="17" fill="#0B3A66">ON TIME ✓</text>
+    </g>
+
+    <!-- the truck drives the trunk and takes the right fork -->
+    <path id="rt-truckpath" d={`${trunk} C500 140 750 120 750 240`} fill="none" stroke="none" />
+    <g id="rt-truck">
+      <rect x="-26" y="-11" width="52" height="22" rx="3" fill="#04182c" opacity=".35" transform="translate(3 3)" />
+      <rect x="-24" y="-10" width="32" height="20" rx="9" fill="#eef3f8" />
+      <path d="M-18 -10l6 20M-8 -10l6 20M2 -10l6 20" stroke="#EB9723" stroke-width="4" />
+      <rect x="9" y="-10" width="15" height="20" rx="3" fill="#EB9723" />
+      <rect x="19" y="-7" width="4" height="14" rx="1" fill="#cfe5fb" />
+    </g>
+  </svg>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+  gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
+  const road = document.querySelector<HTMLElement>('.road');
+  if (road) {
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const masks = [...road.querySelectorAll<SVGPathElement>('.rt-mask')];   // trunk, left, right
+    const bad = road.querySelector('.rt-bad'), good = road.querySelector('.rt-good');
+    const truck = road.querySelector('#rt-truck');
+
+    gsap.set(truck, { motionPath: { path: '#rt-truckpath', align: '#rt-truckpath', alignOrigin: [0.5, 0.5], autoRotate: true, start: 0, end: 0 } });
+
+    if (still) {
+      masks.forEach((m) => m.setAttribute('stroke-dasharray', '1 0'));
+      gsap.set(truck, { motionPath: { path: '#rt-truckpath', align: '#rt-truckpath', alignOrigin: [0.5, 0.5], autoRotate: true, start: 1, end: 1 } });
+    } else {
+      masks.forEach((m) => gsap.set(m, { attr: { 'stroke-dasharray': '1 1', 'stroke-dashoffset': 1 } }));
+      gsap.set([bad, good], { opacity: 0, scale: 0.6, transformOrigin: '50% 100%' });
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: { trigger: road, start: 'top 85%', end: 'bottom 35%', scrub: 0.6 },
+      });
+      tl.to(masks[0], { attr: { 'stroke-dashoffset': 0 }, duration: 0.25 })
+        .to([masks[1], masks[2]], { attr: { 'stroke-dashoffset': 0 }, duration: 0.45 })
+        .to(bad, { opacity: 1, scale: 1, duration: 0.15, ease: 'back.out(2)' }, '-=0.15')
+        .to(good, { opacity: 1, scale: 1, duration: 0.15, ease: 'back.out(2)' }, '-=0.05')
+        .to(truck, { motionPath: { path: '#rt-truckpath', align: '#rt-truckpath', alignOrigin: [0.5, 0.5], autoRotate: true }, duration: 0.85, ease: 'power1.inOut' }, 0.05);
+    }
+  }
+</script>
+
+<style>
+  .road { margin: 28px auto -6px; max-width: 1000px; }
+  .road svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .rt-centre { animation: rt-flow 1.6s linear infinite; }
+  @keyframes rt-flow { to { stroke-dashoffset: -30; } }
+  @media (max-width: 900px) { .road { margin: 20px auto 30px; } }
+  @media (prefers-reduced-motion: reduce) { .rt-centre { animation: none; } }
+</style>
