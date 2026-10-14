@@ -1,0 +1,213 @@
+---
+// Homepage client showcase:
+//  1. schematic map of the Vadodara–Bharuch industrial belt; pins drop onto real client locations,
+//     and pointing at (or tapping) a pin shows the clients there
+//  2. "On site today": running clients with pulsing live dots (their map pins pulse too)
+//  3. a light factory-skyline strip whose windows light up on reveal
+//  4. an endless two-row strip of client names, pausing on hover
+// Names and places come only from `clientHistory` (owner's list). The big PSU/refinery names stay off the
+// homepage (owner removed them from headline use); they remain on /clients/.
+import { clientHistory } from '../data/site';
+
+const HIDE = /IOCL|IPCL|Reliance|HPCL/;
+const list = clientHistory.filter((c) => !HIDE.test(c.name));
+const short = (n: string) => n.replace(/\s*(Pvt\.|Ltd\.|Pvt|Ltd)\.?/g, '').trim();
+
+// schematic positions (projected from approximate lat/long; not to scale)
+const PLACES: Record<string, { x: number; y: number; label: string }> = {
+  Vadodara: { x: 421, y: 142, label: 'Vadodara' },
+  Nandesari: { x: 368, y: 100, label: 'Nandesari' },
+  Anjesar: { x: 384, y: 82, label: 'Anjesar' },
+  Lamdapura: { x: 480, y: 70, label: 'Lamdapura' },
+  'Makarpura GIDC': { x: 447, y: 168, label: 'Makarpura' },
+  Akalbara: { x: 322, y: 140, label: 'Akalbara' },
+  Luna: { x: 284, y: 172, label: 'Luna' },
+  Umraya: { x: 306, y: 210, label: 'Umraya' },
+  Kanjat: { x: 356, y: 188, label: 'Kanjat' },
+  Karjan: { x: 386, y: 252, label: 'Karjan' },
+  Dahej: { x: 82, y: 392, label: 'Dahej' },
+};
+const keysFor = (place?: string) => {
+  if (!place) return [];
+  if (place.startsWith('Akalbara')) return place.includes('Nandesari') ? ['Akalbara', 'Nandesari'] : ['Akalbara'];
+  if (place.startsWith('Kanjat')) return ['Kanjat'];
+  if (place.startsWith('Umraya')) return ['Umraya'];
+  return PLACES[place] ? [place] : [];
+};
+const pins: Record<string, { names: string[]; live: boolean }> = {};
+for (const c of list) for (const k of keysFor(c.place)) {
+  pins[k] ??= { names: [], live: false };
+  if (!pins[k].names.includes(short(c.name))) pins[k].names.push(short(c.name));
+  if (c.running) pins[k].live = true;
+}
+const pinList = Object.entries(pins).map(([k, v], i) => ({ ...PLACES[k], ...v, i }));
+const running = list.filter((c) => c.running);
+const names = [...new Set(list.map((c) => short(c.name)))];
+const rowA = names.filter((_, i) => i % 2 === 0), rowB = names.filter((_, i) => i % 2 === 1);
+const factories = [
+  { x: 0, w: 70, h: 46 }, { x: 80, w: 50, h: 70 }, { x: 140, w: 90, h: 40 }, { x: 240, w: 46, h: 84 },
+  { x: 296, w: 80, h: 52 }, { x: 386, w: 60, h: 66 }, { x: 456, w: 96, h: 44 }, { x: 562, w: 50, h: 76 },
+  { x: 622, w: 84, h: 50 }, { x: 716, w: 56, h: 64 }, { x: 782, w: 92, h: 42 }, { x: 884, w: 48, h: 72 }, { x: 942, w: 58, h: 54 },
+];
+---
+<div class="cs">
+  <div class="cs-top">
+    <!-- 1. map -->
+    <figure class="cs-map">
+      <figcaption class="cs-cap"><b>Our work across the Vadodara–Bharuch belt</b><span>Schematic, not to scale · point at a pin</span></figcaption>
+      <svg viewBox="0 0 600 440" role="img" aria-label="Map of client locations around Vadodara and Dahej">
+        <!-- sea + coast (Gulf of Khambhat) -->
+        <path d="M0 0H140C170 90 150 170 196 228C150 300 120 360 96 440H0Z" fill="#dbe9f6" />
+        <path d="M140 0C170 90 150 170 196 228C150 300 120 360 96 440" fill="none" stroke="#9fc0e0" stroke-width="2" />
+        <!-- rivers -->
+        <path d="M600 30C520 50 470 90 420 108C350 132 270 150 196 228" fill="none" stroke="#9fc0e0" stroke-width="4" stroke-linecap="round" />
+        <text x="226" y="186" font-size="11" fill="#5f8fc0" font-style="italic">Mahi</text>
+        <path d="M600 380C520 384 420 392 330 398C250 404 170 408 112 412" fill="none" stroke="#9fc0e0" stroke-width="5" stroke-linecap="round" />
+        <text x="400" y="384" font-size="11" fill="#5f8fc0" font-style="italic">Narmada</text>
+        <!-- highway NH48 -->
+        <path d="M470 40C440 110 430 160 410 220C392 280 360 340 312 398" fill="none" stroke="#e7d3b2" stroke-width="4" stroke-dasharray="10 6" />
+        <text x="438" y="228" font-size="10" fill="#b8956a">NH 48</text>
+        <!-- reference towns -->
+        <circle cx="303" cy="398" r="4" fill="#9fb2c6" /><text x="290" y="425" font-size="12" fill="#5b6f85">Bharuch</text>
+        <!-- our base -->
+        <g class="cs-base"><circle cx="368" cy="100" r="16" fill="#EB9723" opacity=".18" /></g>
+
+        <!-- client pins: drop in one by one, live ones pulse -->
+        {pinList.map((p) => (
+          <g class:list={['pin', { live: p.live }]} style={`--n:${p.i}`} transform={`translate(${p.x} ${p.y})`} tabindex="0" data-label={p.label} data-names={p.names.join(' · ')}>
+            {p.live && <circle class="pulse" r="10" />}
+            <path class="drop" d="M0 0C-9 -12 -9 -24 0 -24C9 -24 9 -12 0 0Z" />
+            <circle class="dot" cy="-16" r="3.6" />
+            <text class="lbl" x="9" y="-10">{p.label}</text>
+          </g>
+        ))}
+        <!-- Bhopal is off the map -->
+        <g class="pin off" style={`--n:${pinList.length}`} transform="translate(560 120)" tabindex="0" data-label="Bhopal (Madhya Pradesh)" data-names="Som Distillery">
+          <path d="M-14 0h22l-6 -6M8 0l-6 6" stroke="#0B3A66" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <text class="lbl" x="-14" y="18">Bhopal →</text>
+        </g>
+        <text x="356" y="114" text-anchor="end" font-size="10" font-weight="700" fill="#C46200">★ Our base</text>
+      </svg>
+      <div class="cs-tip" role="status" aria-live="polite"></div>
+    </figure>
+
+    <!-- 2. on site today -->
+    <aside class="cs-live">
+      <p class="cs-live-h"><span class="ldot"></span> On site today</p>
+      <ul>
+        {running.map((c) => <li><span class="ldot"></span><div><b>{short(c.name)}</b><small>{c.place ?? 'Running job'}</small></div></li>)}
+      </ul>
+      <p class="cs-note">Running jobs right now. Green pins on the map pulse too.</p>
+      <a class="cs-all" href="/clients/">See all 25+ clients →</a>
+    </aside>
+  </div>
+
+  <!-- 3 + 4: skyline strip with the endless client marquee -->
+  <div class="cs-strip">
+    <svg class="cs-sky" viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true">
+      {factories.map((f, i) => (
+        <g>
+          <rect x={f.x} y={90 - f.h} width={f.w} height={f.h} fill="#dbe7f3" />
+          {i % 3 === 1 && <rect x={f.x + f.w - 14} y={90 - f.h - 22} width="8" height="22" fill="#dbe7f3" />}
+          {Array.from({ length: Math.floor(f.w / 18) }, (_, j) => (
+            <rect class="win" x={f.x + 6 + j * 18} y={90 - f.h + 10} width="9" height="9" style={`--w:${i * 3 + j}`} />
+          ))}
+        </g>
+      ))}
+    </svg>
+    <div class="cs-marquee" aria-label="Clients we have worked with">
+      <div class="row"><div class="track">{rowA.map((n) => <span>{n}</span>)}{rowA.map((n) => <span class="dup" aria-hidden="true">{n}</span>)}</div></div>
+      <div class="row rev"><div class="track">{rowB.map((n) => <span>{n}</span>)}{rowB.map((n) => <span class="dup" aria-hidden="true">{n}</span>)}</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const cs = document.querySelector<HTMLElement>('.cs');
+  if (cs) {
+    // reveal: pins drop and windows light up when the section comes into view
+    new IntersectionObserver(([e]) => cs.classList.toggle('on', e.isIntersecting), { threshold: 0.2 }).observe(cs);
+    // tooltip for pins (hover, keyboard focus or tap)
+    const tip = cs.querySelector<HTMLElement>('.cs-tip')!;
+    const map = cs.querySelector<HTMLElement>('.cs-map')!;
+    const show = (pin: SVGGElement) => {
+      const r = pin.getBoundingClientRect(), m = map.getBoundingClientRect();
+      tip.innerHTML = `<b>${pin.dataset.label}</b><span>${pin.dataset.names}</span>`;
+      tip.style.left = `${r.left - m.left + r.width / 2}px`;
+      tip.style.top = `${r.top - m.top}px`;
+      tip.classList.add('show');
+    };
+    const hide = () => tip.classList.remove('show');
+    cs.querySelectorAll<SVGGElement>('.pin').forEach((p) => {
+      p.addEventListener('pointerenter', () => show(p));
+      p.addEventListener('pointerleave', hide);
+      p.addEventListener('focus', () => show(p));
+      p.addEventListener('blur', hide);
+      p.addEventListener('click', () => show(p));
+    });
+  }
+</script>
+
+<style>
+  .cs { margin-top: 48px; }
+  .cs-top { display: grid; grid-template-columns: 1.6fr 1fr; gap: 28px; align-items: stretch; }
+
+  /* map */
+  .cs-map { margin: 0; position: relative; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px 16px 8px; box-shadow: 0 14px 40px rgba(11,58,102,.08); }
+  .cs-cap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 14px; margin-bottom: 4px; }
+  .cs-cap b { font-family: var(--head); font-size: 20px; color: var(--navy); }
+  .cs-cap span { font-size: 12px; color: var(--muted); align-self: center; }
+  .cs-map svg { display: block; width: 100%; height: auto; font-family: var(--body); }
+  .pin { cursor: pointer; outline: none; }
+  .pin .drop { fill: var(--navy); }
+  .pin .dot { fill: #fff; }
+  .pin.live .drop { fill: #1E7B3A; }
+  .pin .lbl { font-size: 11px; font-weight: 600; fill: var(--navy); paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+  .pin:hover .drop, .pin:focus .drop { fill: var(--accent); }
+  .pin .pulse { fill: #2fbf63; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .cs.on .pin.live .pulse { animation: cs-pulse 1.8s ease-out infinite; animation-delay: calc(var(--n) * 120ms + 900ms); }
+  @keyframes cs-pulse { 0% { opacity: .55; transform: scale(.4); } 100% { opacity: 0; transform: scale(2.6); } }
+  /* pins drop in one by one */
+  .pin .drop, .pin .dot, .pin .lbl { transition: transform .6s cubic-bezier(.3,1.6,.5,1), opacity .3s ease; transition-delay: calc(var(--n) * 120ms); }
+  .cs:not(.on) .pin .drop, .cs:not(.on) .pin .dot { transform: translateY(-40px); opacity: 0; }
+  .cs:not(.on) .pin .lbl, .cs:not(.on) .pin.off path { opacity: 0; }
+  .cs-tip { position: absolute; transform: translate(-50%, calc(-100% - 8px)); background: var(--navy); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; max-width: 240px; pointer-events: none; opacity: 0; transition: opacity .15s; box-shadow: 0 10px 24px rgba(4,24,45,.3); }
+  .cs-tip.show { opacity: 1; }
+  .cs-tip b { display: block; color: var(--orange-light); font-family: var(--head); font-size: 16px; }
+
+  /* on site today */
+  .cs-live { background: var(--navy); color: #fff; border-radius: 10px; padding: 22px; border-top: 4px solid #2fbf63; display: flex; flex-direction: column; }
+  .cs-live-h { font-family: var(--head); font-size: 26px; font-weight: 700; margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
+  .cs-live ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .cs-live li { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.07); border-radius: 6px; padding: 12px 14px; }
+  .cs-live li b { display: block; font-size: 16px; }
+  .cs-live li small { color: var(--navy-soft); font-size: 13px; }
+  .ldot { width: 10px; height: 10px; border-radius: 50%; background: #2fbf63; flex: none; box-shadow: 0 0 0 0 rgba(47,191,99,.6); animation: cs-live 1.6s infinite; }
+  @keyframes cs-live { 0% { box-shadow: 0 0 0 0 rgba(47,191,99,.6); } 70%, 100% { box-shadow: 0 0 0 9px rgba(47,191,99,0); } }
+  .cs-note { font-size: 13px; color: var(--navy-soft); margin: 14px 0 6px; }
+  .cs-all { margin-top: auto; color: var(--orange-light); font-weight: 600; text-decoration: none; }
+
+  /* skyline + marquee */
+  .cs-strip { position: relative; margin-top: 32px; }
+  .cs-sky { display: block; width: 100%; height: 70px; }
+  .cs-sky .win { fill: #b9c8d8; transition: fill .3s ease; transition-delay: calc(var(--w) * 45ms); }
+  .cs.on .cs-sky .win { fill: #F5A623; }
+  .cs-marquee { background: var(--tint); border-top: 3px solid var(--accent); padding: 14px 0; overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .row { overflow: hidden; }
+  .row + .row { margin-top: 10px; }
+  .track { display: flex; gap: 12px; width: max-content; animation: cs-scroll 60s linear infinite; }
+  .rev .track { animation-direction: reverse; animation-duration: 70s; }
+  .cs-marquee:hover .track { animation-play-state: paused; }
+  .track span { white-space: nowrap; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 10px 18px; font-weight: 600; color: var(--navy); }
+  @keyframes cs-scroll { to { transform: translateX(-50%); } }
+
+  @media (max-width: 900px) { .cs-top { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; flex-wrap: wrap; width: auto; }
+    .track .dup { display: none; }
+    .ldot, .cs.on .pin.live .pulse { animation: none; }
+    .pin .drop, .pin .dot, .pin .lbl, .cs-sky .win { transition: none; }
+    .cs:not(.on) .pin .drop, .cs:not(.on) .pin .dot, .cs:not(.on) .pin .lbl { transform: none; opacity: 1; }
+  }
+</style>

@@ -36,7 +36,7 @@ function splitWords(el: Element) {
   el.classList.add('split');
 }
 
-const SKIP = '.exp, .pour, .road, .mega, .visit-form *, .backdrop, .controls, .dpr *, .calc *, .toc';
+const SKIP = '.exp, .pour, .road, .cs, .mega, .visit-form *, .backdrop, .controls, .dpr *, .calc *, .toc';
 
 function init() {
   if (reduce) return;

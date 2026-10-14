@@ -8,7 +8,8 @@ import DprSample from '../components/DprSample.astro';
 import DelayCalculator from '../components/DelayCalculator.astro';
 import PourScene from '../components/PourScene.astro';
 import ChoiceRoad from '../components/ChoiceRoad.astro';
-import { company, featuredClients, stats, serviceGroups, industries, YEARS, FOUNDED } from '../data/site';
+import ClientShowcase from '../components/ClientShowcase.astro';
+import { company, stats, serviceGroups, industries, YEARS, FOUNDED } from '../data/site';
 
 const worries = [
   { fear: '"Will my new plant start production on time?"', answer: 'One integrated plan for civil, steel, piping, mechanical and fire, made before work begins.' },
@@ -74,10 +75,7 @@ const compare = [
 
       <div class="trusted">
         <span class="eyebrow">25+ industrial clients across Gujarat</span>
-        <div class="client-list">
-          {featuredClients.map((c) => <span class="client">{c}</span>)}
-          <a href="/clients/" class="client more-clients">See all clients →</a>
-        </div>
+        <ClientShowcase />
       </div>
 
       <div class="tease">
