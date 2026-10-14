@@ -3,11 +3,14 @@
 // and stay still for visitors who prefer reduced motion.
 import { mcbs } from '../data/mcbs';
 import HeroBackdrop from './HeroBackdrop.astro';
+import PourScene from './PourScene.astro';
 const INTERVAL = 6000;
 ---
 <section class="hero blueprint dark" aria-roledescription="carousel" aria-label="What we build" data-interval={INTERVAL}>
   <HeroBackdrop />
   <div class="wrap hero-front">
+    <div class="hero-grid">
+    <div class="left">
     <div class="slides">
       {mcbs.map((m, i) => (
         <div class:list={['slide', { active: i === 0 }]} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${mcbs.length}`} aria-hidden={i === 0 ? 'false' : 'true'}>
@@ -23,7 +26,6 @@ const INTERVAL = 6000;
               <a href="#site-visit" class="btn btn-ghost" tabindex={i === 0 ? undefined : '-1'}>Book Free Site Visit</a>
             </div>
           </div>
-          <img class="hero-photo" src={m.image} alt={m.imageAlt} width="400" height="500" loading={i === 0 ? 'eager' : 'lazy'} />
 
         </div>
       ))}
@@ -37,6 +39,10 @@ const INTERVAL = 6000;
         ))}
       </div>
       <button class="arrow next" aria-label="Next slide">›</button>
+    </div>
+    </div>
+    <!-- one live scene that keeps playing while the slides change -->
+    <PourScene />
     </div>
   </div>
 </section>
@@ -101,7 +107,8 @@ const INTERVAL = 6000;
   .hero { padding: 64px 0 40px; overflow: hidden; position: relative; }
   .hero-front { position: relative; z-index: 1; }
   .slides { display: grid; }
-  .slide { grid-area: 1 / 1; display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; opacity: 0; visibility: hidden; transform: translateX(24px); transition: opacity .6s ease, transform .6s ease, visibility 0s linear .6s; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; align-items: center; }
+  .slide { grid-area: 1 / 1; align-self: center; opacity: 0; visibility: hidden; transform: translateX(24px); transition: opacity .6s ease, transform .6s ease, visibility 0s linear .6s; }
   .slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease, transform .6s ease, visibility 0s; }
   .h1-label { font-family: var(--body); font-size: 13px; line-height: 1.5; margin: 0 0 12px; }
   .headline { font-family: var(--head); font-weight: 700; line-height: 1.08; font-size: clamp(36px, 5.5vw, 60px); color: #fff; margin: 0 0 24px; }
@@ -109,9 +116,8 @@ const INTERVAL = 6000;
   .hooks { list-style: none; padding: 0; margin: 0 0 32px; display: grid; gap: 12px; }
   .hooks li { padding-left: 32px; position: relative; font-size: 18px; color: #E6EEF7; }
   .hooks li::before { content: '✔'; position: absolute; left: 0; top: 2px; width: 22px; height: 22px; background: var(--accent); color: var(--navy); border-radius: 50%; font-size: 13px; display: grid; place-items: center; font-weight: 700; }
-  .hero-photo { aspect-ratio: 4/5; max-height: 460px; width: 100%; height: auto; object-fit: cover; border-radius: var(--radius); border: 3px solid rgba(255,255,255,.15); box-shadow: 0 20px 50px rgba(0,0,0,.25); justify-self: center; }
 
-  .controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 36px; }
+  .controls { display: flex; align-items: center; justify-content: flex-start; gap: 16px; margin-top: 36px; }
   .arrow { background: transparent; border: 1.5px solid rgba(255,255,255,.5); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; line-height: 1; cursor: pointer; }
   .arrow:hover { border-color: var(--accent); color: var(--accent); }
   .dots { display: flex; gap: 10px; }
@@ -126,7 +132,6 @@ const INTERVAL = 6000;
   }
 
   @media (max-width: 900px) {
-    .slide { grid-template-columns: 1fr; gap: 28px; }
-    .hero-photo { aspect-ratio: 16/9; }
+    .hero-grid { grid-template-columns: 1fr; gap: 28px; }
   }
 </style>
