@@ -9,6 +9,7 @@ import { industryPages, locationPages } from '../../data/seoPages';
 import { serviceSeo } from '../../data/serviceSeo';
 import { guides } from '../../data/guides';
 import { serviceFaqs } from '../../data/serviceFaqs';
+import { keywordPages } from '../../data/keywordPages';
 import { company, serviceGroups, YEARS, FOUNDED, clients } from '../../data/site';
 
 export function getStaticPaths() {
@@ -23,6 +24,7 @@ const url = new URL(`/services/${page.slug}/`, Astro.site).href;
 const seo = serviceSeo[page.slug];
 const areas = locationPages.filter((l) => seo?.areas.includes(l.slug));
 const relGuides = guides.filter((g) => g.services.includes(page.slug));
+const kwPages = keywordPages.filter((k) => k.service === page.slug);
 // lower-case for use mid-sentence, but keep acronyms in capitals
 const lower = name.toLowerCase().replace(/\bpeb\b/g, 'PEB').replace(/\bepc\b/g, 'EPC');
 const an = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
@@ -114,6 +116,12 @@ const schema = [
             <>
               <h4>Helpful guides</h4>
               {relGuides.map((g) => <a href={`/guides/${g.slug}/`}>{g.h1} →</a>)}
+            </>
+          )}
+          {kwPages.length > 0 && (
+            <>
+              <h4>In Vadodara</h4>
+              {kwPages.map((k) => <a href={`/vadodara/${k.slug}/`}>{k.h1} →</a>)}
             </>
           )}
         </div>

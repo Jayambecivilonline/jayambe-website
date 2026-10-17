@@ -94,3 +94,10 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - Location pages accept optional `sections` and `faqs` (the `DEEP` record in `seoPages.ts`; currently Vadodara, Nandesari and Dahej) plus a shared 5-step process section.
 - Guides have an `answer` (40–70 word "Quick answer" box, from the `ANSWERS` record in `guides.ts`). New guide: `plant-shutdown-guide-live-facilities` (15 guides total).
 - Still needs the owner: real case studies, an equipment list, consent to show Vipulbhai as guide author, office geo coordinates and opening hours.
+
+## Keyword landing pages (17 Oct 2026)
+- Owner asked for 30+ pages targeting small keywords ("road construction in Vadodara", "warehouse construction in Vadodara"…). Built **22 keyword pages** at `/vadodara/<slug>/` (content in `src/data/keywordPages.ts`, template `src/pages/vadodara/[slug].astro`) plus **8 supporting guides** (23 guides in total).
+- Each page has unique intro, scope, "what decides quality and cost", mistakes, 5 own FAQs + 2 shared (FAQPage), Service + Breadcrumb schema, and links to its parent service, guides, related keyword pages and location pages. About 850–1,100 words each.
+- `/vadodara/` redirects to `/locations/vadodara/`, which lists all keyword pages. Service pages list their keyword pages under "In Vadodara".
+- Don't create service × city combinations for other towns (doorway pages). Don't create a keyword page that targets the same search as an existing service page (cannibalisation).
+- Work assumed from the civil/steel/maintenance service blurbs, still to confirm with the owner: RCC roads, storm water drains, industrial floor slabs, roof sheet replacement, building repairs, steel mezzanines, storage tank erection.

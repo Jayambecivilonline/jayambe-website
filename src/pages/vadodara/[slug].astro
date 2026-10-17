@@ -1,0 +1,184 @@
+---
+// Keyword landing pages: /vadodara/<slug>/ (content in src/data/keywordPages.ts).
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FaqList from '../../components/FaqList.astro';
+import SiteVisitForm from '../../components/SiteVisitForm.astro';
+import { keywordPages } from '../../data/keywordPages';
+import { guides } from '../../data/guides';
+import { locationPages } from '../../data/seoPages';
+import { company, serviceGroups, YEARS, FOUNDED, clients } from '../../data/site';
+
+export function getStaticPaths() {
+  return keywordPages.map((p) => ({ params: { slug: p.slug }, props: { page: p } }));
+}
+const { page } = Astro.props;
+const url = new URL(`/vadodara/${page.slug}/`, Astro.site).href;
+const parent = serviceGroups.flatMap((g) => g.services).find((s) => s.slug === page.service);
+const relGuides = page.guides.map((s) => guides.find((g) => g.slug === s)).filter(Boolean) as typeof guides;
+const related = page.related.map((s) => keywordPages.find((k) => k.slug === s)).filter(Boolean) as typeof keywordPages;
+const vadodaraAreas = locationPages.filter((l) => l.slug !== 'dahej');
+const T = page.topic.charAt(0).toUpperCase() + page.topic.slice(1);
+
+const faqs = [
+  ...page.faqs,
+  { q: `Is the site visit and quote for ${page.topic} free?`, a: 'Yes. Our engineer visits your site, studies the requirement and sends a detailed quote, free and with no obligation.' },
+  { q: 'How will I know how the work is going?', a: 'You get a daily progress report every evening: manpower on site, measured work done and equipment deployed.' },
+];
+
+const steps = [
+  { t: 'Free site visit', d: `Our engineer visits your site in or around Vadodara and studies your ${page.topic} requirement.` },
+  { t: 'Clear quote', d: 'An itemised quotation that says exactly what is included, and what is not.' },
+  { t: 'Plan before day one', d: 'Sequence, material and crew planned before we mobilise.' },
+  { t: 'Build and report daily', d: 'Our own crew does the work, with a daily progress report to you.' },
+  { t: 'Check and hand over', d: 'Work is checked, tested where required, documented and handed over.' },
+];
+
+const schema = [
+  { '@type': 'Service', name: T, serviceType: page.keyword, description: page.description, url,
+    areaServed: { '@type': 'City', name: 'Vadodara' },
+    provider: { '@id': new URL('#business', Astro.site).href } },
+  { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: 'Vadodara', item: new URL('/locations/vadodara/', Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: T, item: url },
+  ] },
+];
+---
+<Base title={page.title} description={page.description} schema={schema}>
+  <section class="hero blueprint dark">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/locations/vadodara/">Vadodara</a> › <span>{T}</span></nav>
+      <span class="eyebrow">{page.eyebrow} · Vadodara · Since {FOUNDED}</span>
+      <h1>{page.h1}</h1>
+      <ul class="hooks">{page.hooks.map((h) => <li>{h}</li>)}</ul>
+      <div class="btn-row">
+        <a href="#quote" class="btn btn-primary">Get a Free Site Visit</a>
+        <a href={company.phoneHref} class="btn btn-ghost">📞 {company.phone}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap about-grid">
+      <div>
+        <h2>{T} in Vadodara: what you should know</h2>
+        {page.intro.map((p) => <p>{p}</p>)}
+      </div>
+      <div class="card facts">
+        <h3>At a glance</h3>
+        <ul>
+          <li><b>Since {FOUNDED}</b>, based in Nandesari, Vadodara</li>
+          <li><b>Our own skilled crew</b> on every site</li>
+          <li><b><a href="/daily-progress-report/">Daily progress report</a></b> to every client</li>
+          <li><b>0 safety incidents</b></li>
+          <li><b>Free site visit &amp; quote</b></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap two">
+      <div>
+        <span class="eyebrow">Scope</span>
+        <h2>What we do</h2>
+        <ul class="ticks">{page.scope.map((s) => <li>{s}</li>)}</ul>
+        {parent && <p>This is part of our <a href={`/services/${parent.slug}/`}>{parent.name}</a> service.</p>}
+      </div>
+      <div>
+        <span class="eyebrow">Avoid these</span>
+        <h2>Common mistakes with {page.topic}</h2>
+        <ol class="mist">{page.mistakes.map((m) => <li>{m}</li>)}</ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">Quality and cost</span>
+      <h2>What decides the quality and cost of {page.topic}</h2>
+      <div class="grid g2">{page.decides.map((d) => <div class="card dcard"><h3>{d.h}</h3><p>{d.p}</p></div>)}</div>
+      <p class="note">We don’t publish rates per sq ft or per metre, because a price without these details is not comparable. You get an exact, itemised quote after a free site visit.</p>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <span class="eyebrow">How it works</span>
+      <h2>How we deliver {page.topic}, step by step</h2>
+      <ol class="steps">{steps.map((s) => <li><b>{s.t}</b><p>{s.d}</p></li>)}</ol>
+      <p class="trust">{YEARS} years in Gujarat · 25+ industrial clients, including {clients.join(' and ')} · 0 safety incidents · <a href="/clients/">See our clients →</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap two">
+      <div>
+        <span class="eyebrow">Where we work</span>
+        <h2>{T} across Vadodara district</h2>
+        <p>From our office in Nandesari we reach sites across the district quickly, and we also take projects elsewhere in Gujarat, including Dahej.</p>
+        <div class="chips">{vadodaraAreas.map((a) => <a href={`/locations/${a.slug}/`}>📍 {a.name}</a>)}</div>
+      </div>
+      <div class="card more">
+        {relGuides.length > 0 && (<><h3>Helpful guides</h3>{relGuides.map((g) => <a href={`/guides/${g.slug}/`}>{g.h1} →</a>)}</>)}
+        <h3>Related work in Vadodara</h3>
+        {related.map((r) => <a href={`/vadodara/${r.slug}/`}>{r.h1} →</a>)}
+      </div>
+    </div>
+  </section>
+
+  <FaqList faqs={faqs} heading={`${T} in Vadodara: FAQs`} open={2} />
+
+  <section class="section dark blueprint" id="quote">
+    <div class="wrap two">
+      <div>
+        <span class="eyebrow">Free site visit</span>
+        <h2>Planning {page.topic} in Vadodara?</h2>
+        <p class="lead">Tell us about your site. Our engineer will visit, study the requirement and send a detailed quote, free.</p>
+        <div class="btn-row">
+          <a href={company.phoneHref} class="btn btn-primary">📞 Call {company.phone}</a>
+          <a href={company.whatsapp} class="btn btn-ghost" target="_blank" rel="noopener">💬 WhatsApp</a>
+        </div>
+      </div>
+      <SiteVisitForm />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding: 48px 0 64px; }
+  .crumbs { font-size: 14px; margin-bottom: 18px; color: var(--navy-soft); }
+  .crumbs a { color: var(--navy-soft); }
+  .hooks { margin: 18px 0 24px; padding-left: 0; list-style: none; }
+  .hooks li { padding: 4px 0 4px 28px; position: relative; font-size: 18px; }
+  .hooks li::before { content: '✓'; position: absolute; left: 0; color: var(--orange-light); font-weight: 700; }
+  .about-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; align-items: start; }
+  .facts { border-top: 4px solid var(--accent); }
+  .facts ul { padding-left: 18px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .ticks { list-style: none; padding: 0; }
+  .ticks li { padding: 6px 0 6px 28px; position: relative; }
+  .ticks li::before { content: '✓'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
+  .mist { padding-left: 22px; }
+  .mist li { padding: 6px 0; }
+  .dcard { border-top: 4px solid var(--accent); }
+  .dcard h3 { font-size: 22px; }
+  .note { margin-top: 20px; font-size: 15px; }
+  .steps { list-style: none; counter-reset: s; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .steps li { counter-increment: s; background: #fff; border-radius: var(--radius); padding: 18px; }
+  .steps li::before { content: counter(s); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--navy); font-family: var(--head); font-weight: 700; margin-bottom: 8px; }
+  .steps b { font-family: var(--head); font-size: 19px; display: block; }
+  .steps p { margin: 4px 0 0; font-size: 15px; }
+  .trust { margin-top: 24px; font-weight: 500; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .chips a { background: var(--tint); border-radius: 4px; padding: 8px 14px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .more { border-top: 4px solid var(--accent); }
+  .more a { display: block; padding: 6px 0; color: var(--orange); font-weight: 600; }
+  .more h3 + a { margin-top: 4px; }
+  .more a + h3 { margin-top: 18px; }
+  @media (max-width: 1000px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 900px) { .about-grid, .two { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .steps { grid-template-columns: 1fr; } }
+</style>

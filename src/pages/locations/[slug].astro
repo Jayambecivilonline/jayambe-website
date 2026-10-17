@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import FaqList from '../../components/FaqList.astro';
 import { locationPages } from '../../data/seoPages';
+import { keywordPages } from '../../data/keywordPages';
 import { company, serviceGroups, YEARS, FOUNDED } from '../../data/site';
 
 export function getStaticPaths() {
@@ -75,6 +76,16 @@ const schema = [
         <span class="eyebrow">Building in {page.name}</span>
         <h2>What to know about industrial construction in {page.name}</h2>
         <div class="grid g2">{page.sections.map((s) => <div class="card dcard"><h3>{s.h}</h3><p>{s.p}</p></div>)}</div>
+      </div>
+    </section>
+  )}
+
+  {page.slug === 'vadodara' && (
+    <section class="section alt">
+      <div class="wrap">
+        <span class="eyebrow">Construction services in Vadodara</span>
+        <h2>What we build in Vadodara</h2>
+        <div class="grid g3">{keywordPages.map((k) => <a class="card svc" href={`/vadodara/${k.slug}/`}><h3>{k.h1}</h3><span>Read more →</span></a>)}</div>
       </div>
     </section>
   )}
