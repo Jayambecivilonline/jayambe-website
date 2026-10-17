@@ -3,9 +3,12 @@
 // The access key is public by design (it can only send mail to the owner's own inbox).
 import { serviceGroups } from '../data/site';
 const ACCESS_KEY = '3f41700d-d614-41ec-b6ac-dc28941ea4ff';
+// Optional: Google Apps Script web app URL that also saves every enquiry to a Google Sheet
+// (setup steps in docs/form-to-google-sheet.md). Leave empty to send email only.
+const SHEET_URL = '';
 const allServices = serviceGroups.flatMap((g) => g.services.map((s) => s.name));
 ---
-<form class="form visit-form" action="https://api.web3forms.com/submit" method="POST">
+<form class="form visit-form" data-sheet={SHEET_URL} action="https://api.web3forms.com/submit" method="POST">
   <input type="hidden" name="access_key" value={ACCESS_KEY} />
   <input type="hidden" name="subject" value="New free site visit request — jayambeengworks.in" />
   <input type="hidden" name="from_name" value="Jay Ambe website" />
@@ -45,7 +48,14 @@ const allServices = serviceGroups.flatMap((g) => g.services.map((s) => s.name));
       btn.disabled = true;
       btn.textContent = 'Sending…';
       try {
-        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+        const fd = new FormData(form);
+        const sheet = form.dataset.sheet;
+        if (sheet) {
+          const row = new URLSearchParams();
+          fd.forEach((v, k) => { if (k !== "access_key") row.append(k, String(v)); });
+          fetch(sheet, { method: "POST", mode: "no-cors", body: row }).catch(() => {});
+        }
+        const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: fd });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
         form.innerHTML = '<div class="done"><b>✅ Thank you, we’ve received your request.</b><p>Our team will call you back to arrange your free site visit. For anything urgent, call or WhatsApp us.</p></div>';

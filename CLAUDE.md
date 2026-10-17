@@ -59,6 +59,7 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - Every push to `main` builds and deploys via `.github/workflows/deploy.yml` (takes 1–2 minutes). `public/CNAME` = jayambeengworks.in.
 - DNS lives at GoDaddy: A @ → 185.199.108.153 / .109.153 / .110.153 / .111.153, CNAME www → jayambecivilonline.github.io. The domain has no MX (email) records yet.
 - The enquiry form sends through Web3Forms (key in `src/components/SiteVisitForm.astro`, public by design) to the owner's inbox, and shows an inline thank-you message.
+- Contact email: jayambecivil@gmail.com (owner, 17 Oct 2026). The form can also save every enquiry to a Google Sheet: set `SHEET_URL` in `SiteVisitForm.astro` (setup in `docs/form-to-google-sheet.md`).
 - `plan.html` is internal and git-ignored.
 
 ## Experience test page

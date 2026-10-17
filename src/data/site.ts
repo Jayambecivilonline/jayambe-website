@@ -11,7 +11,7 @@ export const company = {
   phone: '+91 73835 03062', // confirmed by owner
   phoneHref: 'tel:+917383503062',
   whatsapp: 'https://wa.me/917383503062?text=' + encodeURIComponent('Hello Jay Ambe Engineering Works, I would like to discuss a project.'),
-  email: 'info@jayambeengworks.in',
+  email: 'jayambecivil@gmail.com',
   address: 'A/27 Nilkhant Society, Nandesari, Vadodara, Gujarat, India', // confirmed by owner
   city: 'Vadodara',
   // Google Business Profile (owner shared 14 Oct 2026) and other official listings
