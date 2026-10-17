@@ -7,6 +7,7 @@ export type Block = { h: string; p?: string; list?: string[] };
 export type Guide = {
   slug: string; title: string; description: string; h1: string; intro: string;
   blocks: Block[]; faqs: Faq[]; services: string[]; updated: string;
+  answer?: string;   // 50–80 word direct answer shown first (for AI Overviews / featured snippets)
 };
 
 export const guides: Guide[] = [
@@ -298,3 +299,46 @@ export const guides: Guide[] = [
     updated: '2026-10-14',
   },
 ];
+
+// ---------- new guide (17 Oct 2026): shutdowns in live plants ----------
+guides.push({
+  slug: 'plant-shutdown-guide-live-facilities',
+  title: 'Managing a Plant Shutdown in a Live Facility: A Guide',
+  description: 'How to plan and run a plant shutdown or turnaround in a live chemical facility: scope freeze, permits, crew, material, daily reporting and box-up.',
+  h1: 'Managing Plant Shutdowns in Live Facilities: A Contractor’s Execution Guide',
+  intro: 'A shutdown is the most expensive time in a plant’s year: production is stopped and every hour counts. This is how to plan one so it ends on time, from the contractor’s side of the job.',
+  blocks: [
+    { h: '1. Freeze the scope early', p: 'List every job, with drawings, material and the equipment it affects. Scope added after mobilisation is the most common reason shutdowns overrun.' },
+    { h: '2. Get material on site before the plant stops', p: 'Pipes, fittings, gaskets, steel and consumables should be checked and staged near the job before day one, so no crew waits for a delivery.' },
+    { h: '3. Plan the crew by job and by shift', p: 'Assign fitters, welders, riggers and supervisors to each job, with the right numbers per shift. A contractor with its own permanent crew can commit to these numbers; one hiring job by job often cannot.' },
+    { h: '4. Work inside the permit system', p: 'Isolation, gas testing, hot-work and confined-space permits come from the plant. Plan the permit sequence with the operations team so jobs are not held up waiting for clearance.' },
+    { h: '5. Report every day', p: 'A daily progress report with manpower, jobs completed and measured work shows slippage the next morning, while there is still time to recover.' },
+    { h: '6. Test, document and box up', p: 'Hydro tests, inspections and records should be planned in the schedule, not squeezed in at the end, so the plant can restart on time.' },
+  ],
+  faqs: [
+    { q: 'How early should a shutdown be planned?', a: 'As early as possible, so scope, material and crew are ready before the plant stops.' },
+    { q: 'Do you do shutdown work in chemical plants?', a: 'Yes. Chemical and process plants are our main clients, and we work under the plant’s permit-to-work system.' },
+  ],
+  services: ['shutdown', 'plant-maintenance', 'piping'],
+  updated: '2026-10-17',
+});
+
+// ---------- quick answers: direct 50–80 word answers shown first on each guide ----------
+const ANSWERS: Record<string, string> = {
+  'industrial-shed-cost-gujarat': 'Industrial shed cost per sq ft in Gujarat depends mainly on clear span, eave height, steel weight, roofing sheet specification, crane loads and foundations. Two quotes with the same rate can differ hugely in steel tonnage and in what is included. Compare steel weight, sheet thickness and whether civil work, flooring and erection are in the price, then get an exact quote after a site visit.',
+  'peb-vs-conventional-steel-shed': 'A PEB (pre-engineered building) is usually better for large, clear-span buildings such as warehouses and big factory halls, where fast erection matters. A conventional steel shed often suits smaller, irregular or frequently modified structures and process areas. In both cases, foundations and anchor bolts decide how fast the job really goes, so civil and steel should be planned by one team.',
+  'precast-compound-wall-vs-brick-wall': 'A precast compound wall is faster to build than a brick wall because panels are cast in a factory and installed on site, with no masonry or curing on your plot, and quality is more consistent. Brick may still suit very short lengths or plastered finishes. Precast wall price per running foot depends on height, panel thickness, column spacing, ground conditions and transport distance.',
+  'warehouse-construction-guide-gujarat': 'Before building a warehouse in Gujarat, decide the structure (PEB or conventional steel), clear height, floor loading for forklifts and racking, loading and truck movement, fire fighting requirements and the boundary wall. These decisions are hard to change once construction starts, and they decide how easy the warehouse is to lease, insure and run.',
+  'fire-fighting-system-factory-gujarat': 'A factory fire fighting system in Gujarat typically includes a fire water tank, a pump house, a hydrant ring main, hydrant points and hose reels, and sprinklers where required. A fire consultant designs it to the applicable norms and handles approval; the contractor installs, pressure-tests and documents it. Planning it from day one stops the fire NOC delaying your start-up.',
+  'how-to-choose-industrial-contractor': 'To choose an industrial contractor, check five things: whether they have their own crew, whether you can call long-standing clients, how they report progress (ask for a real daily report), their safety record, and whether one contract covers civil, steel, piping and fire fighting. Then compare the full cost, including the cost of delay, not just the quotation.',
+  'how-to-choose-construction-company-vadodara': 'For a factory or plant in Vadodara, choose an industrial contractor, not a home builder. Ask for industrial client references you can call, their own crew size, a real daily progress report, their safety record and permit-to-work practice, and an itemised quote. Long client relationships are the most reliable sign of a contractor who delivers.',
+  'best-industrial-construction-company-vadodara': 'The best industrial construction company in Vadodara for your project is one you can verify: clients who have stayed for years, its own skilled crew, measured daily progress reporting, a clean safety record, one responsible contract for every trade, real industrial experience and a clear, itemised quote. Ask each company to show evidence for all seven.',
+  'before-starting-industrial-project-vadodara': 'Before starting an industrial project in Vadodara, check the plot and its access, get drawings ready or frozen in sequence, plan approvals with your consultant alongside the schedule, decide how many contractors you will manage, agree the schedule and daily reporting, and plan testing and hand-over from day one. Most delays are decided at this stage.',
+  'construction-site-safety-industrial': 'On an industrial construction site, the contractor should work inside the plant’s permit-to-work system, keep trained supervisors on every shift, plan crane lifts in advance, isolate work beside live process areas, and maintain housekeeping and PPE. Ask any contractor for their safety record and how they handle hot work, height work and confined spaces.',
+  'structural-steel-fabrication-industrial-guide': 'Structural steel in a plant covers sheds, pipe racks, platforms, walkways and equipment supports. Fabrication can be done in a workshop or on site, depending on access and modifications. Most site problems come from foundations and anchor bolts that do not match the steel, so civil and steel should be checked against each other before erection.',
+  'excavation-foundations-industrial-plants': 'For industrial plants, plan excavation by volume and depth with the right equipment, and make foundations match the steel and equipment drawings exactly, especially anchor bolts. Ask for civil progress in measured quantities such as cubic metres, not “almost done.” Measured daily reporting shows real progress and supports clean billing.',
+  'turnkey-vs-item-rate-contract': 'An item-rate contract pays agreed rates for measured work and suits evolving scopes or work inside running plants. A turnkey (lump-sum) contract delivers a defined scope for an agreed price with one point of responsibility, and suits clear drawings and fixed deadlines. Under either model, measured daily progress reporting protects the client.',
+  'why-local-contractor-vadodara': 'A Vadodara-based industrial contractor knows the local estates and their rules, can visit your site quickly, keeps a stable local crew on your job, and can support maintenance and modifications for years after hand-over. Jay Ambe Engineering Works has been based in Nandesari, Vadodara since 1996, and works across Nandesari, Makarpura, Padra, Savli and Dahej.',
+  'plant-shutdown-guide-live-facilities': 'To run a plant shutdown on time in a live facility, freeze the scope early, stage all material on site before the plant stops, plan the crew by job and shift, sequence permits with the operations team, report progress every day, and schedule testing and box-up rather than squeezing them in at the end.',
+};
+for (const g of guides) g.answer = ANSWERS[g.slug];

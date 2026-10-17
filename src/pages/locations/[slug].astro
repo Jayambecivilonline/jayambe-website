@@ -22,6 +22,7 @@ const faqs = [
   { q: `Do you build industrial sheds and PEB structures in ${page.name}?`, a: "Yes, along with factory buildings, warehouses and precast compound walls from our own plant." },
   { q: `Do you install fire fighting systems in ${page.name}?`, a: "Yes: fire hydrant, sprinkler and fire water systems, pressure-tested and documented." },
   { q: "Is the site visit and quote free?", a: "Yes. The first site visit and quote are free, with no obligation." },
+  ...(page.faqs ?? []),
 ];
 const schema = [
   { "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
@@ -68,6 +69,30 @@ const schema = [
     </div>
   </section>
 
+  {page.sections && (
+    <section class="section deep">
+      <div class="wrap">
+        <span class="eyebrow">Building in {page.name}</span>
+        <h2>What to know about industrial construction in {page.name}</h2>
+        <div class="grid g2">{page.sections.map((s) => <div class="card dcard"><h3>{s.h}</h3><p>{s.p}</p></div>)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">How it works</span>
+      <h2>How a project in {page.name} runs with us</h2>
+      <ol class="steps">
+        <li><b>Free site visit</b><p>Our engineer visits your site in {page.name}, understands the requirement and checks access, ground and neighbouring plants.</p></li>
+        <li><b>Scope and quote</b><p>We review your drawings and send a clear, itemised quotation that says exactly what is included.</p></li>
+        <li><b>Plan before day one</b><p>Sequence, schedule, material and crew are planned before mobilisation, including your consultant's approvals.</p></li>
+        <li><b>Build and report daily</b><p>Our own crew does the work, and you get a <a href="/daily-progress-report/">daily progress report</a> every evening.</p></li>
+        <li><b>Test and hand over</b><p>Work is checked and tested where required, documented and handed over, with support afterwards.</p></li>
+      </ol>
+    </div>
+  </section>
+
   <section class="section alt">
     <div class="wrap">
       <h2>Our services in {page.name}</h2>
@@ -94,5 +119,14 @@ const schema = [
   .svc h3 { font-size: 21px; }
   .svc span { color: var(--orange); font-weight: 600; }
   .trust { margin-top: 28px; font-weight: 500; }
+  .dcard { border-top: 4px solid var(--accent); }
+  .steps { list-style: none; counter-reset: s; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .steps li { counter-increment: s; background: var(--tint); border-radius: var(--radius); padding: 18px; }
+  .steps li::before { content: counter(s); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--navy); font-family: var(--head); font-weight: 700; margin-bottom: 8px; }
+  .steps b { font-family: var(--head); font-size: 19px; display: block; }
+  .steps p { margin: 4px 0 0; font-size: 15px; }
+  @media (max-width: 1000px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .steps { grid-template-columns: 1fr; } }
+  .dcard h3 { font-size: 22px; }
   @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
 </style>

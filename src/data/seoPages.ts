@@ -98,6 +98,8 @@ export type LocationPage = {
   clients: string[];        // only real clients in this area (empty is fine)
   nearby?: string[];        // real clients in neighbouring areas, shown when `clients` is empty
   focus?: string[];         // services most relevant to this area (slugs)
+  sections?: { h: string; p: string }[];   // deeper local content (unique per location)
+  faqs?: Faq[];             // extra location-specific FAQs
 };
 
 export const locationPages: LocationPage[] = [
@@ -201,3 +203,44 @@ export const locationPages: LocationPage[] = [
     focus: ['industrial-construction', 'piping', 'fire-fighting', 'plant-maintenance'],
   },
 ];
+
+// ---------- deeper local content for the main locations (unique per page, no invented facts) ----------
+const DEEP: Record<string, { sections: { h: string; p: string }[]; faqs: Faq[] }> = {
+  vadodara: {
+    sections: [
+      { h: 'Vadodara’s industrial belt at a glance', p: 'Vadodara district is one of Gujarat’s main industrial regions. Around the city sit established estates such as Nandesari, Makarpura, Waghodia and Savli–Manjusar, with the Padra belt to the west and Halol to the north-east. Chemical, pharmaceutical, engineering and gas companies all operate here, and many of them are expanding or adding new units.' },
+      { h: 'What plant owners in Vadodara usually build', p: 'Most enquiries we receive in Vadodara are for new production units and expansions inside running plants, industrial sheds and PEB buildings, warehouses for raw material and finished goods, utility and process piping, fire fighting systems ahead of a fire NOC, and precast compound walls to secure new plots quickly.' },
+      { h: 'Planning a project in a Vadodara GIDC estate', p: 'Estates have their own rules for access, working hours and safety, and neighbouring plants may be running hazardous processes. Building plan and fire approvals are handled by your consultants, so the construction schedule should be planned around them. In Gujarat, the monsoon months also affect excavation and concrete work, so foundations are best planned with the season in mind.' },
+      { h: 'Why a Vadodara-based contractor helps', p: 'Our office has been in Nandesari, Vadodara since 1996. Being close means quicker site visits, a stable local crew on your site rather than unfamiliar labour, and support for maintenance and modifications long after hand-over.' },
+    ],
+    faqs: [
+      { q: 'Which industrial estates around Vadodara do you work in?', a: 'Nandesari, Makarpura, Manjusar and Savli, Waghodia and the Padra belt, along with other sites across Vadodara district.' },
+      { q: 'Do you take projects in Vadodara city as well as the GIDC estates?', a: 'Yes, as long as the work is industrial: factories, sheds, warehouses, plant buildings, piping, fire fighting and compound walls.' },
+    ],
+  },
+  nandesari: {
+    sections: [
+      { h: 'Nandesari GIDC: a chemical estate', p: 'Nandesari is one of Vadodara’s long-established chemical industrial estates, home to many chemical and process plants. Construction here usually happens beside running units, so the work has to fit around production and the plant’s safety system.' },
+      { h: 'Working beside live chemical plants', p: 'Hot work, height work and confined-space work go through the plant’s permit-to-work system. Tie-ins to existing lines are planned with the operations team, and areas are isolated and barricaded. Our crews are used to this way of working because most of our clients run chemical plants.' },
+      { h: 'Built for corrosive environments', p: 'Chemical atmospheres attack steel and concrete. Coating specifications, material choices and drainage details matter more here than on an ordinary site, and we agree them with your consultant before fabrication or pouring starts.' },
+      { h: 'Our home ground since 1996', p: 'Jay Ambe Engineering Works was founded in Nandesari in 1996 and is still based here. That means fast response for site visits, small jobs and maintenance, and a crew that already knows the estate.' },
+    ],
+    faqs: [
+      { q: 'Is your office in Nandesari GIDC?', a: 'Our office is at A/27 Nilkhant Society, Nandesari, Vadodara, and we have been based in Nandesari since 1996.' },
+      { q: 'Can you work inside a running chemical plant in Nandesari?', a: 'Yes, under the plant’s permit-to-work system with trained supervisors. Our record is zero safety incidents.' },
+    ],
+  },
+  dahej: {
+    sections: [
+      { h: 'Dahej: a coastal chemical hub', p: 'Dahej in Bharuch district is one of Gujarat’s major chemical and petrochemical hubs, on the coast of the Gulf of Khambhat. Large plants and new units keep coming up here, and many are run by companies that also operate in the Vadodara belt.' },
+      { h: 'Building on the coast', p: 'Coastal air and soil conditions are harder on steel and concrete. Corrosion protection, concrete specification and drainage need attention from the start, along with foundations suited to the ground conditions your consultant identifies.' },
+      { h: 'Mobilising from Vadodara', p: 'We mobilise our own crew and equipment from Vadodara for projects in Dahej, plan material deliveries in advance, and report progress to you every day, just as we do closer to home.' },
+      { h: 'Working in Dahej today', p: 'We are currently working at Gulbrandsen Chemicals’ Dahej site, after many years with them at Akalbara near Vadodara.' },
+    ],
+    faqs: [
+      { q: 'Do you have a team in Dahej?', a: 'We mobilise our own crew and equipment from Vadodara for each project in Dahej and keep them on site for the duration of the job.' },
+      { q: 'Which client are you working for in Dahej?', a: 'We are currently working at Gulbrandsen Chemicals’ Dahej site.' },
+    ],
+  },
+};
+for (const p of locationPages) Object.assign(p, DEEP[p.slug] ?? {});

@@ -42,17 +42,29 @@ const nav = [
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet" />
+  <!-- site-wide business entity: one @id so every page's schema refers to the same company -->
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'GeneralContractor',
+    '@id': `${Astro.site}#business`,
     name: company.name,
-    founder: company.founder,
+    alternateName: 'Jay Ambe Engineering',
+    url: Astro.site,
+    logo: new URL('/logo.png', Astro.site).href,
+    image: new URL('/logo.png', Astro.site).href,
+    description: `Industrial construction and EPC contractor in Nandesari, Vadodara since ${FOUNDED}: factories, industrial sheds, PEB structures, warehouses, civil works, structural steel, process piping, fire fighting systems and precast compound walls.`,
     foundingDate: String(FOUNDED),
+    founder: { '@type': 'Person', '@id': `${Astro.site}about/vipulbhai-padhiyar/#person`, name: company.founder, url: new URL('/about/vipulbhai-padhiyar/', Astro.site).href },
     telephone: company.phone,
     email: company.email,
-    url: Astro.site,
     address: { '@type': 'PostalAddress', streetAddress: 'A/27 Nilkhant Society, Nandesari', addressLocality: 'Vadodara', addressRegion: 'Gujarat', addressCountry: 'IN' },
-    areaServed: "Gujarat, India",
+    areaServed: ['Vadodara', 'Nandesari GIDC', 'Makarpura GIDC', 'Manjusar GIDC', 'Savli', 'Halol', 'Waghodia', 'Padra', 'Dahej', 'Bharuch', 'Gujarat'].map((name) => ({ '@type': 'Place', name })),
+    knowsAbout: ['Industrial construction', 'EPC contracting', 'Pre-engineered buildings', 'Industrial sheds', 'Warehouse construction', 'Structural steel fabrication', 'Process piping', 'Fire fighting systems', 'Precast compound walls', 'Plant maintenance', 'Shutdown and turnaround'],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Industrial construction services',
+      itemListElement: serviceGroups.flatMap((g) => g.services).map((s) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.name, url: new URL(`/services/${s.slug}/`, Astro.site).href } })),
+    },
     sameAs: [company.googleProfile, company.googleKg, company.indiamart],
   })} />
   {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", ...s })} />)}
@@ -116,6 +128,7 @@ const nav = [
         <a href="/industries/">Industries</a>
         <a href="/guides/">Guides</a>
         <a href="/safety-quality/">Safety &amp; Quality</a>
+        <a href="/daily-progress-report/">Daily Progress Report</a>
         <a href="/faq/">FAQ</a>
         <a href="/careers/">Careers</a>
         <a href="/contact/">Contact</a>

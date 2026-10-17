@@ -43,6 +43,8 @@ const schema = [
   <article class="section">
     <div class="wrap layout">
       <div class="body">
+        <p class="byline">By <a href="/about/">Jay Ambe Engineering Works</a>, industrial contractors in Vadodara since 1996 · Founded by <a href="/about/vipulbhai-padhiyar/">Vipulbhai Padhiyar</a></p>
+        {g.answer && <div class="answer"><b>Quick answer</b><p>{g.answer}</p></div>}
         {g.blocks.map((b) => (
           <section class="block">
             <h2>{b.h}</h2>
@@ -83,6 +85,10 @@ const schema = [
   .crumbs a { color: var(--navy-soft); }
   h1 { font-size: clamp(32px, 4.5vw, 50px); }
   .layout { display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: start; }
+  .byline { font-size: 14px; margin-bottom: 18px; }
+  .answer { background: var(--tint); border-left: 5px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 32px; }
+  .answer b { font-family: var(--head); font-size: 18px; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
+  .answer p { margin: 6px 0 0; font-size: 17px; }
   .block { margin-bottom: 28px; }
   .block h2 { font-size: 28px; }
   .block li { margin: 6px 0; }

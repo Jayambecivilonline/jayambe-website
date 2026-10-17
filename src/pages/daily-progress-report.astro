@@ -1,0 +1,114 @@
+---
+// The company's biggest USP gets its own page: the real (anonymised) daily progress report, explained.
+// Figures in DprSample are copied from a real report and must never be changed.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import FaqList from '../components/FaqList.astro';
+import DprSample from '../components/DprSample.astro';
+import { company } from '../data/site';
+
+const fields = [
+  { t: 'Report number and date', d: 'Every report is numbered and dated, so the series forms a day-by-day record of the whole job.' },
+  { t: 'Manpower on site', d: 'Total workers, split into skilled and unskilled. You see whether the crew promised is the crew present.' },
+  { t: 'Work done today', d: 'What was worked on, so you can follow the sequence of the job.' },
+  { t: 'Measured work executed', d: 'Each item with its quantity, unit and location, for example cubic metres excavated at a given area. Progress is measured, not described as “almost done.”' },
+  { t: 'Equipment deployed', d: 'Which machines were on site that day, such as excavators and JCBs.' },
+  { t: 'Signatures', d: 'Spaces for the site engineer, project manager and client representative, so the record is agreed by both sides.' },
+];
+const why = [
+  { t: 'See problems on day one', d: 'A short crew or a stalled activity shows up in the first report, not at the monthly review.' },
+  { t: 'Bill on measured quantities', d: 'Daily measurements build a clear record for running bills, with fewer disputes at the end.' },
+  { t: 'Answer your management instantly', d: 'Forward the report. Your management sees the same picture you do.' },
+  { t: 'A record for every decision', d: 'Weather, access, design changes: the day-by-day record shows what happened and when.' },
+];
+const faqs = [
+  { q: 'What is a daily progress report (DPR) in construction?', a: 'A DPR is a short report sent at the end of each working day that records manpower on site, work done, measured quantities executed and equipment deployed. It gives the client a day-by-day record of the project.' },
+  { q: 'Do you send a daily progress report on every job?', a: 'Yes. Every client receives a daily progress report for every day of the job.' },
+  { q: 'What does your daily progress report include?', a: 'Report number and date, client and location, manpower (total, skilled and unskilled), work done, measured work executed with quantity, unit and location, equipment deployed, and signatures of the site engineer, project manager and client representative.' },
+  { q: 'Is the report real or a template?', a: 'The sample on this page is re-created from a real report sent to one of our clients. Only the client, project and author details are hidden.' },
+  { q: 'How is a daily report better than a weekly update?', a: 'A weekly update tells you about problems after a week has been lost. A daily report shows the same problem the next morning, when it is still easy to fix.' },
+  { q: 'Can the daily report support billing?', a: 'Yes. Because work is recorded in measured quantities every day, it builds a clear basis for running bills.' },
+];
+const url = new URL('/daily-progress-report/', Astro.site).href;
+const schema = [
+  { '@type': 'WebPage', url, name: 'Daily progress report in construction', about: { '@id': `${Astro.site}#business` } },
+  { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: 'Daily Progress Report', item: url },
+  ] },
+];
+---
+<Base title="Daily Progress Report (DPR) in Construction | Jay Ambe" description="See a real construction daily progress report: manpower, measured work, equipment and sign-off. We send one to every client, every day of every job." schema={schema}>
+  <PageHero eyebrow="Daily progress report" title="See exactly what happened on your site. Every single day." lead="Most contractors make you chase them for updates. We send every client a daily progress report: manpower, measured work and equipment, signed off and on your phone each evening." />
+
+  <section class="section">
+    <div class="wrap two">
+      <div>
+        <div class="answer"><b>Quick answer</b><p>A daily progress report (DPR) is a short record sent at the end of each working day, showing how many people were on site, what work was done, the quantities executed with their units and locations, and the equipment used. Jay Ambe Engineering Works sends one to every client, every day of every job, so delays are seen the next morning, not at the month-end review.</p></div>
+        <h2>What is a daily progress report in construction?</h2>
+        <p>On an industrial project, the biggest risk is not knowing. A crew that is short by twenty people, an activity waiting for material, or a drawing that hasn't arrived can cost days before anyone notices. A daily progress report closes that gap: at the end of each day, you receive a written, measured record of what actually happened on your site.</p>
+        <p>We have reported this way on our jobs because plant owners need facts, not reassurance. The format below is re-created from a real report we sent to a client, with the client's details hidden.</p>
+      </div>
+      <DprSample />
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2>What our daily report includes</h2>
+      <div class="grid g3">{fields.map((f) => <div class="card c"><h3>{f.t}</h3><p>{f.d}</p></div>)}</div>
+      <p class="note">On the sample above, one day's report shows <b>200 workers</b> on site (50 skilled, 150 unskilled), <b>2,268 m³</b> of excavation at 6–7 m depth for a warehouse, and an AJAX 4300 and a JCB deployed.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Why daily reporting matters to plant owners</h2>
+      <div class="grid g4">{why.map((w) => <div class="card c"><h3>{w.t}</h3><p>{w.d}</p></div>)}</div>
+      <h2 class="mt">Daily report vs weekly or monthly updates</h2>
+      <div class="tbl">
+        <table>
+          <thead><tr><th></th><th>Daily progress report</th><th>Weekly / monthly update</th></tr></thead>
+          <tbody>
+            <tr><td>When you hear about a problem</td><td>The next morning</td><td>Days or weeks later</td></tr>
+            <tr><td>How progress is shown</td><td>Measured quantities, units and locations</td><td>Often a percentage or “on track”</td></tr>
+            <tr><td>Manpower visibility</td><td>Every day, skilled and unskilled</td><td>Rarely</td></tr>
+            <tr><td>Basis for billing</td><td>Day-by-day measured record</td><td>Measured at the end, more disputes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h2 class="mt">What to ask any contractor about reporting</h2>
+      <ol class="check">
+        <li>Will I get a written report every day, or only meetings?</li>
+        <li>Does it show measured quantities, or only “work in progress”?</li>
+        <li>Does it show manpower and equipment on site?</li>
+        <li>Can you show me a real report from a current job?</li>
+      </ol>
+      <p>Read more in our guide on <a href="/guides/how-to-choose-industrial-contractor/">how to choose an industrial contractor</a>.</p>
+    </div>
+  </section>
+
+  <FaqList faqs={faqs} heading="Daily progress report: common questions" open={2} />
+  <CtaBand heading="Want this level of visibility on your next project? Start with a free site visit." />
+</Base>
+
+<style>
+  .two { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; }
+  .answer { background: var(--tint); border-left: 5px solid var(--accent); padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 24px; }
+  .answer b { font-family: var(--head); font-size: 18px; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; }
+  .answer p { margin: 6px 0 0; }
+  .c { border-top: 4px solid var(--accent); }
+  .c h3 { font-size: 21px; }
+  .note { margin-top: 20px; }
+  .mt { margin-top: 48px; }
+  .tbl { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { background: var(--navy); color: #fff; }
+  td:first-child { font-weight: 600; }
+  td:nth-child(2) { color: var(--navy); font-weight: 600; }
+  .check li { margin: 8px 0; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+</style>

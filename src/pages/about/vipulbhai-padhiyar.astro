@@ -1,0 +1,65 @@
+---
+// Founder profile (E-E-A-T: a named person behind the company). Confirmed facts only:
+// founded the company in 1996 in Nandesari, Vadodara; the company's record and how it works.
+// Add a photo, a personal message and career details when the owner provides them.
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { company, FOUNDED, YEARS, clients } from '../../data/site';
+
+const url = new URL('/about/vipulbhai-padhiyar/', Astro.site).href;
+const schema = [
+  { '@type': 'ProfilePage', url, mainEntity: { '@id': `${url}#person` } },
+  { '@type': 'Person', '@id': `${url}#person`, name: company.founder, jobTitle: 'Founder', url,
+    worksFor: { '@id': `${Astro.site}#business` }, knowsAbout: ['Industrial construction', 'Plant construction in Gujarat', 'Structural steel', 'Process piping', 'Fire fighting systems'],
+    workLocation: { '@type': 'Place', name: 'Nandesari, Vadodara, Gujarat' } },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.href },
+    { '@type': 'ListItem', position: 2, name: 'About', item: new URL('/about/', Astro.site).href },
+    { '@type': 'ListItem', position: 3, name: company.founder, item: url },
+  ] },
+];
+---
+<Base title="Vipulbhai Padhiyar, Founder | Jay Ambe Engineering Works" description={`Vipulbhai Padhiyar founded Jay Ambe Engineering Works in Nandesari, Vadodara in ${FOUNDED}. ${YEARS} years of industrial construction for Gujarat's plants.`} schema={schema}>
+  <PageHero eyebrow="Founder" title={company.founder} lead={`Founded Jay Ambe Engineering Works in Nandesari, Vadodara in ${FOUNDED}.`} />
+
+  <section class="section">
+    <div class="wrap two">
+      <div>
+        <h2>{YEARS} years of building for Gujarat's industries</h2>
+        <p>{company.founder} started Jay Ambe Engineering Works in {FOUNDED} in Nandesari, one of Vadodara's long-established chemical industrial estates. Since then the company has grown into an industrial construction contractor that builds and maintains plants across the Vadodara–Bharuch belt and beyond.</p>
+        <p>Under his leadership, the company has worked for more than 25 industrial clients, including {clients.join(' and ')}. Sicgil India has been a client since {FOUNDED}, and that long relationship reflects how the company works: stay with the client, know their plant, and deliver safely.</p>
+        <h2>How the company works</h2>
+        <ul>
+          <li><b>Our own skilled crew.</b> A stable team rather than labour hired job by job. One recent site report shows 200 workers on a single site.</li>
+          <li><b>A daily progress report to every client</b>, showing manpower, measured work and equipment. <a href="/daily-progress-report/">See how it works →</a></li>
+          <li><b>Safety first.</b> Work under the client's permit-to-work system, with a record of zero safety incidents. <a href="/safety-quality/">Safety &amp; quality →</a></li>
+          <li><b>One responsible contract</b> for civil, structural steel, piping, mechanical, fire fighting and precast compound walls from the company's own plant.</li>
+        </ul>
+      </div>
+      <aside class="card facts">
+        <h3>At a glance</h3>
+        <dl>
+          <dt>Role</dt><dd>Founder, {company.name}</dd>
+          <dt>Founded</dt><dd>{FOUNDED}, Nandesari, Vadodara</dd>
+          <dt>Work</dt><dd>Industrial construction, EPC, piping, steel, fire fighting, precast walls</dd>
+          <dt>Region</dt><dd>Vadodara district, Dahej and across Gujarat</dd>
+        </dl>
+        <a class="btn btn-primary" href="/contact/#site-visit">Talk to our team</a>
+      </aside>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .two { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: start; }
+  .two li { margin: 10px 0; }
+  .facts { border-top: 4px solid var(--accent); position: sticky; top: 100px; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin: 0 0 18px; }
+  dt { font-weight: 700; color: var(--navy); }
+  dd { margin: 0; }
+  .facts .btn { justify-content: center; width: 100%; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } .facts { position: static; } }
+</style>
