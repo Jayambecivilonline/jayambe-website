@@ -202,6 +202,29 @@ export const locationPages: LocationPage[] = [
     nearby: ['Chemical clients across Vadodara, such as Nexcel Chemicals and Gulbrandsen Chemicals'],
     focus: ['industrial-construction', 'piping', 'fire-fighting', 'plant-maintenance'],
   },
+  {
+    slug: 'karjan',
+    name: 'Karjan',
+    title: 'Industrial Construction in Karjan, Vadodara | Jay Ambe',
+    description: 'Industrial construction in Karjan on NH48: factories, sheds, warehouses, roads, floors and piping. Past client: Belex, Karjan. Free site visit.',
+    headline: 'Industrial Construction in Karjan',
+    intro: 'Karjan sits on NH48 between Vadodara and Bharuch, with quick access to both. We have worked here before, for Belex, and we build factories, sheds, warehouses, roads and floors for units in and around Karjan.',
+    areas: ['Karjan', 'NH48 belt', 'Vadodara district'],
+    clients: ['Belex'],
+    focus: ['factory-construction', 'industrial-shed-construction', 'warehouse-construction', 'civil-works'],
+  },
+  {
+    slug: 'por',
+    name: 'Por',
+    title: 'Industrial Construction in Por GIDC, Vadodara | Jay Ambe',
+    description: 'Industrial construction in Por–Ramangamdi GIDC south of Vadodara: sheds, warehouses, factory buildings, roads and floors from a Vadodara contractor.',
+    headline: 'Industrial Construction in Por–Ramangamdi',
+    intro: 'Por lies on NH48 just south of Vadodara, close to Makarpura and the expressway. We build sheds, warehouses, factory buildings, roads and floors for units here, from our office in Nandesari.',
+    areas: ['Por', 'Ramangamdi', 'NH48 south of Vadodara'],
+    clients: [],
+    nearby: ['Pavan Gases, Makarpura GIDC', 'Nexcel Chemicals, Vadodara'],
+    focus: ['industrial-shed-construction', 'warehouse-construction', 'factory-construction', 'civil-works'],
+  },
 ];
 
 // ---------- deeper local content for the main locations (unique per page, no invented facts) ----------
@@ -240,6 +263,30 @@ const DEEP: Record<string, { sections: { h: string; p: string }[]; faqs: Faq[] }
     faqs: [
       { q: 'Do you have a team in Dahej?', a: 'We mobilise our own crew and equipment from Vadodara for each project in Dahej and keep them on site for the duration of the job.' },
       { q: 'Which client are you working for in Dahej?', a: 'We are currently working at Gulbrandsen Chemicals’ Dahej site.' },
+    ],
+  },
+  karjan: {
+    sections: [
+      { h: 'Karjan on the NH48 corridor', p: 'Karjan sits on NH48 and the main rail line between Vadodara and Bharuch. For a factory or warehouse, that means easy truck access to both the Vadodara market and the Bharuch, Ankleshwar and Dahej industrial belt.' },
+      { h: 'Highway traffic changes the design', p: 'Sites near the highway take loaded trucks from day one. Approach roads, yards, turning space and floors should be designed for that traffic, not added later.' },
+      { h: 'Work we have done here', p: 'Belex in Karjan is among our past clients. We know the area and can reach sites here quickly from our office in Nandesari.' },
+      { h: 'What we build in Karjan', p: 'Factory buildings, industrial and PEB sheds, warehouses and godowns, RCC roads and yards, industrial floors, piping and fire fighting, plus precast compound walls from our own plant.' },
+    ],
+    faqs: [
+      { q: 'Have you worked in Karjan before?', a: 'Yes. Belex in Karjan is among our past clients.' },
+      { q: 'Do you build warehouses along NH48 near Karjan?', a: 'Yes, including the yard, docks, roads and fire fighting around them.' },
+    ],
+  },
+  por: {
+    sections: [
+      { h: 'Por–Ramangamdi, south of Vadodara', p: 'Por and the Por–Ramangamdi GIDC estate lie along NH48 just south of Vadodara city, close to Makarpura and the expressway. Units here serve Vadodara and the wider south Gujarat corridor.' },
+      { h: 'Good for sheds and warehouses', p: 'Highway access makes Por a practical location for workshops, production sheds and warehouses. Planning the yard, docks and floor loads at the start pays off for years.' },
+      { h: 'Our nearest work', p: 'We have not yet built inside Por itself, and we will not claim clients we do not have. Our nearest work is in Makarpura GIDC, including Pavan Gases, and in Vadodara city.' },
+      { h: 'What we build in Por', p: 'Industrial and PEB sheds, warehouses, factory buildings, RCC roads and yards, industrial floors and fire fighting systems, plus precast compound walls from our own plant.' },
+    ],
+    faqs: [
+      { q: 'Do you take projects in Por GIDC?', a: 'Yes. Por is a short drive from our office in Nandesari, Vadodara.' },
+      { q: 'Have you worked in Por before?', a: 'Not inside Por itself yet. Our nearest work is in Makarpura GIDC and Vadodara city.' },
     ],
   },
 };

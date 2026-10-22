@@ -101,3 +101,8 @@ Supporting pages (About, Projects, Safety, Careers) end with the Phase 4 CTA ban
 - `/vadodara/` redirects to `/locations/vadodara/`, which lists all keyword pages. Service pages list their keyword pages under "In Vadodara".
 - Don't create service × city combinations for other towns (doorway pages). Don't create a keyword page that targets the same search as an existing service page (cannibalisation).
 - Work assumed from the civil/steel/maintenance service blurbs, still to confirm with the owner: RCC roads, storm water drains, industrial floor slabs, roof sheet replacement, building repairs, steel mezzanines, storage tank erection.
+
+## Town keyword pages (22 Oct 2026)
+- Owner asked for warehouse / shed / industrial construction / road / floor pages for Vadodara, Karjan, Dahej, Manjusar, Savli, Makarpura and Por. Built **24 pages** at `/<town>/<service>/` (towns: karjan, por, dahej, manjusar, savli, makarpura; services: warehouse-construction, industrial-shed-construction, road-construction, industrial-flooring). Content: `src/data/townPages.ts`; template: `src/pages/[town]/[service].astro`.
+- "Industrial construction in <town>" is the existing `/locations/<town>/` page, so it isn't repeated. New location pages: **Karjan** (past client Belex) and **Por** (no client there; "Our work nearby" only). Vadodara is covered by the `/vadodara/` keyword pages.
+- Each town page has a unique title, description, H1, local intro and 3 local FAQs. The town context and service scope are shared. `/<town>/` redirects to `/locations/<town>/`; add any new town folder to `folders` in `astro.config.mjs`.

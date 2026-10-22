@@ -1,11 +1,14 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
+// /vadodara/, /savli/ etc. are only folders for keyword pages; send visitors to the matching location page
+const folders = ['vadodara', 'karjan', 'por', 'dahej', 'manjusar', 'savli', 'makarpura'];
+const redirects = Object.fromEntries(folders.map((f) => [`/${f}/`, `/locations/${f}/`]));
+
 export default defineConfig({
   site: 'https://jayambeengworks.in',
   trailingSlash: 'always',
-  // the /experience/ test page stays out of the sitemap
-  // /vadodara/ is only a folder for keyword pages; send visitors to the Vadodara location page
-  redirects: { '/vadodara/': '/locations/vadodara/' },
-  integrations: [sitemap({ filter: (page) => !page.includes('/experience/') && !page.endsWith('/vadodara/') })],
+  redirects,
+  // the /experience/ test page and the redirect folders stay out of the sitemap
+  integrations: [sitemap({ filter: (page) => !page.includes('/experience/') && !folders.some((f) => page.endsWith(`.in/${f}/`)) })],
 });
