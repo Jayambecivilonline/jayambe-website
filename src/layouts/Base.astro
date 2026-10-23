@@ -70,7 +70,7 @@ const nav = [
   {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", ...s })} />)}
   {GA_ID && !noindex && (
     <>
-      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ADS_ID || GA_ID}`}></script>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
       <script is:inline define:vars={{ GA_ID, ADS_ID }}>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
