@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { company, serviceGroups, FOUNDED, GA_ID } from '../data/site';
+import { company, serviceGroups, FOUNDED, GA_ID, ADS_ID } from '../data/site';
 import { industryPages } from '../data/seoPages';
 
 interface Props {
@@ -70,13 +70,14 @@ const nav = [
   {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", ...s })} />)}
   {GA_ID && !noindex && (
     <>
-      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-      <script is:inline define:vars={{ GA_ID }}>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ADS_ID || GA_ID}`}></script>
+      <script is:inline define:vars={{ GA_ID, ADS_ID }}>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         window.gtag = gtag;
         gtag('js', new Date());
         gtag('config', GA_ID);
+        if (ADS_ID) gtag('config', ADS_ID);
         // count Call and WhatsApp taps as key actions
         document.addEventListener('click', (e) => {
           const a = e.target.closest && e.target.closest('a[href]');

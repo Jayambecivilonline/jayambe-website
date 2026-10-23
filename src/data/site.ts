@@ -2,8 +2,10 @@
 // renders with a yellow TODO outline in the site until the owner confirms it.
 
 export const FOUNDED = 1996;
-// Google Analytics 4 measurement ID (looks like G-XXXXXXXXXX). Leave empty to turn analytics off.
+// Google tag: GA4 measurement ID and the Google Ads tag that Google combined it into.
+// The script must load via ADS_ID (Google serves the combined tag only under that ID). Empty GA_ID = off.
 export const GA_ID = 'G-K0EHP5XW3S';
+export const ADS_ID = 'AW-16927444402';
 export const YEARS = new Date().getFullYear() - FOUNDED;
 
 export const company = {
