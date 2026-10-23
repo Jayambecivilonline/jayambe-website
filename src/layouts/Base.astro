@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { company, serviceGroups, FOUNDED } from '../data/site';
+import { company, serviceGroups, FOUNDED, GA_ID } from '../data/site';
 import { industryPages } from '../data/seoPages';
 
 interface Props {
@@ -68,6 +68,26 @@ const nav = [
     sameAs: [company.googleProfile, company.googleKg, company.indiamart],
   })} />
   {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", ...s })} />)}
+  {GA_ID && !noindex && (
+    <>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+      <script is:inline define:vars={{ GA_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_ID);
+        // count Call and WhatsApp taps as key actions
+        document.addEventListener('click', (e) => {
+          const a = e.target.closest && e.target.closest('a[href]');
+          if (!a) return;
+          const href = a.getAttribute('href');
+          if (href.startsWith('tel:')) gtag('event', 'call_click', { link_url: href, page_path: location.pathname });
+          else if (/wa\.me|whatsapp/.test(href)) gtag('event', 'whatsapp_click', { link_url: href, page_path: location.pathname });
+        });
+      </script>
+    </>
+  )}
 </head>
 <body>
   <header class="site-header">

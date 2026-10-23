@@ -58,6 +58,7 @@ const allServices = serviceGroups.flatMap((g) => g.services.map((s) => s.name));
         const res = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: fd });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+        (window as any).gtag?.('event', 'generate_lead', { form: 'site_visit', page_path: location.pathname });
         form.innerHTML = '<div class="done"><b>✅ Thank you, we’ve received your request.</b><p>Our team will call you back to arrange your free site visit. For anything urgent, call or WhatsApp us.</p></div>';
       } catch {
         btn.disabled = false;

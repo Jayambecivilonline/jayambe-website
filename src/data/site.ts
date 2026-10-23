@@ -2,6 +2,8 @@
 // renders with a yellow TODO outline in the site until the owner confirms it.
 
 export const FOUNDED = 1996;
+// Google Analytics 4 measurement ID (looks like G-XXXXXXXXXX). Leave empty to turn analytics off.
+export const GA_ID = '';
 export const YEARS = new Date().getFullYear() - FOUNDED;
 
 export const company = {
